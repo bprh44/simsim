@@ -17,8 +17,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Asian Ports Dataset -->
+  <!-- Asian Ports Dataset & Centralized Map Config -->
   <script src="static/js/asia_ports.js"></script>
+  <script src="static/js/map_config.js"></script>
 
   <style>
     :root {
@@ -436,6 +437,7 @@
   <div class="top-bar">
     <div class="title-card">
       <span class="badge-live">NGA WPI</span>
+      <span class="badge-live" style="background: rgba(0, 255, 170, 0.12); border-color: var(--accent-emerald); color: var(--accent-emerald);" title="CARTO API Key: cb1_3fzc_1_e47177e320e1c761d456a149">CARTO KEY ACTIVE</span>
       <div>
         <h1>⚓ Asian Maritime Ports &amp; H3 Spatial Grid</h1>
         <p>Interactive spatial indexing via Uber H3 (Res 3-8) on CARTO basemap</p>
@@ -551,14 +553,21 @@
       </div>
     </div>
 
-    <!-- Basemap Selector -->
+    <!-- Basemap Selector & API Key -->
     <div>
-      <div class="section-title">CARTO Basemap</div>
-      <select id="select-basemap">
-        <option value="dark">CARTO Dark Matter (Maritime Night)</option>
-        <option value="positron">CARTO Positron (High Contrast Light)</option>
-        <option value="voyager">CARTO Voyager (Nautical Detail)</option>
-      </select>
+      <div class="section-title">CARTO Basemap &amp; Key</div>
+      <div class="control-group">
+        <label>Basemap Theme</label>
+        <select id="select-basemap">
+          <option value="dark">CARTO Dark Matter (Maritime Night)</option>
+          <option value="positron">CARTO Positron (High Contrast Light)</option>
+          <option value="voyager">CARTO Voyager (Nautical Detail)</option>
+        </select>
+      </div>
+      <div class="control-group" style="margin-top: 8px;">
+        <label>CARTO Maps API Key</label>
+        <input type="text" id="carto-key-input" placeholder="Enter CARTO API Key..." style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 6px 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); border-radius: 6px; color: var(--accent-cyan);" />
+      </div>
     </div>
 
     <!-- Active Hexagon Details Drawer -->
@@ -585,31 +594,17 @@
       8: { area: "~0.65 km²", edge: "~460 m edge" }
     };
 
-    // CARTO Basemaps
-    const BASEMAPS = {
-      dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-      }),
-      positron: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-      }),
-      voyager: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-      })
-    };
+    // Centralized Map Config & Basemaps
+    let activeBasemapType = 'dark';
+    let BASEMAPS = MapConfig.createSingleLayers();
 
-    // Initialize Map centered on Asian Maritime Corridor
+    // Initialize Map centered on Asian Maritime Corridor via MapConfig
+    const region = MapConfig.REGIONS.ASIA_MARITIME;
     const map = L.map('map', {
-      center: [23.5, 115.0],
-      zoom: 4,
+      center: region.center,
+      zoom: region.zoom,
       zoomControl: false,
-      layers: [BASEMAPS.dark]
+      layers: [BASEMAPS[activeBasemapType]]
     });
 
     L.control.zoom({ position: 'bottomleft' }).addTo(map);
@@ -625,6 +620,8 @@
 
     // Populate Country Filter Dropdown
     const countrySelect = document.getElementById('filter-country');
+    const allOpt = countrySelect.querySelector('option[value="ALL"]');
+    if (allOpt) allOpt.textContent = `-- All Asian Countries (${PORTS_DATA.length} Ports) --`;
     const countries = [...new Set(PORTS_DATA.map(p => p.country))].sort();
     countries.forEach(c => {
       const count = PORTS_DATA.filter(p => p.country === c).length;
@@ -866,9 +863,26 @@
 
     // Basemap switch
     document.getElementById('select-basemap').addEventListener('change', (e) => {
-      const val = e.target.value;
+      activeBasemapType = e.target.value;
       Object.values(BASEMAPS).forEach(l => map.removeLayer(l));
-      BASEMAPS[val].addTo(map);
+      BASEMAPS[activeBasemapType].addTo(map);
+    });
+
+    // CARTO API Key Input & MapConfig Binding
+    const keyInput = document.getElementById('carto-key-input');
+    keyInput.value = MapConfig.getApiKey();
+    keyInput.addEventListener('change', (e) => {
+      MapConfig.setApiKey(e.target.value);
+    });
+
+    MapConfig.onKeyChange((newKey) => {
+      keyInput.value = newKey;
+      Object.values(BASEMAPS).forEach(l => map.removeLayer(l));
+      BASEMAPS = MapConfig.createSingleLayers(newKey);
+      BASEMAPS[activeBasemapType].addTo(map);
+
+      const badge = document.querySelector('.badge-live[title^="CARTO"]');
+      if (badge) badge.title = `CARTO API Key: ${newKey || 'None'}`;
     });
 
     // Initial Render

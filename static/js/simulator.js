@@ -41,45 +41,29 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initMap() {
+  const region = (window.MapConfig && window.MapConfig.REGIONS.EAST_ASIA) || { center: [34.5, 129.8], zoom: 7 };
   map = L.map("map", {
-    center: [34.5, 129.8],
-    zoom: 7,
+    center: region.center,
+    zoom: region.zoom,
     zoomControl: false,
     attributionControl: false
   });
 
   L.control.zoom({ position: "topright" }).addTo(map);
 
-  const keyParam = CARTO_API_KEY ? `?key=${encodeURIComponent(CARTO_API_KEY)}` : "";
-  
-  baseTileLayers.dark = L.layerGroup([
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd"
-    }),
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd", opacity: 0.8
-    })
-  ]);
+  if (window.MapConfig) {
+    baseTileLayers = window.MapConfig.createCompositeLayers();
+    window.MapConfig.onKeyChange(() => {
+      const active = currentLayerName;
+      if (baseTileLayers[active]) map.removeLayer(baseTileLayers[active]);
+      baseTileLayers = window.MapConfig.createCompositeLayers();
+      if (baseTileLayers[active]) baseTileLayers[active].addTo(map);
+    });
+  }
 
-  baseTileLayers.light = L.layerGroup([
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd"
-    }),
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd", opacity: 0.8
-    })
-  ]);
-
-  baseTileLayers.voyager = L.layerGroup([
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd"
-    }),
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd", opacity: 0.8
-    })
-  ]);
-
-  baseTileLayers.dark.addTo(map);
+  if (baseTileLayers.dark) {
+    baseTileLayers.dark.addTo(map);
+  }
 
   // Layers for features
   routePolyline = L.polyline([], {
@@ -195,11 +179,39 @@ function reverseRoute() {
 async function loadVesselSpecs() {
   try {
     const res = await fetch("/api/vessel_types");
-    currentVesselSpecs = await res.json();
-    populateVesselTypeDropdown();
+    if (res.ok) {
+      currentVesselSpecs = await res.json();
+    }
   } catch (err) {
-    console.error("Failed to fetch vessel specs:", err);
+    console.warn("Using client-side vessel specs dictionary fallback:", err);
   }
+
+  // Fallback to static window.VESSEL_SPECS if backend is offline / GitHub Pages
+  if ((!currentVesselSpecs || Object.keys(currentVesselSpecs).length === 0) && window.VESSEL_SPECS) {
+    currentVesselSpecs = window.VESSEL_SPECS;
+  }
+
+  // Authoritative ITU-R M.1371 AIS Vessel Types safety fallback
+  if (!currentVesselSpecs || Object.keys(currentVesselSpecs).length === 0) {
+    currentVesselSpecs = {
+      "70": { type_code: 70, label: "70 - Cargo Ship (General / Bulk)", cruise_sog: 16.6 },
+      "71": { type_code: 71, label: "71 - Container Ship", cruise_sog: 19.1 },
+      "72": { type_code: 72, label: "72 - Bulk Carrier", cruise_sog: 14.5 },
+      "80": { type_code: 80, label: "80 - Tanker (Oil / Chemical)", cruise_sog: 16.4 },
+      "81": { type_code: 81, label: "81 - Crude Oil Tanker", cruise_sog: 15.5 },
+      "82": { type_code: 82, label: "82 - Gas Carrier (LNG / LPG)", cruise_sog: 17.5 },
+      "60": { type_code: 60, label: "60 - Passenger / Ferry", cruise_sog: 18.1 },
+      "40": { type_code: 40, label: "40 - High Speed Craft (HSC)", cruise_sog: 28.1 },
+      "52": { type_code: 52, label: "52 - Tug / Towing", cruise_sog: 12.0 },
+      "30": { type_code: 30, label: "30 - Fishing Vessel", cruise_sog: 9.5 },
+      "31": { type_code: 31, label: "31 - Towing / Offshore Service", cruise_sog: 11.0 },
+      "50": { type_code: 50, label: "50 - Pilot Vessel", cruise_sog: 18.0 },
+      "51": { type_code: 51, label: "51 - Search and Rescue", cruise_sog: 22.0 },
+      "90": { type_code: 90, label: "90 - Other / Special Craft", cruise_sog: 12.5 }
+    };
+  }
+
+  populateVesselTypeDropdown();
 }
 
 let historicalVessels = [];

@@ -824,6 +824,7 @@ def generate_multi_leg_simulation(
             # Insert extended dwell period before departure
             dwell_seconds = anom_delay_h * 3600.0
             dwell_start = current_time
+            terminal_lat, terminal_lon = leg_wpts[0]
             vessel_name = str(vessel_profile.get("Name") or vessel_profile.get("VesselName") or "COMMUTER FERRY")
             vessel_imo = str(vessel_profile.get("IMO") or "")
             v_type = int(vessel_profile.get("Type") or vessel_profile.get("VesselType") or vessel_type)
@@ -902,7 +903,7 @@ def generate_multi_leg_simulation(
         leg_nm = round(leg_dist_m * M_TO_NM, 2)
         total_transit_nm += leg_nm
 
-        last_ping_dt = datetime.fromisoformat(leg_pings[-1]["BaseDateTime"].replace("Z", "+00:00"))
+        last_ping_dt = datetime.fromisoformat(leg_pings[-1]["DateTime"].replace("Z", "+00:00"))
         leg_duration_s = (last_ping_dt - leg_departure_time).total_seconds()
         current_time = last_ping_dt
 

@@ -106,7 +106,7 @@ def get_vessels_history():
         meta_file = cf.replace(".csv", ".meta.json")
         name = None
         imo = None
-        v_type = 70
+        v_type = None
         v_label = None
         mod_time = datetime.fromtimestamp(os.path.getmtime(cf)).strftime("%Y-%m-%d %H:%M")
 
@@ -117,12 +117,12 @@ def get_vessels_history():
                     vp = meta.get("vessel_profile", {})
                     name = vp.get("Name") or vp.get("VesselName")
                     imo = vp.get("IMO")
-                    v_type = vp.get("Type") or vp.get("VesselType") or 70
+                    v_type = vp.get("Type") or vp.get("VesselType")
                     v_label = vp.get("TypeLabel") or vp.get("VesselTypeLabel")
             except Exception:
                 pass
 
-        if not name or not imo:
+        if not name or not imo or not v_type:
             # Fallback: inspect first 2 rows of CSV
             try:
                 with open(cf, "r", encoding="utf-8-sig") as f:
@@ -131,10 +131,13 @@ def get_vessels_history():
                     if row:
                         name = name or row.get("Name") or row.get("VesselName")
                         imo = imo or row.get("IMO")
-                        if not v_type:
-                            v_type = int(row.get("Type") or row.get("VesselType") or 70)
+                        if not v_type and row.get("Type"):
+                            v_type = int(row.get("Type"))
             except Exception:
                 pass
+
+        if not v_type:
+            v_type = 70
 
         if name and imo:
             key = f"{name.strip().upper()}___{imo.strip().upper()}"
