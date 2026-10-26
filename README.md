@@ -45,7 +45,7 @@ Calibrated directly from `data/bronze/ais_bronze.duckdb` (43.9M records):
 ## 4. Web Interfaces
 * **Interactive Studio**: `http://127.0.0.1:8765/`
 * **Telemetry Run Viewer**: `http://127.0.0.1:8765/viewer`
-  * Lists all saved simulation runs from `sim/ais_simulator/output/`.
+  * Lists all saved simulation runs from `output/`.
   * Plots both the original drawn route (dashed line) and colored AIS pings (speed color-coded).
   * Timeline scrubber with animation playback (`▶️`) and hover inspector.
   * Direct CSV download for each run.
@@ -53,7 +53,7 @@ Calibrated directly from `data/bronze/ais_bronze.duckdb` (43.9M records):
 ---
 
 ## 5. Verified Sample Routes
-Pre-generated and verified in `sim/ais_simulator/output/`:
+Pre-generated or generated into `output/`:
 1. **Incheon (KR) $\rightarrow$ Fukuoka (JP)**:
    - File: `1_Incheon_to_Fukuoka_356316238.csv`
    - Vessel: `ROYAL NAVIGATOR 25` (Type 70 Cargo, MMSI `356316238`)
