@@ -1,0 +1,402 @@
+{
+  "70": {
+    "type_code": 70,
+    "label": "70 - Cargo Ship (General / Bulk)",
+    "description": "Cargo Ship (General / Bulk)",
+    "median_length": 201.0,
+    "median_width": 32.0,
+    "median_draft": 10.2,
+    "median_sog": 11.3,
+    "cruise_sog": 16.6
+  },
+  "60": {
+    "type_code": 60,
+    "label": "60 - Passenger / Ferry",
+    "description": "Passenger / Ferry",
+    "median_length": 51.0,
+    "median_width": 18.0,
+    "median_draft": 3.2,
+    "median_sog": 12.3,
+    "cruise_sog": 18.1
+  },
+  "80": {
+    "type_code": 80,
+    "label": "80 - Tanker (Oil / Chemical)",
+    "description": "Tanker (Oil / Chemical)",
+    "median_length": 219.0,
+    "median_width": 32.0,
+    "median_draft": 11.7,
+    "median_sog": 11.8,
+    "cruise_sog": 16.4
+  },
+  "31": {
+    "type_code": 31,
+    "label": "31 - Towing / Fishing Vessel",
+    "description": "Towing / Fishing Vessel",
+    "median_length": 30.0,
+    "median_width": 10.0,
+    "median_draft": 3.8,
+    "median_sog": 6.3,
+    "cruise_sog": 9.5
+  },
+  "52": {
+    "type_code": 52,
+    "label": "52 - Tug / Towing",
+    "description": "Tug / Towing",
+    "median_length": 31.0,
+    "median_width": 12.0,
+    "median_draft": 5.9,
+    "median_sog": 8.4,
+    "cruise_sog": 16.9
+  },
+  "71": {
+    "type_code": 71,
+    "label": "71 - Container Ship",
+    "description": "Container Ship",
+    "median_length": 283.0,
+    "median_width": 41.0,
+    "median_draft": 11.8,
+    "median_sog": 12.9,
+    "cruise_sog": 19.1
+  },
+  "81": {
+    "type_code": 81,
+    "label": "81 - Crude Oil / Product Tanker",
+    "description": "Crude Oil / Product Tanker",
+    "median_length": 250.0,
+    "median_width": 37.0,
+    "median_draft": 11.3,
+    "median_sog": 14.9,
+    "cruise_sog": 19.9
+  },
+  "90": {
+    "type_code": 90,
+    "label": "90 - Other / Specialized",
+    "description": "Other / Specialized",
+    "median_length": 62.0,
+    "median_width": 14.0,
+    "median_draft": 4.3,
+    "median_sog": 7.0,
+    "cruise_sog": 10.3
+  },
+  "57": {
+    "type_code": 57,
+    "label": "57 - Port Tender / Service",
+    "description": "Port Tender / Service",
+    "median_length": 119.0,
+    "median_width": 18.0,
+    "median_draft": 3.0,
+    "median_sog": 5.4,
+    "cruise_sog": 8.4
+  },
+  "40": {
+    "type_code": 40,
+    "label": "40 - High Speed Craft (HSC)",
+    "description": "High Speed Craft (HSC)",
+    "median_length": 41.0,
+    "median_width": 10.0,
+    "median_draft": 2.0,
+    "median_sog": 15.2,
+    "cruise_sog": 28.1
+  },
+  "32": {
+    "type_code": 32,
+    "label": "32 - Towing Vessel",
+    "description": "Towing Vessel",
+    "median_length": 33.0,
+    "median_width": 10.0,
+    "median_draft": 3.7,
+    "median_sog": 6.6,
+    "cruise_sog": 8.5
+  },
+  "69": {
+    "type_code": 69,
+    "label": "69 - Vessel Type 69",
+    "description": "Vessel Type 69",
+    "median_length": 272.0,
+    "median_width": 36.0,
+    "median_draft": 8.1,
+    "median_sog": 9.8,
+    "cruise_sog": 15.6
+  },
+  "79": {
+    "type_code": 79,
+    "label": "79 - Cargo Ship (Specialized)",
+    "description": "Cargo Ship (Specialized)",
+    "median_length": 202.0,
+    "median_width": 30.0,
+    "median_draft": 9.4,
+    "median_sog": 9.6,
+    "cruise_sog": 15.2
+  },
+  "74": {
+    "type_code": 74,
+    "label": "74 - Vessel Type 74",
+    "description": "Vessel Type 74",
+    "median_length": 335.0,
+    "median_width": 46.0,
+    "median_draft": 12.8,
+    "median_sog": 9.1,
+    "cruise_sog": 10.3
+  },
+  "37": {
+    "type_code": 37,
+    "label": "37 - Pleasure Craft / Yacht",
+    "description": "Pleasure Craft / Yacht",
+    "median_length": 28.0,
+    "median_width": 7.0,
+    "median_draft": 2.2,
+    "median_sog": 9.1,
+    "cruise_sog": 12.7
+  },
+  "89": {
+    "type_code": 89,
+    "label": "89 - Vessel Type 89",
+    "description": "Vessel Type 89",
+    "median_length": 205.0,
+    "median_width": 32.0,
+    "median_draft": 9.5,
+    "median_sog": 10.1,
+    "cruise_sog": 12.8
+  },
+  "35": {
+    "type_code": 35,
+    "label": "35 - Military Vessel",
+    "description": "Military Vessel",
+    "median_length": 35.0,
+    "median_width": 10.0,
+    "median_draft": 2.5,
+    "median_sog": 10.2,
+    "cruise_sog": 13.7
+  },
+  "33": {
+    "type_code": 33,
+    "label": "33 - Dredger / Underwater Ops",
+    "description": "Dredger / Underwater Ops",
+    "median_length": 16.0,
+    "median_width": 6.0,
+    "median_draft": 2.0,
+    "median_sog": 2.5,
+    "cruise_sog": 5.6
+  },
+  "51": {
+    "type_code": 51,
+    "label": "51 - Search and Rescue (SAR)",
+    "description": "Search and Rescue (SAR)",
+    "median_length": 14.0,
+    "median_width": 4.0,
+    "median_draft": 1.4,
+    "median_sog": 5.9,
+    "cruise_sog": 17.8
+  },
+  "50": {
+    "type_code": 50,
+    "label": "50 - Pilot Vessel",
+    "description": "Pilot Vessel",
+    "median_length": 19.0,
+    "median_width": 6.0,
+    "median_draft": 2.0,
+    "median_sog": 11.3,
+    "cruise_sog": 23.5
+  },
+  "56": {
+    "type_code": 56,
+    "label": "56 - Vessel Type 56",
+    "description": "Vessel Type 56",
+    "median_length": 42.0,
+    "median_width": 8.0,
+    "median_draft": 2.0,
+    "median_sog": 3.4,
+    "cruise_sog": 6.7
+  },
+  "30": {
+    "type_code": 30,
+    "label": "30 - Fishing Vessel",
+    "description": "Fishing Vessel",
+    "median_length": 24.0,
+    "median_width": 8.0,
+    "median_draft": 2.7,
+    "median_sog": 7.9,
+    "cruise_sog": 10.5
+  },
+  "36": {
+    "type_code": 36,
+    "label": "36 - Sailing Vessel",
+    "description": "Sailing Vessel",
+    "median_length": 42.0,
+    "median_width": 8.0,
+    "median_draft": 3.3,
+    "median_sog": 7.6,
+    "cruise_sog": 8.7
+  },
+  "82": {
+    "type_code": 82,
+    "label": "82 - Vessel Type 82",
+    "description": "Vessel Type 82",
+    "median_length": 159.0,
+    "median_width": 26.0,
+    "median_draft": 8.5,
+    "median_sog": 11.2,
+    "cruise_sog": 13.5
+  },
+  "99": {
+    "type_code": 99,
+    "label": "99 - Vessel Type 99",
+    "description": "Vessel Type 99",
+    "median_length": 53.0,
+    "median_width": 10.0,
+    "median_draft": 4.5,
+    "median_sog": 7.6,
+    "cruise_sog": 10.0
+  },
+  "72": {
+    "type_code": 72,
+    "label": "72 - Vessel Type 72",
+    "description": "Vessel Type 72",
+    "median_length": 210.0,
+    "median_width": 30.0,
+    "median_draft": 10.2,
+    "median_sog": 9.9,
+    "cruise_sog": 17.0
+  },
+  "73": {
+    "type_code": 73,
+    "label": "73 - Vessel Type 73",
+    "description": "Vessel Type 73",
+    "median_length": 334.0,
+    "median_width": 46.0,
+    "median_draft": 12.6,
+    "median_sog": 9.5,
+    "cruise_sog": 12.9
+  },
+  "38": {
+    "type_code": 38,
+    "label": "38 - Vessel Type 38",
+    "description": "Vessel Type 38",
+    "median_length": 55.0,
+    "median_width": 10.0,
+    "median_draft": 2.1,
+    "median_sog": 10.2,
+    "cruise_sog": 13.8
+  },
+  "55": {
+    "type_code": 55,
+    "label": "55 - Vessel Type 55",
+    "description": "Vessel Type 55",
+    "median_length": 44.0,
+    "median_width": 8.0,
+    "median_draft": 3.0,
+    "median_sog": 9.5,
+    "cruise_sog": 15.2
+  },
+  "96": {
+    "type_code": 96,
+    "label": "96 - Vessel Type 96",
+    "description": "Vessel Type 96",
+    "median_length": 27.0,
+    "median_width": 11.0,
+    "median_draft": 5.2,
+    "median_sog": 7.2,
+    "cruise_sog": 9.9
+  },
+  "0": {
+    "type_code": 0,
+    "label": "0 - Vessel Type 0",
+    "description": "Vessel Type 0",
+    "median_length": 104.0,
+    "median_width": 32.0,
+    "median_draft": 7.0,
+    "median_sog": 8.8,
+    "cruise_sog": 12.7
+  },
+  "84": {
+    "type_code": 84,
+    "label": "84 - Vessel Type 84",
+    "description": "Vessel Type 84",
+    "median_length": 244.0,
+    "median_width": 42.0,
+    "median_draft": 9.3,
+    "median_sog": 12.0,
+    "cruise_sog": 13.6
+  },
+  "18": {
+    "type_code": 18,
+    "label": "18 - Vessel Type 18",
+    "description": "Vessel Type 18",
+    "median_length": 37.0,
+    "median_width": 8.0,
+    "median_draft": 3.5,
+    "median_sog": 10.3,
+    "cruise_sog": 19.6
+  },
+  "39": {
+    "type_code": 39,
+    "label": "39 - Vessel Type 39",
+    "description": "Vessel Type 39",
+    "median_length": 35.0,
+    "median_width": 8.0,
+    "median_draft": 3.0,
+    "median_sog": 8.4,
+    "cruise_sog": 9.1
+  },
+  "87": {
+    "type_code": 87,
+    "label": "87 - Vessel Type 87",
+    "description": "Vessel Type 87",
+    "median_length": 183.0,
+    "median_width": 32.0,
+    "median_draft": 8.8,
+    "median_sog": 6.8,
+    "cruise_sog": 12.7
+  },
+  "75": {
+    "type_code": 75,
+    "label": "75 - Vessel Type 75",
+    "description": "Vessel Type 75",
+    "median_length": 210.0,
+    "median_width": 30.0,
+    "median_draft": 10.0,
+    "median_sog": 9.8,
+    "cruise_sog": 12.6
+  },
+  "53": {
+    "type_code": 53,
+    "label": "53 - Vessel Type 53",
+    "description": "Vessel Type 53",
+    "median_length": 20.0,
+    "median_width": 6.0,
+    "median_draft": 3.0,
+    "median_sog": 5.7,
+    "cruise_sog": 13.9
+  },
+  "95": {
+    "type_code": 95,
+    "label": "95 - Vessel Type 95",
+    "description": "Vessel Type 95",
+    "median_length": 76.0,
+    "median_width": 24.0,
+    "median_draft": 7.7,
+    "median_sog": 5.3,
+    "cruise_sog": 9.0
+  },
+  "68": {
+    "type_code": 68,
+    "label": "68 - Vessel Type 68",
+    "description": "Vessel Type 68",
+    "median_length": 46.0,
+    "median_width": 9.0,
+    "median_draft": 2.5,
+    "median_sog": 9.9,
+    "cruise_sog": 15.2
+  },
+  "94": {
+    "type_code": 94,
+    "label": "94 - Vessel Type 94",
+    "description": "Vessel Type 94",
+    "median_length": 286.0,
+    "median_width": 44.0,
+    "median_draft": 10.0,
+    "median_sog": 2.4,
+    "cruise_sog": 3.8
+  }
+}

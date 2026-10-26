@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIS Synthetic Telemetry Viewer & Inspector</title>
+  <meta name="description" content="Inspect, play back, and download synthetic vessel telemetry runs from output CSV files." />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet GIS Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Custom Maritime Design System -->
+  <link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+
+  <!-- Top Global Header -->
+  <header class="top-header">
+    <div class="brand-section">
+      <span class="brand-badge" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff;">
+        <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        AIS VIEWER
+      </span>
+      <div>
+        <h1 class="brand-title">
+          ohD • Telemetry Inspector & Playback
+          <span class="live-beacon" style="color: var(--accent-purple); border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.1);">
+            Playback Engine
+          </span>
+        </h1>
+      </div>
+    </div>
+
+    <!-- Active Vessel Title -->
+    <div class="header-center">
+      <span id="vessel-title-display" style="font-family: var(--font-mono); font-size: 13px; color: var(--accent-cyan); font-weight: 700; letter-spacing: -0.3px;">
+        Select a run to view
+      </span>
+    </div>
+
+    <!-- Top Navigation Links -->
+    <div class="header-nav">
+      <a href="/" class="nav-link">
+        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        <span>Studio</span>
+      </a>
+      <a href="/viewer" class="nav-link active">
+        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>Telemetry Viewer</span>
+      </a>
+      <button type="button" class="btn-primary" style="width: auto; padding: 6px 14px; font-size: 12px;" id="btn-viewer-download">
+        <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Download CSV</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- App Main Viewport -->
+  <div class="app-container">
+    
+    <!-- Left Runs List Sidebar -->
+    <aside class="sidebar" id="sidebar" style="width: 380px;">
+      <section class="panel-section">
+        <div class="section-header">
+          <span class="section-title">
+            <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+            Output Directory Runs
+          </span>
+          <button type="button" class="btn-icon" id="btn-refresh-runs" title="Refresh list">
+            <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+          </button>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">
+          Saved in <code style="color: var(--accent-cyan); font-family: var(--font-mono);">ais_simulator/output/</code>
+        </div>
+
+        <!-- Scrollable list of runs -->
+        <div id="runs-list-container"></div>
+      </section>
+    </aside>
+
+    <!-- Sidebar Collapse Toggle Tab -->
+    <button type="button" class="sidebar-toggle-btn" id="sidebar-toggle" style="left: 380px;" title="Toggle Sidebar">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+
+    <!-- Map Viewport -->
+    <main class="map-container">
+      <div id="map"></div>
+
+      <!-- Floating HUD: Real-time Telemetry Stats -->
+      <div class="map-hud">
+        <div class="hud-item">
+          <span class="hud-label">Ping Count</span>
+          <span class="hud-value" id="hud-viewer-pings">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Total Distance</span>
+          <span class="hud-value" id="hud-viewer-dist">0.0 NM</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Speed Stats</span>
+          <span class="hud-value" id="hud-viewer-speed">-- kts</span>
+        </div>
+      </div>
+
+      <!-- Playback Animation Scrubber Bar -->
+      <div class="viewer-playback-bar">
+        <div class="playback-controls-row">
+          <button type="button" class="btn-play" id="btn-play-pause" title="Play / Pause Playback">
+            <svg class="ui-icon" id="play-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+          <input type="range" class="timeline-slider" id="timeline-slider" min="0" max="100" value="0" />
+        </div>
+        <div class="playback-telemetry-row">
+          <div>Leg: <strong id="playback-leg">--</strong></div>
+          <div>Time: <strong id="playback-time">--</strong></div>
+          <div>SOG: <strong id="playback-sog">-- kts</strong></div>
+          <div>COG: <strong id="playback-cog">--°</strong></div>
+          <div>Coords: <strong id="playback-pos">--</strong></div>
+        </div>
+      </div>
+
+      <!-- Carto Layer Picker -->
+      <div class="layer-picker">
+        <button type="button" class="layer-btn active" data-layer="dark" onclick="setViewerBasemap('dark')">Carto Dark</button>
+        <button type="button" class="layer-btn" data-layer="light" onclick="setViewerBasemap('light')">Carto Light</button>
+        <button type="button" class="layer-btn" data-layer="voyager" onclick="setViewerBasemap('voyager')">Voyager</button>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Leaflet GIS JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Viewer Script -->
+  <script src="static/js/viewer.js"></script>
+
+  <!-- Sidebar Toggle Script -->
+  <script>
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    if (toggleBtn && sidebar) {
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        setTimeout(() => {
+          if (typeof map !== 'undefined' && map.invalidateSize) {
+            map.invalidateSize();
+          }
+        }, 320);
+      });
+    }
+  </script>
+</body>
+</html>
