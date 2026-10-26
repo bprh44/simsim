@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initViewerMap();
   loadRunsList();
   initViewerControls();
+  initCsvUploadHandlers();
 
   // Check URL query param ?file=...
   const params = new URLSearchParams(window.location.search);
@@ -133,7 +134,7 @@ async function loadRunsList() {
           <span class="run-tag">Type ${r.vessel_type}</span>
         </div>
         <div class="run-card-meta">
-          <span>MMSI: <strong>${r.mmsi}</strong></span>
+          <span>IMO: <strong>${r.imo || "-"}</strong></span>
           <span>${r.ping_count} pings</span>
           <span>${r.total_nm} NM</span>
         </div>
@@ -228,9 +229,10 @@ function renderRunOnMap(data) {
 
     circle.bindTooltip(`
       <div style="font-family: monospace; font-size: 11px;">
-        <strong>#${idx + 1} ${p.VesselName}</strong> (${p.MMSI})<br/>
-        Time: ${p.BaseDateTime}<br/>
-        SOG: ${p.SOG} kts | COG: ${p.COG}° | HDG: ${p.Heading}°<br/>
+        <strong>#${idx + 1} ${p.Name || p.VesselName}</strong> (${p.IMO || 'No IMO'})<br/>
+        Time: ${p.DateTime || p.BaseDateTime}<br/>
+        SOG: ${p.SOG.toFixed(1)} kts | COG: ${p.COG.toFixed(1)}° | HDG: ${p.Heading.toFixed(0)}°<br/>
+        Type: ${p.Type || p.VesselType} • Status: ${p.Status}<br/>
         Pos: ${p.LAT.toFixed(4)}, ${p.LON.toFixed(4)}
       </div>
     `);
@@ -246,7 +248,7 @@ function renderRunOnMap(data) {
   map.fitBounds(L.latLngBounds(latlngs), { padding: [50, 50] });
 
   // Update Header & HUD
-  document.getElementById("vessel-title-display").textContent = `${pings[0].VesselName} (MMSI: ${pings[0].MMSI})${meta.total_days ? ` — ${meta.total_days} Days Simulation` : ''}`;
+  document.getElementById("vessel-title-display").textContent = `${pings[0].Name || pings[0].VesselName} (${pings[0].IMO || 'No IMO'})${meta.total_days ? ` — ${meta.total_days} Days Simulation` : ''}`;
   document.getElementById("hud-viewer-pings").textContent = `${pings.length.toLocaleString()}`;
   document.getElementById("hud-viewer-dist").textContent = `${meta.total_nm ? meta.total_nm + ' NM' : (meta.total_days ? '~88,000 NM' : calculateDistanceNM(latlngs) + ' NM')}`;
   document.getElementById("hud-viewer-speed").textContent = `${meta.avg_sog || "--"} kts (Max ${meta.max_sog || "--"})`;
@@ -259,7 +261,13 @@ function renderRunOnMap(data) {
 
   // Setup Download Button
   const btnDl = document.getElementById("btn-viewer-download");
-  btnDl.onclick = () => window.open(`/api/download/${data.filename}`, "_blank");
+  btnDl.onclick = () => {
+    if (window.AisClientEngine && data.pings) {
+      window.AisClientEngine.downloadCsvBlob(data.pings, data.filename);
+    } else {
+      window.open(`/api/download/${data.filename}`, "_blank");
+    }
+  };
 }
 
 function calculateDistanceNM(coords) {
@@ -298,7 +306,8 @@ function setPlaybackPosition(idx) {
     legEl.innerHTML = `Leg ${legNum} (${phase})${isAnom ? ' <span style="color: #f59e0b; font-size: 10px; font-weight:bold;">[ANOMALY]</span>' : ''}`;
   }
 
-  document.getElementById("playback-time").textContent = p.BaseDateTime.replace("T", " ").replace("Z", " UTC");
+  const pbDt = p.DateTime || p.BaseDateTime || "";
+  document.getElementById("playback-time").textContent = pbDt.replace("T", " ").replace("Z", " UTC");
   document.getElementById("playback-sog").textContent = `${p.SOG} kts`;
   document.getElementById("playback-cog").textContent = `${p.COG}°`;
   document.getElementById("playback-pos").textContent = `${p.LAT.toFixed(4)}, ${p.LON.toFixed(4)}`;
@@ -371,4 +380,122 @@ function initViewerControls() {
   });
 
   document.getElementById("btn-refresh-runs").addEventListener("click", loadRunsList);
+}
+
+// Client-side CSV File Upload & Drag-and-Drop Inspector
+function parseUploadedCsv(csvText, filename) {
+  const lines = csvText.split(/\r?\n/).filter(l => l.trim().length > 0);
+  if (lines.length < 2) return;
+
+  const headerLine = lines[0];
+  const headers = headerLine.split(",").map(h => h.trim().replace(/^"|"$/g, ""));
+
+  const pings = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(",").map(c => c.trim().replace(/^"|"$/g, ""));
+    const row = {};
+    headers.forEach((h, idx) => {
+      row[h] = cols[idx] || "";
+    });
+
+    const dt = row["DateTime"] || row["BaseDateTime"] || "";
+    const name = row["Name"] || row["VesselName"] || "Uploaded Vessel";
+    const imo = row["IMO"] || "-";
+    const vType = parseInt(row["Type"] || row["VesselType"] || 70);
+    const lat = parseFloat(row["LAT"] || 0.0);
+    const lon = parseFloat(row["LON"] || 0.0);
+    const sog = parseFloat(row["SOG"] || 0.0);
+    const cog = parseFloat(row["COG"] || 0.0);
+    const hdg = parseFloat(row["Heading"] || 0.0);
+    const status = parseInt(row["Status"] || 0);
+
+    if (lat !== 0 || lon !== 0) {
+      pings.push({
+        DateTime: dt,
+        LAT: lat,
+        LON: lon,
+        SOG: sog,
+        COG: cog,
+        Heading: hdg,
+        Name: name,
+        IMO: imo,
+        Type: vType,
+        Status: status
+      });
+    }
+  }
+
+  if (pings.length === 0) return;
+
+  const sogs = pings.map(p => p.SOG);
+  const avgSog = Math.round((sogs.reduce((a, b) => a + b, 0) / sogs.length) * 10) / 10;
+  const maxSog = Math.round(Math.max(...sogs, 0) * 10) / 10;
+
+  const runData = {
+    filename: filename || "uploaded_trajectory.csv",
+    meta: {
+      total_nm: "Calculated",
+      avg_sog: avgSog,
+      max_sog: maxSog,
+      start_time: pings[0].DateTime,
+      end_time: pings[pings.length - 1].DateTime
+    },
+    pings: pings
+  };
+
+  loadedRunsCache.set(runData.filename, runData);
+  currentRunData = runData;
+  renderRunOnMap(runData);
+
+  // Add card to top of sidebar
+  const container = document.getElementById("runs-list-container");
+  const card = document.createElement("div");
+  card.className = "run-card active";
+  card.dataset.filename = runData.filename;
+  card.innerHTML = `
+    <div class="run-card-header">
+      <span class="run-vessel-name">${pings[0].Name}</span>
+      <span class="run-tag">Uploaded</span>
+    </div>
+    <div class="run-card-meta">
+      <span>IMO: <strong>${pings[0].IMO}</strong></span>
+      <span>${pings.length} pings</span>
+    </div>
+    <div class="run-card-date">Just uploaded • Local</div>
+  `;
+  document.querySelectorAll(".run-card").forEach(c => c.classList.remove("active"));
+  container.prepend(card);
+}
+
+function initCsvUploadHandlers() {
+  const fileInput = document.getElementById("input-upload-csv");
+  if (fileInput) {
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        parseUploadedCsv(event.target.result, file.name);
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  // Drag and drop onto window/map
+  window.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+  window.addEventListener("drop", (e) => {
+    e.preventDefault();
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      if (file.name.endsWith(".csv")) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          parseUploadedCsv(event.target.result, file.name);
+        };
+        reader.readAsText(file);
+      }
+    }
+  });
 }

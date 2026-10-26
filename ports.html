@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NGA Asian Ports &amp; H3 Spatial Grid Explorer</title>
+  
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- Uber H3 JS (v4 UMD) -->
+  <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Asian Ports Dataset -->
+  <script src="static/js/asia_ports.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0a0f18;
+      --panel-bg: rgba(13, 20, 36, 0.88);
+      --panel-border: rgba(45, 80, 130, 0.45);
+      --accent-cyan: #00f0ff;
+      --accent-blue: #0077ff;
+      --accent-emerald: #00ffaa;
+      --accent-yellow: #ffd700;
+      --accent-coral: #ff5252;
+      --text-main: #f0f4fc;
+      --text-muted: #8ea0be;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      background: #090d14;
+    }
+
+    /* Top Floating Header & Stats */
+    .top-bar {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .title-card {
+      pointer-events: auto;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 12px 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-links-box {
+      pointer-events: auto;
+      display: flex;
+      gap: 10px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 8px 14px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    .nav-link-btn {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-link-btn:hover {
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--accent-cyan);
+    }
+
+    .badge-live {
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .title-card h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-card p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Floating Control Deck (Right Sidebar) */
+    .control-deck {
+      position: absolute;
+      top: 80px;
+      right: 16px;
+      width: 350px;
+      max-height: calc(100vh - 100px);
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .control-deck::-webkit-scrollbar {
+      width: 6px;
+    }
+    .control-deck::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Custom Slider */
+    .slider-container {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .res-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .res-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #1b283d;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--accent-cyan);
+      transition: transform 0.1s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .ticks {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Inputs & Selects */
+    input[type=text], select {
+      width: 100%;
+      background: rgba(10, 16, 28, 0.85);
+      border: 1px solid rgba(45, 80, 130, 0.6);
+      border-radius: 7px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type=text]:focus, select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    }
+
+    /* Checkbox Toggles */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider-switch {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #23344d;
+      transition: .3s;
+      border-radius: 20px;
+    }
+
+    .slider-switch:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider-switch {
+      background-color: var(--accent-cyan);
+    }
+
+    input:checked + .slider-switch:before {
+      transform: translateX(18px);
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .metric-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .metric-val {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 2px;
+    }
+
+    /* Port Detail Modal / Drawer */
+    .port-details-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+      font-size: 12px;
+      display: none;
+    }
+
+    .port-details-box.active {
+      display: block;
+    }
+
+    .port-item {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .port-item:last-child {
+      border-bottom: none;
+    }
+
+    .port-item strong {
+      color: var(--accent-cyan);
+    }
+
+    /* Leaflet Tooltips & Popups */
+    .leaflet-popup-content-wrapper {
+      background: rgba(12, 19, 32, 0.95) !important;
+      color: #fff !important;
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+    }
+
+    .leaflet-popup-tip {
+      background: rgba(12, 19, 32, 0.95) !important;
+    }
+
+    .h3-label {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: #fff;
+      font-weight: 700;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      text-shadow: 0 0 4px #000, 0 0 8px #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Legend */
+    .legend-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(to right, #00f0ff, #00ffaa, #ffd700, #ff5252);
+      margin-top: 6px;
+    }
+
+    .legend-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Map Canvas -->
+  <div id="map"></div>
+
+  <!-- Top Floating Header -->
+  <div class="top-bar">
+    <div class="title-card">
+      <span class="badge-live">NGA WPI</span>
+      <div>
+        <h1>⚓ Asian Maritime Ports &amp; H3 Spatial Grid</h1>
+        <p>Interactive spatial indexing via Uber H3 (Res 3-8) on CARTO basemap</p>
+      </div>
+    </div>
+
+    <!-- Navigation to Studio and Viewer -->
+    <div class="nav-links-box">
+      <a href="index.html" class="nav-link-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        <span>Studio</span>
+      </a>
+      <a href="viewer.html" class="nav-link-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>Viewer</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Right Floating Control Deck -->
+  <div class="control-deck">
+    
+    <!-- H3 Resolution Slider -->
+    <div>
+      <div class="section-title">
+        <span>H3 Resolution</span>
+        <span id="res-edge-len" style="font-size: 10px; color: var(--text-muted);">~22 km edge</span>
+      </div>
+      <div class="slider-container">
+        <div class="slider-header">
+          <span class="res-val" id="res-display">Res 4</span>
+          <span class="res-meta" id="res-area">Area: ~1,570 km²</span>
+        </div>
+        <input type="range" id="h3-res-slider" min="3" max="8" step="1" value="4" />
+        <div class="ticks">
+          <span>3</span>
+          <span>4</span>
+          <span>5</span>
+          <span>6</span>
+          <span>7</span>
+          <span>8</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics -->
+    <div>
+      <div class="section-title">Spatial Metrics</div>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Ports Active</div>
+          <div class="metric-val" id="stat-ports-count">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">H3 Hexagons</div>
+          <div class="metric-val" id="stat-hex-count">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Max Density</div>
+          <div class="metric-val" id="stat-max-density">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Avg Ports/Cell</div>
+          <div class="metric-val" id="stat-avg-density">0.0</div>
+        </div>
+      </div>
+      <div class="legend-bar"></div>
+      <div class="legend-labels">
+        <span>1 port</span>
+        <span id="legend-mid">Density</span>
+        <span id="legend-max">Max</span>
+      </div>
+    </div>
+
+    <!-- Filter Deck -->
+    <div>
+      <div class="section-title">Filter Ports</div>
+      <div class="control-group">
+        <label>Country / Territory</label>
+        <select id="filter-country">
+          <option value="ALL">-- All Asian Countries (768 Ports) --</option>
+        </select>
+      </div>
+      <div class="control-group" style="margin-top: 8px;">
+        <label>Search Port Name or ID</label>
+        <input type="text" id="filter-search" placeholder="e.g. Busan, Tokyo, Shanghai, 57020..." />
+      </div>
+    </div>
+
+    <!-- Layer Toggles -->
+    <div>
+      <div class="section-title">Display Layers</div>
+      <div class="toggle-row">
+        <span>H3 Hexagon Bins</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-hex" checked />
+          <span class="slider-switch"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <span>Port Point Markers</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-points" checked />
+          <span class="slider-switch"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <span>Hex Count Badges</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-labels" checked />
+          <span class="slider-switch"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Basemap Selector -->
+    <div>
+      <div class="section-title">CARTO Basemap</div>
+      <select id="select-basemap">
+        <option value="dark">CARTO Dark Matter (Maritime Night)</option>
+        <option value="positron">CARTO Positron (High Contrast Light)</option>
+        <option value="voyager">CARTO Voyager (Nautical Detail)</option>
+      </select>
+    </div>
+
+    <!-- Active Hexagon Details Drawer -->
+    <div id="hex-details-container">
+      <div class="section-title">Selected Hexagon Ports</div>
+      <div id="hex-details-content" class="port-details-box active">
+        <span style="color: var(--text-muted);">Click any hexagon or port to inspect details.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Source data loaded from static/js/asia_ports.js (window.RAW_PORTS)
+    const PORTS_DATA = window.RAW_PORTS || [];
+
+    // H3 Resolution Metadata (Approximations)
+    const H3_META = {
+      3: { area: "~11,000 km²", edge: "~60 km edge" },
+      4: { area: "~1,570 km²", edge: "~22 km edge" },
+      5: { area: "~224 km²", edge: "~8.5 km edge" },
+      6: { area: "~32 km²", edge: "~3.2 km edge" },
+      7: { area: "~4.6 km²", edge: "~1.2 km edge" },
+      8: { area: "~0.65 km²", edge: "~460 m edge" }
+    };
+
+    // CARTO Basemaps
+    const BASEMAPS = {
+      dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }),
+      positron: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }),
+      voyager: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      })
+    };
+
+    // Initialize Map centered on Asian Maritime Corridor
+    const map = L.map('map', {
+      center: [23.5, 115.0],
+      zoom: 4,
+      zoomControl: false,
+      layers: [BASEMAPS.dark]
+    });
+
+    L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+    // Layer Groups
+    const hexLayerGroup = L.layerGroup().addTo(map);
+    const pointLayerGroup = L.layerGroup().addTo(map);
+    const labelLayerGroup = L.layerGroup().addTo(map);
+
+    // State
+    let currentRes = 4;
+    let filteredPorts = [...PORTS_DATA];
+
+    // Populate Country Filter Dropdown
+    const countrySelect = document.getElementById('filter-country');
+    const countries = [...new Set(PORTS_DATA.map(p => p.country))].sort();
+    countries.forEach(c => {
+      const count = PORTS_DATA.filter(p => p.country === c).length;
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = `${c} (${count})`;
+      countrySelect.appendChild(opt);
+    });
+
+    // Color ramp based on port density
+    function getHexColor(count, max) {
+      if (max <= 1) return '#00f0ff';
+      const ratio = count / max;
+      if (ratio < 0.25) return '#00f0ff';   // Cyan
+      if (ratio < 0.50) return '#00ffaa';   // Emerald
+      if (ratio < 0.75) return '#ffd700';   // Yellow
+      return '#ff5252';                     // Coral Red
+    }
+
+    // Render spatial H3 grid and port markers
+    function renderMap() {
+      hexLayerGroup.clearLayers();
+      pointLayerGroup.clearLayers();
+      labelLayerGroup.clearLayers();
+
+      const showHex = document.getElementById('toggle-hex').checked;
+      const showPoints = document.getElementById('toggle-points').checked;
+      const showLabels = document.getElementById('toggle-labels').checked;
+
+      // Group ports by H3 Index at current resolution
+      const hexMap = new Map();
+
+      filteredPorts.forEach(port => {
+        let cell;
+        try {
+          if (typeof h3.latLngToCell === 'function') {
+            cell = h3.latLngToCell(port.lat, port.lon, currentRes);
+          } else if (typeof h3.geoToH3 === 'function') {
+            cell = h3.geoToH3(port.lat, port.lon, currentRes);
+          }
+        } catch(e) {
+          console.warn("H3 cell computation error", e);
+        }
+
+        if (!cell) return;
+
+        if (!hexMap.has(cell)) {
+          hexMap.set(cell, []);
+        }
+        hexMap.get(cell).push(port);
+      });
+
+      const totalHex = hexMap.size;
+      let maxDensity = 0;
+      hexMap.forEach(ports => {
+        if (ports.length > maxDensity) maxDensity = ports.length;
+      });
+
+      // Update Statistics HUD
+      document.getElementById('stat-ports-count').textContent = filteredPorts.length;
+      document.getElementById('stat-hex-count').textContent = totalHex;
+      document.getElementById('stat-max-density').textContent = maxDensity;
+      const avg = totalHex > 0 ? (filteredPorts.length / totalHex).toFixed(1) : '0.0';
+      document.getElementById('stat-avg-density').textContent = avg;
+      document.getElementById('legend-max').textContent = maxDensity + ' ports';
+
+      // Render Hexagons
+      hexMap.forEach((ports, cell) => {
+        let boundary;
+        try {
+          if (typeof h3.cellToBoundary === 'function') {
+            boundary = h3.cellToBoundary(cell);
+          } else if (typeof h3.h3ToGeoBoundary === 'function') {
+            boundary = h3.h3ToGeoBoundary(cell);
+          }
+        } catch(e) {
+          boundary = [];
+        }
+
+        if (!boundary || boundary.length === 0) return;
+
+        const count = ports.length;
+        const color = getHexColor(count, maxDensity);
+
+        if (showHex) {
+          const polygon = L.polygon(boundary, {
+            color: color,
+            weight: 1.5,
+            opacity: 0.85,
+            fillColor: color,
+            fillOpacity: 0.35 + (count / (maxDensity || 1)) * 0.4
+          });
+
+          // Hexagon Tooltip & Interaction
+          const portListHtml = ports.slice(0, 5).map(p => `• ${p.name} (${p.country})`).join('<br>');
+          const more = ports.length > 5 ? `<br><i>+${ports.length - 5} more...</i>` : '';
+          
+          polygon.bindTooltip(`
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px;">
+              <strong style="color: ${color}">H3 Cell: ${cell}</strong><br>
+              <strong>Ports Count:</strong> ${count}<br>
+              <div style="margin-top: 4px; font-size: 10px;">${portListHtml}${more}</div>
+            </div>
+          `, { sticky: true });
+
+          polygon.on('click', () => {
+            displayHexDetails(cell, ports);
+          });
+
+          hexLayerGroup.addLayer(polygon);
+        }
+
+        // Hex Label
+        if (showLabels && count > 1) {
+          let center;
+          try {
+            if (typeof h3.cellToLatLng === 'function') {
+              center = h3.cellToLatLng(cell);
+            } else if (typeof h3.h3ToGeo === 'function') {
+              center = h3.h3ToGeo(cell);
+            }
+          } catch(e) {
+            center = null;
+          }
+          if (center) {
+            const countMarker = L.marker(center, {
+              icon: L.divIcon({
+                className: 'h3-label',
+                html: `<span style="color: ${color}">${count}</span>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+              }),
+              interactive: false
+            });
+            labelLayerGroup.addLayer(countMarker);
+          }
+        }
+      });
+
+      // Render Individual Port Points
+      if (showPoints) {
+        filteredPorts.forEach(port => {
+          const circle = L.circleMarker([port.lat, port.lon], {
+            radius: 4,
+            fillColor: '#ffffff',
+            color: '#00f0ff',
+            weight: 1.5,
+            opacity: 0.9,
+            fillOpacity: 0.9
+          });
+
+          circle.bindPopup(`
+            <div style="font-family: 'Outfit', sans-serif; font-size: 12px;">
+              <h3 style="color: #00f0ff; margin-bottom: 4px;">⚓ ${port.name}</h3>
+              ${port.alt && port.alt !== ' ' ? `<div style="color: #8ea0be; font-size: 11px;">Alt: ${port.alt}</div>` : ''}
+              <div><strong>Country:</strong> ${port.country}</div>
+              <div><strong>WPI Index:</strong> ${port.id}</div>
+              ${port.unlocode && port.unlocode !== ' ' ? `<div><strong>UN/LOCODE:</strong> ${port.unlocode}</div>` : ''}
+              <div><strong>Coords:</strong> ${port.lat.toFixed(4)}, ${port.lon.toFixed(4)}</div>
+              ${port.water ? `<div><strong>Body:</strong> ${port.water}</div>` : ''}
+            </div>
+          `);
+
+          circle.on('click', () => {
+            displayPortDirect(port);
+          });
+
+          pointLayerGroup.addLayer(circle);
+        });
+      }
+    }
+
+    // Display Hex Details Drawer
+    function displayHexDetails(cell, ports) {
+      const container = document.getElementById('hex-details-content');
+      let html = `<div style="margin-bottom: 6px; font-weight: 700; color: #00f0ff;">Cell: ${cell} (${ports.length} ports)</div>`;
+      html += ports.map(p => `
+        <div class="port-item">
+          <strong>${p.name}</strong> (${p.country})<br>
+          <span style="color: #8ea0be;">WPI: ${p.id} | Coords: ${p.lat}, ${p.lon}</span>
+        </div>
+      `).join('');
+      container.innerHTML = html;
+      container.classList.add('active');
+    }
+
+    function displayPortDirect(port) {
+      const container = document.getElementById('hex-details-content');
+      container.innerHTML = `
+        <div class="port-item">
+          <strong style="font-size: 13px;">⚓ ${port.name}</strong> (${port.country})<br>
+          <span style="color: #8ea0be;">WPI Number: ${port.id}</span><br>
+          <span style="color: #8ea0be;">Coords: ${port.lat}, ${port.lon}</span><br>
+          ${port.unlocode ? `<span style="color: #8ea0be;">UN/LOCODE: ${port.unlocode}</span><br>` : ''}
+          ${port.water ? `<span style="color: #8ea0be;">Water: ${port.water}</span>` : ''}
+        </div>
+      `;
+      container.classList.add('active');
+    }
+
+    // Event Listeners
+    // H3 Slider
+    const slider = document.getElementById('h3-res-slider');
+    slider.addEventListener('input', (e) => {
+      currentRes = parseInt(e.target.value);
+      document.getElementById('res-display').textContent = `Res ${currentRes}`;
+      document.getElementById('res-area').textContent = `Area: ${H3_META[currentRes].area}`;
+      document.getElementById('res-edge-len').textContent = H3_META[currentRes].edge;
+      renderMap();
+    });
+
+    // Filters
+    function applyFilters() {
+      const countryVal = document.getElementById('filter-country').value;
+      const searchVal = document.getElementById('filter-search').value.trim().toLowerCase();
+
+      filteredPorts = PORTS_DATA.filter(p => {
+        if (countryVal !== 'ALL' && p.country !== countryVal) return false;
+        if (searchVal) {
+          const matchName = p.name.toLowerCase().includes(searchVal);
+          const matchAlt = p.alt && p.alt.toLowerCase().includes(searchVal);
+          const matchId = p.id.toLowerCase().includes(searchVal);
+          const matchLocode = p.unlocode && p.unlocode.toLowerCase().includes(searchVal);
+          if (!matchName && !matchAlt && !matchId && !matchLocode) return false;
+        }
+        return true;
+      });
+
+      renderMap();
+    }
+
+    document.getElementById('filter-country').addEventListener('change', applyFilters);
+    document.getElementById('filter-search').addEventListener('input', applyFilters);
+
+    // Layer Toggles
+    document.getElementById('toggle-hex').addEventListener('change', renderMap);
+    document.getElementById('toggle-points').addEventListener('change', renderMap);
+    document.getElementById('toggle-labels').addEventListener('change', renderMap);
+
+    // Basemap switch
+    document.getElementById('select-basemap').addEventListener('change', (e) => {
+      const val = e.target.value;
+      Object.values(BASEMAPS).forEach(l => map.removeLayer(l));
+      BASEMAPS[val].addTo(map);
+    });
+
+    // Initial Render
+    renderMap();
+
+  </script>
+</body>
+</html>

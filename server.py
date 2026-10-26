@@ -1,8 +1,10 @@
 """
 AIS Simulator Web Application Server.
 Exposes endpoints for:
-  - Vessel type metadata & dimension generation (DuckDB-grounded)
-  - Random vessel profile generation (MMSI, IMO, VesselName, CallSign)
+  - Canonical 10-column telemetry synthesis (DateTime, LAT, LON, SOG, COG, Heading, Name, IMO, Type, Status)
+  - Historical vessel profile scanning from output directory (/api/vessels/history)
+  - Authentic commercial vessel profile generation (/api/random_vessel)
+  - NGA World Port Index querying & caching (/api/ports)
   - Synthetic AIS path simulation with dynamic kinematics & stochastic intervals
   - Output CSV management, viewing, and direct downloads
   - Dual Web UI: Interactive Route Simulator (/), Historical Run Viewer (/viewer)
@@ -11,6 +13,8 @@ Exposes endpoints for:
 import os
 import glob
 import json
+import random
+import csv
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, Query
@@ -32,7 +36,7 @@ os.makedirs(STATIC_DIR, exist_ok=True)
 app = FastAPI(
     title="Maritime AIS Synthetic Route Simulator",
     description="Interactive web platform for drawing synthetic vessel tracks and synthesizing Class A AIS telemetry.",
-    version="1.0.0"
+    version="2.0.0"
 )
 
 app.add_middleware(
@@ -74,36 +78,109 @@ def get_vessel_types():
     return JSONResponse(content=simulator_engine.VESSEL_SPECS)
 
 
+@app.get("/api/ports")
+def get_ports(q: str = Query("", description="Search term for port name, UN/LOCODE or index"),
+              country: str = Query("", description="Country name filter"),
+              limit: int = Query(50, description="Max ports to return")):
+    """Returns authoritative ports from reference/wpi_nga_ports.csv."""
+    ports = simulator_engine.load_wpi_ports(query=q, country=country, limit=limit)
+    return JSONResponse(content={
+        "total": len(ports),
+        "limit": limit,
+        "ports": ports
+    })
+
+
+@app.get("/api/vessels/history")
+def get_vessels_history():
+    """
+    Scans the output/ directory for unique vessels previously simulated.
+    Returns deduplicated list with Name, IMO, Type, TypeLabel, and run count.
+    """
+    history_map = {}
+    csv_files = glob.glob(os.path.join(OUTPUT_DIR, "*.csv"))
+    # Sort files by modification date (newest first)
+    csv_files.sort(key=os.path.getmtime, reverse=True)
+
+    for cf in csv_files:
+        meta_file = cf.replace(".csv", ".meta.json")
+        name = None
+        imo = None
+        v_type = 70
+        v_label = None
+        mod_time = datetime.fromtimestamp(os.path.getmtime(cf)).strftime("%Y-%m-%d %H:%M")
+
+        if os.path.exists(meta_file):
+            try:
+                with open(meta_file, "r", encoding="utf-8") as mf:
+                    meta = json.load(mf)
+                    vp = meta.get("vessel_profile", {})
+                    name = vp.get("Name") or vp.get("VesselName")
+                    imo = vp.get("IMO")
+                    v_type = vp.get("Type") or vp.get("VesselType") or 70
+                    v_label = vp.get("TypeLabel") or vp.get("VesselTypeLabel")
+            except Exception:
+                pass
+
+        if not name or not imo:
+            # Fallback: inspect first 2 rows of CSV
+            try:
+                with open(cf, "r", encoding="utf-8-sig") as f:
+                    reader = csv.DictReader(f)
+                    row = next(reader, None)
+                    if row:
+                        name = name or row.get("Name") or row.get("VesselName")
+                        imo = imo or row.get("IMO")
+                        if not v_type:
+                            v_type = int(row.get("Type") or row.get("VesselType") or 70)
+            except Exception:
+                pass
+
+        if name and imo:
+            key = f"{name.strip().upper()}___{imo.strip().upper()}"
+            if key not in history_map:
+                if not v_label:
+                    meta_info = simulator_engine.get_vessel_type_metadata(int(v_type))
+                    v_label = meta_info.get("label", f"Type {v_type}")
+                history_map[key] = {
+                    "Name": name.strip(),
+                    "IMO": imo.strip(),
+                    "Type": int(v_type),
+                    "TypeLabel": v_label,
+                    "last_simulated": mod_time,
+                    "runs_count": 1
+                }
+            else:
+                history_map[key]["runs_count"] += 1
+
+    return JSONResponse(content={"vessels": list(history_map.values())})
+
+
 @app.get("/api/random_vessel")
 def get_random_vessel(vessel_type: Optional[int] = Query(None)):
-    """Generates an authentic vessel profile with randomized identifiers and dimensions."""
+    """
+    Generates an authentic commercial vessel identity with randomized Name,
+    valid IMO (IMO9xxxxxx), Type, and default Status.
+    """
     if vessel_type is None:
-        # Default to Passenger Ferry (60), Cargo (70) or Container (71)
         vessel_type = random.choice([60, 70, 71, 80])
     
-    dims = simulator_engine.auto_generate_dimensions(vessel_type)
     meta = simulator_engine.get_vessel_type_metadata(vessel_type)
     
     profile = {
-        "MMSI": simulator_engine.generate_random_mmsi(),
+        "Name": simulator_engine.generate_random_name(),
         "IMO": simulator_engine.generate_random_imo(),
-        "VesselName": simulator_engine.generate_random_name(),
-        "CallSign": simulator_engine.generate_random_callsign(),
-        "VesselType": vessel_type,
-        "VesselTypeLabel": meta.get("label", f"Type {vessel_type}"),
-        "Length": dims["Length"],
-        "Width": dims["Width"],
-        "Draft": dims["Draft"],
-        "Cargo": "All ships of this type",
-        "TransceiverClass": "A",
-        "TypicalCruiseSpeed": meta.get("cruise_sog", 18.0)
+        "Type": vessel_type,
+        "TypeLabel": meta.get("label", f"Type {vessel_type}"),
+        "Status": 0,  # Under way using engine
+        "TypicalCruiseSpeed": meta.get("cruise_sog", 16.5)
     }
     return JSONResponse(content=profile)
 
 
 @app.post("/api/simulate")
 def simulate_ais(req: SimulateRequest):
-    """Executes the simulation engine and writes the resulting CSV output."""
+    """Executes the simulation engine and writes the strictly 10-column CSV output."""
     if len(req.waypoints) < 2:
         raise HTTPException(status_code=400, detail="At least 2 waypoints are required to simulate a trajectory.")
 
@@ -116,7 +193,6 @@ def simulate_ais(req: SimulateRequest):
         except Exception:
             ref_dt = datetime.now()
 
-    # Convert waypoints to list of tuples
     wpt_tuples = [(pt[0], pt[1]) for pt in req.waypoints]
 
     legs_meta = None
@@ -152,7 +228,7 @@ def simulate_ais(req: SimulateRequest):
             dropout_probability=req.dropout_probability
         )
 
-    # Save to CSV
+    # Save to CSV strictly with 10 columns
     csv_path = simulator_engine.save_trajectory_to_csv(
         pings=pings,
         output_dir=OUTPUT_DIR,
@@ -172,6 +248,9 @@ def simulate_ais(req: SimulateRequest):
     avg_sog = round(sum(sogs) / max(1, len(sogs)), 1)
     max_sog = round(max(sogs) if sogs else 0.0, 1)
 
+    start_time = pings[0].get("DateTime") if pings else None
+    end_time = pings[-1].get("DateTime") if pings else None
+
     # Save metadata JSON alongside CSV for instant viewer loading
     meta_filename = csv_filename.replace(".csv", ".meta.json")
     meta_path = os.path.join(OUTPUT_DIR, meta_filename)
@@ -187,8 +266,8 @@ def simulate_ais(req: SimulateRequest):
         "ping_count": len(pings),
         "avg_sog": avg_sog,
         "max_sog": max_sog,
-        "start_time": pings[0]["BaseDateTime"] if pings else None,
-        "end_time": pings[-1]["BaseDateTime"] if pings else None,
+        "start_time": start_time,
+        "end_time": end_time,
         "waypoints": req.waypoints,
         "legs_metadata": legs_meta,
         "created_at": datetime.now().isoformat()
@@ -205,8 +284,8 @@ def simulate_ais(req: SimulateRequest):
             "ping_count": len(pings),
             "avg_sog": avg_sog,
             "max_sog": max_sog,
-            "start_time": pings[0]["BaseDateTime"] if pings else None,
-            "end_time": pings[-1]["BaseDateTime"] if pings else None,
+            "start_time": start_time,
+            "end_time": end_time,
         },
         "pings": pings,
         "waypoints": req.waypoints
@@ -226,7 +305,6 @@ def list_runs():
         mtime = datetime.fromtimestamp(os.path.getmtime(cf)).strftime("%Y-%m-%d %H:%M:%S")
         size_kb = round(os.path.getsize(cf) / 1024, 1)
 
-        # Check for companion metadata
         meta_file = cf.replace(".csv", ".meta.json")
         meta = {}
         if os.path.exists(meta_file):
@@ -236,17 +314,38 @@ def list_runs():
             except Exception:
                 pass
 
+        vp = meta.get("vessel_profile", {})
+        vessel_name = vp.get("Name") or vp.get("VesselName") or fname
+        vessel_imo = vp.get("IMO", "-")
+        vessel_type = vp.get("Type") or vp.get("VesselType") or "-"
+        start_time = meta.get("start_time") or "-"
+        end_time = meta.get("end_time") or "-"
+
+        # Fallback reading if meta is missing
+        if not meta:
+            try:
+                with open(cf, "r", encoding="utf-8-sig") as f:
+                    reader = csv.DictReader(f)
+                    first_row = next(reader, None)
+                    if first_row:
+                        vessel_name = first_row.get("Name") or first_row.get("VesselName") or fname
+                        vessel_imo = first_row.get("IMO", "-")
+                        vessel_type = first_row.get("Type") or first_row.get("VesselType") or "-"
+                        start_time = first_row.get("DateTime") or first_row.get("BaseDateTime") or "-"
+            except Exception:
+                pass
+
         runs.append({
             "filename": fname,
             "modified_at": mtime,
             "size_kb": size_kb,
-            "vessel_name": meta.get("vessel_profile", {}).get("VesselName", fname),
-            "mmsi": meta.get("vessel_profile", {}).get("MMSI", "-"),
-            "vessel_type": meta.get("vessel_profile", {}).get("VesselType", "-"),
+            "vessel_name": vessel_name,
+            "imo": vessel_imo,
+            "vessel_type": vessel_type,
             "ping_count": meta.get("ping_count", 0),
             "total_nm": meta.get("total_nm", 0),
-            "start_time": meta.get("start_time", "-"),
-            "end_time": meta.get("end_time", "-")
+            "start_time": start_time,
+            "end_time": end_time
         })
 
     return JSONResponse(content=runs)
@@ -255,31 +354,35 @@ def list_runs():
 @app.get("/api/runs/{filename}")
 def get_run_details(filename: str):
     """Retrieves full telemetry pings and metadata for a specific saved run."""
-    import csv
-
-    # Security check: prevent directory traversal
     clean_name = os.path.basename(filename)
     csv_path = os.path.join(OUTPUT_DIR, clean_name)
     if not os.path.exists(csv_path):
         raise HTTPException(status_code=404, detail="Run not found.")
 
     pings = []
-    with open(csv_path, "r", encoding="utf-8") as f:
+    with open(csv_path, "r", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         for row in reader:
+            dt = row.get("DateTime") or row.get("BaseDateTime", "")
+            name = row.get("Name") or row.get("VesselName", "")
+            v_type = int(row.get("Type") or row.get("VesselType") or 0)
+            imo = row.get("IMO", "")
+            status = int(row.get("Status") or 0)
+            
             pings.append({
-                "MMSI": int(row["MMSI"]) if row.get("MMSI") else None,
-                "BaseDateTime": row.get("BaseDateTime", ""),
-                "LAT": float(row["LAT"]) if row.get("LAT") else 0.0,
-                "LON": float(row["LON"]) if row.get("LON") else 0.0,
-                "SOG": float(row["SOG"]) if row.get("SOG") else 0.0,
-                "COG": float(row["COG"]) if row.get("COG") else 0.0,
-                "Heading": float(row["Heading"]) if row.get("Heading") else 0.0,
-                "VesselName": row.get("VesselName", ""),
-                "IMO": row.get("IMO", ""),
-                "CallSign": row.get("CallSign", ""),
-                "VesselType": int(row["VesselType"]) if row.get("VesselType") else 0,
-                "Status": int(row["Status"]) if row.get("Status") else 0
+                "DateTime": dt,
+                "BaseDateTime": dt,  # Backwards compatibility for older viewers
+                "LAT": float(row.get("LAT", 0.0)),
+                "LON": float(row.get("LON", 0.0)),
+                "SOG": float(row.get("SOG", 0.0)),
+                "COG": float(row.get("COG", 0.0)),
+                "Heading": float(row.get("Heading", 0.0)),
+                "Name": name,
+                "VesselName": name,  # Backwards compatibility
+                "IMO": imo,
+                "Type": v_type,
+                "VesselType": v_type,  # Backwards compatibility
+                "Status": status
             })
 
     meta_file = csv_path.replace(".csv", ".meta.json")
@@ -312,7 +415,24 @@ def download_csv(filename: str):
     )
 
 
-# Serve Static UI Assets & Pages
+# Serve Ports Visualizer standalone page
+@app.get("/ports-visualizer")
+def serve_ports_visualizer():
+    vis_path = os.path.join(BASE_DIR, "specs", "001-simplified-telemetry-and-vessel-picker", "ports_visualizer.html")
+    if os.path.exists(vis_path):
+        return FileResponse(vis_path)
+    raise HTTPException(status_code=404, detail="Visualizer not found.")
+
+
+@app.get("/specs/001-simplified-telemetry-and-vessel-picker/asia_ports.js")
+def serve_asia_ports_js():
+    js_path = os.path.join(BASE_DIR, "specs", "001-simplified-telemetry-and-vessel-picker", "asia_ports.js")
+    if os.path.exists(js_path):
+        return FileResponse(js_path, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="Data file not found.")
+
+
+# Mount Static Assets & Pages
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
@@ -334,7 +454,6 @@ def serve_viewer():
 
 if __name__ == "__main__":
     import uvicorn
-    import random
     port = 8765
     print(f"Starting AIS Simulator Server on http://127.0.0.1:{port}")
     uvicorn.run(app, host="127.0.0.1", port=port, log_level="info")

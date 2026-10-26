@@ -12,11 +12,11 @@ Features:
 
 import math
 import random
+import bisect
 import json
 import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Dict, Any, Tuple, Optional
-import numpy as np
 
 # Load precomputed vessel specifications
 SPECS_PATH = os.path.join(os.path.dirname(__file__), "vessel_specs.json")
@@ -450,9 +450,9 @@ def generate_random_mmsi(country: Optional[str] = None) -> int:
 
 
 def generate_random_imo() -> str:
-    """Generates a valid-format 7-digit IMO number."""
-    # IMO numbers have 7 digits with a checksum: sum(d_i * (8-i)) mod 10 = d_7
-    d = [random.randint(1, 9)] + [random.randint(0, 9) for _ in range(5)]
+    """Generates an authentic 7-digit IMO number starting with 9 (IMO9xxxxxx)."""
+    # IMO numbers have 7 digits with a checksum: sum(d_i * (7-i)) mod 10 = d_7
+    d = [9] + [random.randint(0, 9) for _ in range(5)]
     checksum = sum(d[i] * (7 - i) for i in range(6)) % 10
     d.append(checksum)
     return f"IMO{''.join(map(str, d))}"
@@ -655,7 +655,7 @@ def build_trajectory(
 
     # Helper function to interpolate coord and bearing at any given distance
     def interpolate_coord_at_dist(d_m: float) -> Tuple[float, float, float]:
-        idx = np.searchsorted(cum_distances_m, d_m)
+        idx = bisect.bisect_left(cum_distances_m, d_m)
         if idx <= 0:
             lat1, lon1 = smoothed_coords[0]
             lat2, lon2 = smoothed_coords[min(1, len(smoothed_coords) - 1)]
@@ -687,7 +687,7 @@ def build_trajectory(
         frac_time = curr_time_s / max(1.0, total_travel_time_s)
         # Binary search time_at_dist
         t_arr = [pt[1] for pt in time_at_dist]
-        idx = np.searchsorted(t_arr, curr_time_s)
+        idx = bisect.bisect_left(t_arr, curr_time_s)
         idx = max(0, min(len(time_at_dist) - 1, idx))
         dist_m, _, target_sog = time_at_dist[idx]
 
@@ -719,25 +719,22 @@ def build_trajectory(
         if (curr_time_s < 30.0 or curr_time_s > (total_travel_time_s - 30.0)) and sog_noisy < 1.5:
             status = 5
 
+        vessel_name = str(vessel_profile.get("Name") or vessel_profile.get("VesselName") or "UNKNOWN VESSEL")
+        vessel_imo = str(vessel_profile.get("IMO") or "")
+        v_type = int(vessel_profile.get("Type") or vessel_profile.get("VesselType") or vessel_type)
+        v_status = int(vessel_profile.get("Status") if vessel_profile.get("Status") is not None else status)
+
         ping_record = {
-            "MMSI": int(vessel_profile.get("MMSI", 440123456)),
-            "BaseDateTime": formatted_time,
+            "DateTime": formatted_time,
             "LAT": round(lat, 6),
             "LON": round(lon, 6),
             "SOG": sog_noisy,
             "COG": cog_noisy,
             "Heading": heading_noisy,
-            "VesselName": str(vessel_profile.get("VesselName", "UNKNOWN VESSEL")),
-            "IMO": str(vessel_profile.get("IMO", "")),
-            "CallSign": str(vessel_profile.get("CallSign", "")),
-            "VesselType": vessel_type,
-            "Status": status,
-            "Length": float(vessel_profile.get("Length", meta.get("median_length", 120.0))),
-            "Width": float(vessel_profile.get("Width", meta.get("median_width", 20.0))),
-            "Draft": float(vessel_profile.get("Draft", meta.get("median_draft", 6.0))),
-            "Cargo": str(vessel_profile.get("Cargo", "All ships of this type")),
-            "TransceiverClass": str(vessel_profile.get("TransceiverClass", "A")),
-            "ROT": rot
+            "Name": vessel_name,
+            "IMO": vessel_imo,
+            "Type": v_type,
+            "Status": v_status
         }
         pings.append(ping_record)
 
@@ -827,8 +824,10 @@ def generate_multi_leg_simulation(
             # Insert extended dwell period before departure
             dwell_seconds = anom_delay_h * 3600.0
             dwell_start = current_time
-            terminal_lat, terminal_lon = leg_wpts[0]
-            
+            vessel_name = str(vessel_profile.get("Name") or vessel_profile.get("VesselName") or "COMMUTER FERRY")
+            vessel_imo = str(vessel_profile.get("IMO") or "")
+            v_type = int(vessel_profile.get("Type") or vessel_profile.get("VesselType") or vessel_type)
+
             # Generate moored pings during anomaly delay
             dwell_elapsed = 0.0
             while dwell_elapsed < dwell_seconds:
@@ -837,27 +836,16 @@ def generate_multi_leg_simulation(
                 lat_jitter = terminal_lat + random.gauss(0.0, 0.00003)
                 lon_jitter = terminal_lon + random.gauss(0.0, 0.00003)
                 all_pings.append({
-                    "MMSI": int(vessel_profile.get("MMSI", 440123456)),
-                    "BaseDateTime": ping_dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "DateTime": ping_dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "LAT": round(lat_jitter, 6),
                     "LON": round(lon_jitter, 6),
                     "SOG": round(random.uniform(0.0, 0.2), 1),
                     "COG": 0.0,
                     "Heading": round(random.choice([0.0, 90.0, 180.0, 270.0]), 0),
-                    "VesselName": str(vessel_profile.get("VesselName", "COMMUTER FERRY")),
-                    "IMO": str(vessel_profile.get("IMO", "")),
-                    "CallSign": str(vessel_profile.get("CallSign", "")),
-                    "VesselType": vessel_type,
-                    "Status": 5,  # Moored
-                    "Length": float(vessel_profile.get("Length", meta.get("median_length", 130.0))),
-                    "Width": float(vessel_profile.get("Width", meta.get("median_width", 22.0))),
-                    "Draft": float(vessel_profile.get("Draft", meta.get("median_draft", 6.5))),
-                    "Cargo": str(vessel_profile.get("Cargo", "All ships of this type")),
-                    "TransceiverClass": str(vessel_profile.get("TransceiverClass", "A")),
-                    "ROT": 0.0,
-                    "LegNumber": leg_idx,
-                    "LegPhase": "moored_delayed",
-                    "IsAnomaly": True
+                    "Name": vessel_name,
+                    "IMO": vessel_imo,
+                    "Type": v_type,
+                    "Status": 5
                 })
                 # Moored cadence: 180s to 360s
                 dwell_elapsed += random.randint(180, 360)
@@ -936,6 +924,9 @@ def generate_multi_leg_simulation(
             dwell_seconds = port_dwell_hours * 3600.0
             dwell_start = current_time
             dest_lat, dest_lon = leg_wpts[-1]
+            vessel_name = str(vessel_profile.get("Name") or vessel_profile.get("VesselName") or "COMMUTER FERRY")
+            vessel_imo = str(vessel_profile.get("IMO") or "")
+            v_type = int(vessel_profile.get("Type") or vessel_profile.get("VesselType") or vessel_type)
 
             dwell_elapsed = 0.0
             while dwell_elapsed < dwell_seconds:
@@ -943,27 +934,16 @@ def generate_multi_leg_simulation(
                 lat_jitter = dest_lat + random.gauss(0.0, 0.00003)
                 lon_jitter = dest_lon + random.gauss(0.0, 0.00003)
                 all_pings.append({
-                    "MMSI": int(vessel_profile.get("MMSI", 440123456)),
-                    "BaseDateTime": ping_dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "DateTime": ping_dt.strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "LAT": round(lat_jitter, 6),
                     "LON": round(lon_jitter, 6),
                     "SOG": round(random.uniform(0.0, 0.2), 1),
                     "COG": 0.0,
                     "Heading": round(random.choice([0.0, 90.0, 180.0, 270.0]), 0),
-                    "VesselName": str(vessel_profile.get("VesselName", "COMMUTER FERRY")),
-                    "IMO": str(vessel_profile.get("IMO", "")),
-                    "CallSign": str(vessel_profile.get("CallSign", "")),
-                    "VesselType": vessel_type,
-                    "Status": 5,  # Moored
-                    "Length": float(vessel_profile.get("Length", meta.get("median_length", 130.0))),
-                    "Width": float(vessel_profile.get("Width", meta.get("median_width", 22.0))),
-                    "Draft": float(vessel_profile.get("Draft", meta.get("median_draft", 6.5))),
-                    "Cargo": str(vessel_profile.get("Cargo", "All ships of this type")),
-                    "TransceiverClass": str(vessel_profile.get("TransceiverClass", "A")),
-                    "ROT": 0.0,
-                    "LegNumber": leg_idx,
-                    "LegPhase": "moored",
-                    "IsAnomaly": False
+                    "Name": vessel_name,
+                    "IMO": vessel_imo,
+                    "Type": v_type,
+                    "Status": 5
                 })
                 # Moored interval: 180s to 360s
                 dwell_elapsed += random.randint(180, 360)
@@ -989,8 +969,8 @@ def generate_multi_leg_simulation(
 
 def save_trajectory_to_csv(pings: List[Dict[str, Any]], output_dir: str, custom_filename: Optional[str] = None) -> str:
     """
-    Saves the generated telemetry pings to a standardized CSV file in canonical NOAA/Medallion AIS format.
-    Includes benchmark evaluation tags (LegNumber, LegPhase, IsAnomaly) if present.
+    Saves the generated telemetry pings to a standardized CSV file with strictly 10 columns:
+    DateTime, LAT, LON, SOG, COG, Heading, Name, IMO, Type, Status
     """
     import csv
 
@@ -998,24 +978,23 @@ def save_trajectory_to_csv(pings: List[Dict[str, Any]], output_dir: str, custom_
     if not pings:
         raise ValueError("Cannot save empty telemetry trajectory.")
 
-    vessel_name = "".join(c for c in pings[0]["VesselName"] if c.isalnum() or c in ("_", "-")).strip() or "VESSEL"
-    mmsi = pings[0]["MMSI"]
+    first_p = pings[0]
+    v_name = first_p.get("Name") or first_p.get("VesselName") or "VESSEL"
+    vessel_name = "".join(c for c in v_name if c.isalnum() or c in ("_", "-")).strip() or "VESSEL"
+    imo_str = "".join(c for c in (first_p.get("IMO") or "") if c.isalnum()).strip() or "NOIMO"
     now_str = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    filename = custom_filename or f"ais_{vessel_name}_{mmsi}_{now_str}.csv"
+    filename = custom_filename or f"ais_{vessel_name}_{imo_str}_{now_str}.csv"
     if not filename.endswith(".csv"):
         filename += ".csv"
 
     filepath = os.path.join(output_dir, filename)
 
-    # Standard canonical columns + evaluation benchmark tags
+    # Strictly the 10 requested canonical columns
     columns = [
-        "MMSI", "BaseDateTime", "LAT", "LON", "SOG", "COG", "Heading",
-        "VesselName", "IMO", "CallSign", "VesselType", "Status",
-        "Length", "Width", "Draft", "Cargo", "TransceiverClass", "ROT"
+        "DateTime", "LAT", "LON", "SOG", "COG", "Heading",
+        "Name", "IMO", "Type", "Status"
     ]
-    if "LegNumber" in pings[0]:
-        columns.extend(["LegNumber", "LegPhase", "IsAnomaly"])
 
     with open(filepath, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=columns, extrasaction="ignore")
@@ -1023,4 +1002,54 @@ def save_trajectory_to_csv(pings: List[Dict[str, Any]], output_dir: str, custom_
         writer.writerows(pings)
 
     return filepath
+
+
+# ---------------------------------------------------------------------------
+# NGA World Port Index (WPI) Port Loader
+# ---------------------------------------------------------------------------
+WPI_PORTS_PATH = os.path.join(os.path.dirname(__file__), "reference", "wpi_nga_ports.csv")
+_CACHED_WPI_PORTS = None
+
+
+def load_wpi_ports(query: Optional[str] = None, country: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+    """Loads and filters authoritative maritime ports from reference/wpi_nga_ports.csv."""
+    global _CACHED_WPI_PORTS
+    import csv
+    if _CACHED_WPI_PORTS is None:
+        _CACHED_WPI_PORTS = []
+        if os.path.exists(WPI_PORTS_PATH):
+            with open(WPI_PORTS_PATH, "r", encoding="utf-8", errors="replace") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    main_name = (row.get("Main Port Name") or "").strip()
+                    alt_name = (row.get("Alternate Port Name") or "").strip()
+                    c_code = (row.get("Country Code") or "").strip()
+                    locode = (row.get("UN/LOCODE") or "").strip()
+                    lat_str = row.get("Latitude")
+                    lon_str = row.get("Longitude")
+                    if lat_str and lon_str and main_name:
+                        try:
+                            _CACHED_WPI_PORTS.append({
+                                "name": main_name,
+                                "alt_name": alt_name,
+                                "country": c_code,
+                                "locode": locode,
+                                "lat": round(float(lat_str), 4),
+                                "lon": round(float(lon_str), 4),
+                                "harbor_size": (row.get("Harbor Size") or "").strip(),
+                                "harbor_type": (row.get("Harbor Type") or "").strip()
+                            })
+                        except (ValueError, TypeError):
+                            continue
+
+    results = _CACHED_WPI_PORTS or []
+    if country:
+        c_low = country.lower().strip()
+        results = [p for p in results if c_low in p["country"].lower()]
+
+    if query:
+        q_low = query.lower().strip()
+        results = [p for p in results if q_low in p["name"].lower() or q_low in p["alt_name"].lower() or q_low in p["locode"].lower()]
+
+    return results[:limit]
 

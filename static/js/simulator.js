@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initMap();
   loadCorridors();
   loadVesselSpecs();
+  loadVesselHistory();
   initFormControls();
   initDrawingTools();
   setLocalDefaultTimestamp();
@@ -128,7 +129,11 @@ async function loadCorridors() {
       availableCorridors = await res.json();
     }
   } catch (err) {
-    console.warn("Using offline corridors dictionary fallback:", err);
+    console.warn("Using static corridors dictionary fallback:", err);
+  }
+
+  if ((!availableCorridors || Object.keys(availableCorridors).length === 0) && window.CORRIDORS) {
+    availableCorridors = window.CORRIDORS;
   }
 
   // Load default corridor
@@ -197,8 +202,53 @@ async function loadVesselSpecs() {
   }
 }
 
+let historicalVessels = [];
+
+async function loadVesselHistory() {
+  const historySelect = document.getElementById("vessel-history-select");
+  if (!historySelect) return;
+
+  try {
+    const res = await fetch("/api/vessels/history");
+    if (res.ok) {
+      const data = await res.json();
+      historicalVessels = data.vessels || [];
+    }
+  } catch (err) {
+    // Backend offline / GitHub Pages mode
+  }
+
+  if ((!historicalVessels || historicalVessels.length === 0) && window.AisClientEngine) {
+    historicalVessels = window.AisClientEngine.getHistoricalVesselsFromLocalStorage();
+  }
+
+  historySelect.innerHTML = '<option value="">-- [ New / Custom Vessel Profile ] --</option>';
+
+  historicalVessels.forEach((v, idx) => {
+    const opt = document.createElement("option");
+    opt.value = idx;
+    opt.textContent = `${v.Name} (${v.IMO}) [${v.TypeLabel || 'Type ' + v.Type}] (${v.runs_count || 1} runs)`;
+    historySelect.appendChild(opt);
+  });
+
+  historySelect.onchange = (e) => {
+    const val = e.target.value;
+    if (val !== "" && historicalVessels[val]) {
+      const selected = historicalVessels[val];
+      document.getElementById("vessel-name").value = selected.Name;
+      document.getElementById("vessel-imo").value = selected.IMO;
+      const typeSelect = document.getElementById("vessel-type-select");
+      if (typeSelect) {
+        typeSelect.value = selected.Type;
+        onVesselTypeChanged(selected.Type);
+      }
+    }
+  };
+}
+
 function populateVesselTypeDropdown() {
   const select = document.getElementById("vessel-type-select");
+  if (!select) return;
   select.innerHTML = "";
   
   const sortedKeys = Object.keys(currentVesselSpecs).sort((a, b) => parseInt(a) - parseInt(b));
@@ -208,7 +258,7 @@ function populateVesselTypeDropdown() {
     const opt = document.createElement("option");
     opt.value = code;
     opt.textContent = `${item.label} (Cruise: ${item.cruise_sog} kts)`;
-    if (code === "60") opt.selected = true; // default passenger/ferry
+    if (code === "70") opt.selected = true; // default cargo
     select.appendChild(opt);
   });
 
@@ -216,40 +266,56 @@ function populateVesselTypeDropdown() {
     onVesselTypeChanged(parseInt(select.value));
   });
 
-  onVesselTypeChanged(60);
+  onVesselTypeChanged(70);
+  randomizeAllVesselFields();
 }
 
 function onVesselTypeChanged(typeCode) {
   const spec = currentVesselSpecs[typeCode] || {};
-  document.getElementById("vessel-length").value = spec.median_length || 135;
-  document.getElementById("vessel-width").value = spec.median_width || 22;
-  document.getElementById("vessel-draft").value = spec.median_draft || 6.5;
-
   const speedInput = document.getElementById("desired-speed");
-  const speed = spec.cruise_sog || 18.0;
-  speedInput.value = speed;
-  document.getElementById("speed-slider").value = speed;
+  const speed = spec.cruise_sog || 16.5;
+  if (speedInput) speedInput.value = speed;
+  const speedSlider = document.getElementById("speed-slider");
+  if (speedSlider) speedSlider.value = speed;
   updateEstimatedHUD();
 }
 
 async function randomizeAllVesselFields() {
   const select = document.getElementById("vessel-type-select");
-  const typeCode = select ? select.value : 60;
+  const typeCode = select ? select.value : 70;
+  let data = null;
+
   try {
     const res = await fetch(`/api/random_vessel?vessel_type=${typeCode}`);
-    const data = await res.json();
-    document.getElementById("vessel-mmsi").value = data.MMSI;
-    document.getElementById("vessel-imo").value = data.IMO;
-    document.getElementById("vessel-name").value = data.VesselName;
-    document.getElementById("vessel-callsign").value = data.CallSign;
-    document.getElementById("vessel-length").value = data.Length;
-    document.getElementById("vessel-width").value = data.Width;
-    document.getElementById("vessel-draft").value = data.Draft;
-    document.getElementById("desired-speed").value = data.TypicalCruiseSpeed;
-    document.getElementById("speed-slider").value = data.TypicalCruiseSpeed;
+    if (res.ok) data = await res.json();
+  } catch (err) {}
+
+  if (!data && window.AisClientEngine) {
+    const spec = (currentVesselSpecs && currentVesselSpecs[typeCode]) || {};
+    data = {
+      Name: window.AisClientEngine.generateRandomName(),
+      IMO: window.AisClientEngine.generateRandomImo(),
+      Type: parseInt(typeCode),
+      TypeLabel: spec.label || `Type ${typeCode}`,
+      Status: 0,
+      TypicalCruiseSpeed: spec.cruise_sog || 16.5
+    };
+  }
+
+  if (data) {
+    const nameInput = document.getElementById("vessel-name");
+    const imoInput = document.getElementById("vessel-imo");
+    if (nameInput) nameInput.value = data.Name;
+    if (imoInput) imoInput.value = data.IMO;
+    const historySelect = document.getElementById("vessel-history-select");
+    if (historySelect) historySelect.value = "";
+    if (data.TypicalCruiseSpeed) {
+      const speedInput = document.getElementById("desired-speed");
+      if (speedInput) speedInput.value = data.TypicalCruiseSpeed;
+      const speedSlider = document.getElementById("speed-slider");
+      if (speedSlider) speedSlider.value = data.TypicalCruiseSpeed;
+    }
     updateEstimatedHUD();
-  } catch (err) {
-    console.error("Failed to randomize vessel:", err);
   }
 }
 
@@ -257,10 +323,14 @@ async function randomizeSingleField(field) {
   try {
     const res = await fetch(`/api/random_vessel`);
     const data = await res.json();
-    if (field === 'mmsi') document.getElementById("vessel-mmsi").value = data.MMSI;
-    if (field === 'imo') document.getElementById("vessel-imo").value = data.IMO;
-    if (field === 'name') document.getElementById("vessel-name").value = data.VesselName;
-    if (field === 'callsign') document.getElementById("vessel-callsign").value = data.CallSign;
+    if (field === 'imo') {
+      const imoEl = document.getElementById("vessel-imo");
+      if (imoEl) imoEl.value = data.IMO;
+    }
+    if (field === 'name') {
+      const nameEl = document.getElementById("vessel-name");
+      if (nameEl) nameEl.value = data.Name;
+    }
   } catch (err) {
     console.error("Field randomization failed:", err);
   }
@@ -630,16 +700,11 @@ async function executeSimulation() {
   const payload = {
     waypoints: waypoints,
     vessel_profile: {
-      MMSI: mmsi,
+      Name: vesselName,
       IMO: imo,
-      VesselName: vesselName,
-      CallSign: callSign,
-      VesselType: vesselType,
-      Length: length,
-      Width: width,
-      Draft: draft,
-      Cargo: "All ships of this type",
-      TransceiverClass: "A"
+      Type: vesselType,
+      Status: navStatus,
+      TypicalCruiseSpeed: desiredSpeed
     },
     num_legs: numLegs,
     port_dwell_hours: dwellHours,
@@ -655,18 +720,32 @@ async function executeSimulation() {
   };
 
   try {
-    const res = await fetch("/api/simulate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    let result = null;
 
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.detail || "Simulation failed");
+    try {
+      const res = await fetch("/api/simulate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        result = await res.json();
+      }
+    } catch (netErr) {
+      // Backend not running (e.g. GitHub Pages static hosting)
     }
 
-    const result = await res.json();
+    if (!result && window.AisClientEngine) {
+      // Synthesize trajectory client-side in the browser!
+      result = window.AisClientEngine.simulateTrajectory(payload);
+      window.AisClientEngine.saveRunToLocalStorage(result);
+      loadVesselHistory(); // Refresh history dropdown with newly created vessel
+    }
+
+    if (!result) {
+      throw new Error("Simulation failed. Client engine unavailable.");
+    }
+
     lastSimulatedResult = result;
     renderSimulationResults(result);
 
@@ -704,11 +783,11 @@ function renderSimulationResults(result) {
 
     circle.bindTooltip(`
       <div style="font-family: monospace; font-size: 11px;">
-        <strong>${ping.VesselName}</strong> (MMSI: ${ping.MMSI})<br/>
-        Leg: ${ping.LegNumber || 1} • Phase: ${ping.LegPhase || 'underway'}${isAnomaly ? ' <span style="color: #f59e0b; font-weight:bold;">[ANOMALY]</span>' : ''}<br/>
-        Time: ${ping.BaseDateTime}<br/>
-        SOG: ${ping.SOG} kts | COG: ${ping.COG}° | Heading: ${ping.Heading}°<br/>
-        LAT: ${ping.LAT} | LON: ${ping.LON}
+        <strong>${ping.Name || ping.VesselName}</strong> (${ping.IMO || 'No IMO'})<br/>
+        Type: ${ping.Type || ping.VesselType} • Status: ${ping.Status}<br/>
+        Time: ${ping.DateTime || ping.BaseDateTime}<br/>
+        SOG: ${ping.SOG.toFixed(1)} kts | COG: ${ping.COG.toFixed(1)}° | Heading: ${ping.Heading.toFixed(0)}°<br/>
+        LAT: ${ping.LAT.toFixed(4)} | LON: ${ping.LON.toFixed(4)}
       </div>
     `);
 
@@ -738,10 +817,16 @@ function showResultModal(result) {
   document.getElementById("res-filename").textContent = result.csv_filename;
 
   const btnDl = document.getElementById("btn-download-csv");
-  btnDl.onclick = () => window.open(result.download_url, "_blank");
+  btnDl.onclick = () => {
+    if (result.download_url && !result.download_url.startsWith("blob:")) {
+      window.open(result.download_url, "_blank");
+    } else if (window.AisClientEngine) {
+      window.AisClientEngine.downloadCsvBlob(result.pings, result.csv_filename);
+    }
+  };
 
   const btnViewer = document.getElementById("btn-open-viewer");
-  btnViewer.onclick = () => window.open(`/viewer?file=${result.csv_filename}`, "_blank");
+  btnViewer.onclick = () => window.open(`viewer.html?file=${encodeURIComponent(result.csv_filename)}`, "_blank");
 
   // Sample preview table
   const tbody = document.getElementById("sample-tbody");
@@ -749,13 +834,17 @@ function showResultModal(result) {
   const sample = result.pings.slice(0, 12);
   sample.forEach(p => {
     const tr = document.createElement("tr");
+    const dt = p.DateTime || p.BaseDateTime || "";
     tr.innerHTML = `
-      <td>${p.BaseDateTime.slice(11, 19)}</td>
+      <td>${dt.length > 19 ? dt.slice(0, 19).replace('T', ' ') : dt}</td>
       <td>${p.LAT.toFixed(4)}</td>
       <td>${p.LON.toFixed(4)}</td>
-      <td style="color: ${getSogColor(p.SOG)}; font-weight: bold;">${p.SOG}</td>
-      <td>${p.COG}°</td>
-      <td>${p.Heading}°</td>
+      <td style="color: ${getSogColor(p.SOG)}; font-weight: bold;">${p.SOG.toFixed(1)}</td>
+      <td>${p.COG.toFixed(1)}°</td>
+      <td>${p.Heading.toFixed(0)}°</td>
+      <td><strong>${p.Name || p.VesselName}</strong></td>
+      <td><code>${p.IMO}</code></td>
+      <td>${p.Type || p.VesselType}</td>
       <td>${p.Status === 5 ? '5 (Moored)' : p.Status}</td>
     `;
     tbody.appendChild(tr);

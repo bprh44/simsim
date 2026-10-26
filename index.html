@@ -73,13 +73,17 @@
 
     <!-- Top Navigation Links -->
     <div class="header-nav">
-      <a href="/" class="nav-link active">
+      <a href="index.html" class="nav-link active">
         <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
         <span>Studio</span>
       </a>
-      <a href="/viewer" class="nav-link">
+      <a href="viewer.html" class="nav-link">
         <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
         <span>Telemetry Viewer</span>
+      </a>
+      <a href="ports.html" class="nav-link" target="_blank" title="Explore Asian Ports on CARTO Basemap with H3 Hexagonal Grid">
+        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span>Ports &amp; H3 Grid</span>
       </a>
     </div>
   </header>
@@ -109,83 +113,67 @@
         </div>
       </section>
 
-      <!-- Section 1: Vessel Profile & Identifiers -->
+      <!-- Section 1: Vessel Identity & Canonical Specs -->
       <section class="panel-section">
         <div class="section-header">
           <span class="section-title">
-            <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M12 10V4"/><path d="M8 8h8"/></svg>
-            Vessel Profile & Identifiers
+            <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M12 10V4"/><path d="M8 8h8"/></svg>
+            Vessel Identity &amp; Profile
           </span>
-          <button type="button" class="btn-secondary" style="width: auto; padding: 4px 9px;" onclick="randomizeAllVesselFields()" title="Randomize All Identifiers">
+          <button type="button" class="btn-secondary" style="width: auto; padding: 4px 9px;" onclick="randomizeAllVesselFields()" title="Randomize Name &amp; IMO">
             <svg class="ui-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-            <span>Randomize All</span>
+            <span>Randomize Identity</span>
           </button>
+        </div>
+
+        <!-- Previously Simulated Vessels (Dropdown) -->
+        <div class="form-group">
+          <label class="form-label" for="vessel-history-select">Previously Simulated Vessels:</label>
+          <select id="vessel-history-select" class="input-field">
+            <option value="">-- [ New / Custom Vessel Profile ] --</option>
+          </select>
+          <div class="checkbox-desc" style="margin-top: 3px; font-size: 11px;">
+            Select a previous vessel from <code>output/</code> to reuse Name, IMO, and Type.
+          </div>
+        </div>
+
+        <!-- Vessel Name -->
+        <div class="form-group">
+          <label class="form-label" for="vessel-name">Vessel Name:</label>
+          <div class="input-with-button">
+            <input type="text" id="vessel-name" class="input-field" placeholder="e.g. PACIFIC GLORY 12" />
+            <button type="button" class="btn-icon" onclick="randomizeSingleField('name')" title="Randomize Vessel Name">
+              <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- IMO Number -->
+        <div class="form-group">
+          <label class="form-label" for="vessel-imo">IMO Number:</label>
+          <div class="input-with-button">
+            <input type="text" id="vessel-imo" class="input-field mono" placeholder="e.g. IMO9382104" />
+            <button type="button" class="btn-icon" onclick="randomizeSingleField('imo')" title="Randomize IMO Number">
+              <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+            </button>
+          </div>
         </div>
 
         <!-- Vessel Type Dropdown -->
         <div class="form-group">
-          <label class="form-label" for="vessel-type-select">Historical Vessel Type:</label>
+          <label class="form-label" for="vessel-type-select">AIS Vessel Type:</label>
           <select id="vessel-type-select" class="input-field"></select>
         </div>
 
-        <!-- 4 Vessel Identifiers with individual Randomizers -->
+        <!-- Navigation Status -->
         <div class="form-group">
-          <label class="form-label" for="vessel-mmsi">MMSI (9 Digits):</label>
-          <div class="input-with-button">
-            <input type="number" id="vessel-mmsi" class="input-field mono" placeholder="e.g. 440835263" />
-            <button type="button" class="btn-icon" onclick="randomizeSingleField('mmsi')" title="Randomize MMSI">
-              <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="vessel-name">Vessel Name:</label>
-          <div class="input-with-button">
-            <input type="text" id="vessel-name" class="input-field" placeholder="e.g. PACIFIC PIONEER" />
-            <button type="button" class="btn-icon" onclick="randomizeSingleField('name')" title="Randomize Name">
-              <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="vessel-imo">IMO Number:</label>
-          <div class="input-with-button">
-            <input type="text" id="vessel-imo" class="input-field mono" placeholder="e.g. IMO9562219" />
-            <button type="button" class="btn-icon" onclick="randomizeSingleField('imo')" title="Randomize IMO">
-              <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="vessel-callsign">Radio Call Sign:</label>
-          <div class="input-with-button">
-            <input type="text" id="vessel-callsign" class="input-field mono" placeholder="e.g. DSQB9" />
-            <button type="button" class="btn-icon" onclick="randomizeSingleField('callsign')" title="Randomize CallSign">
-              <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8" cy="8" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Auto Dimensions Grid -->
-        <div class="form-group">
-          <label class="form-label">Dimensions (Auto-Generated / Editable):</label>
-          <div class="grid-3">
-            <div class="dim-box">
-              <label>Length (m)</label>
-              <input type="number" id="vessel-length" value="180" step="0.5" />
-            </div>
-            <div class="dim-box">
-              <label>Width (m)</label>
-              <input type="number" id="vessel-width" value="28" step="0.5" />
-            </div>
-            <div class="dim-box">
-              <label>Draft (m)</label>
-              <input type="number" id="vessel-draft" value="8.5" step="0.1" />
-            </div>
-          </div>
+          <label class="form-label" for="nav-status-select">Navigation Status:</label>
+          <select id="nav-status-select" class="input-field">
+            <option value="0" selected>0 - Under way using engine</option>
+            <option value="1">1 - At anchor</option>
+            <option value="5">5 - Moored</option>
+            <option value="8">8 - Under way sailing</option>
+          </select>
         </div>
       </section>
 
@@ -448,17 +436,20 @@
           Saved to disk: <code id="res-filename" style="color: var(--accent-cyan); font-family: var(--font-mono);"></code>
         </div>
 
-        <!-- Sample preview table -->
+        <!-- Sample preview table with canonical 10 columns -->
         <div class="table-wrapper">
           <table class="data-table">
             <thead>
               <tr>
-                <th>Time (UTC)</th>
+                <th>DateTime</th>
                 <th>LAT</th>
                 <th>LON</th>
                 <th>SOG (kts)</th>
                 <th>COG</th>
                 <th>Heading</th>
+                <th>Name</th>
+                <th>IMO</th>
+                <th>Type</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -485,6 +476,10 @@
 
   <!-- Leaflet GIS JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Static Data & Client Engine for GitHub Pages Standalone Support -->
+  <script src="static/js/corridors_data.js"></script>
+  <script src="static/js/vessel_specs_data.js"></script>
+  <script src="static/js/simulator_engine_client.js"></script>
   <!-- Main Simulator Script -->
   <script src="static/js/simulator.js"></script>
 
