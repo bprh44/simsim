@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>spatA — AIS Spatiotemporal Analytics Workbench</title>
+
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Uber H3 JS (v4 UMD) -->
+  <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
+
+  <!-- Google Fonts: JetBrains Mono & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Centralized CARTO Basemap Configuration -->
+  <script src="static/js/map_config.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0a0f18;
+      --panel-bg: rgba(13, 20, 36, 0.90);
+      --panel-bg-subtle: rgba(18, 29, 52, 0.75);
+      --panel-border: rgba(45, 80, 130, 0.45);
+      --accent-cyan: #00f0ff;
+      --accent-blue: #0077ff;
+      --accent-emerald: #00ffaa;
+      --accent-yellow: #ffd700;
+      --accent-coral: #ff5252;
+      --accent-purple: #c084fc;
+      --text-main: #f0f4fc;
+      --text-muted: #8ea0be;
+      --text-sub: #546882;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      background: #090d14;
+    }
+
+    .leaflet-control-zoom {
+      border: 1px solid var(--panel-border) !important;
+      border-radius: var(--radius-md) !important;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    }
+    .leaflet-control-zoom a {
+      background-color: var(--panel-bg) !important;
+      color: var(--text-main) !important;
+      border-bottom: 1px solid var(--panel-border) !important;
+      backdrop-filter: blur(10px);
+    }
+    .leaflet-control-zoom a:hover {
+      background-color: rgba(0, 240, 255, 0.2) !important;
+      color: var(--accent-cyan) !important;
+    }
+
+    /* Top Floating Header & Stats */
+    .top-bar {
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      pointer-events: none;
+      gap: 16px;
+    }
+
+    .title-card {
+      pointer-events: auto;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      padding: 10px 18px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-live {
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
+
+    .title-card h1 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .title-card h1 span.logo-highlight {
+      color: var(--accent-cyan);
+      letter-spacing: -0.5px;
+    }
+
+    .title-card p {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    /* Stats Ribbon (Center Top) */
+    .stats-ribbon {
+      pointer-events: auto;
+      display: flex;
+      gap: 8px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      padding: 6px 14px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65);
+    }
+
+    .stat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 4px 10px;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .stat-pill:last-child {
+      border-right: none;
+    }
+    .stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .stat-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Side Control Decks (Glassmorphic) */
+    .deck-panel {
+      position: absolute;
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .deck-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    .deck-panel::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    /* Left Control Deck: Filters & Settings */
+    .deck-left {
+      top: 84px;
+      left: 16px;
+      width: 360px;
+      max-height: calc(100vh - 104px);
+    }
+
+    /* Right Control Deck: Hotspots & Leaderboard */
+    .deck-right {
+      top: 84px;
+      right: 16px;
+      width: 380px;
+      max-height: calc(100vh - 104px);
+    }
+
+    .section-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .card-box {
+      background: var(--panel-bg-subtle);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input[type="text"], select {
+      background: rgba(8, 12, 22, 0.85);
+      border: 1px solid rgba(72, 110, 165, 0.4);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.2s;
+      width: 100%;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+      outline: none;
+      margin: 6px 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--accent-cyan);
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .btn {
+      background: rgba(0, 119, 255, 0.2);
+      border: 1px solid var(--accent-blue);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: rgba(0, 119, 255, 0.4);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.25), rgba(0, 119, 255, 0.35));
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.4), rgba(0, 119, 255, 0.5));
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    .day-selector {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .day-pill {
+      flex: 1;
+      text-align: center;
+      padding: 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .day-pill.active {
+      background: rgba(0, 255, 170, 0.2);
+      border-color: var(--accent-emerald);
+      color: var(--accent-emerald);
+      font-weight: 700;
+    }
+
+    .preset-group {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .preset-btn {
+      flex: 1;
+      padding: 4px 6px;
+      font-size: 10.5px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-cyan);
+    }
+
+    .drop-zone {
+      border: 2px dashed rgba(72, 110, 165, 0.4);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(8, 12, 22, 0.5);
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 240, 255, 0.08);
+    }
+    .drop-zone p {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .cluster-card {
+      background: rgba(18, 29, 52, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cluster-card:hover {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 240, 255, 0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+    .cluster-card.active {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 12px rgba(0, 255, 170, 0.3);
+    }
+    .cluster-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cluster-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .cluster-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 215, 0, 0.15);
+      border: 1px solid var(--accent-yellow);
+      color: var(--accent-yellow);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .cluster-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .cluster-stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .cluster-stat-item span:first-child {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .cluster-stat-item span:last-child {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .switch-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-main);
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider-switch {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .2s;
+      border-radius: 20px;
+    }
+    .slider-switch:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+    input:checked + .slider-switch {
+      background-color: var(--accent-cyan);
+    }
+    input:checked + .slider-switch:before {
+      transform: translateX(16px);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(13, 20, 36, 0.95);
+      border: 1px solid var(--accent-cyan);
+      color: var(--text-main);
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 2000;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(14px);
+      display: none;
+      animation: fadeIn 0.2s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, 10px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fullscreen Map Canvas -->
+  <div id="map"></div>
+
+  <!-- Top Floating Header Bar -->
+  <div class="top-bar">
+    <div class="title-card">
+      <span class="badge-live">spatA &bull; H3 &bull; DBSCAN</span>
+      <div>
+        <h1><span class="logo-highlight">spatA</span> &bull; Spatiotemporal Hotspot Workbench</h1>
+        <p>Diurnal Temporal Slicing &bull; Uber H3 Hexagonal Grid &bull; Spatial DBSCAN Hotspots</p>
+      </div>
+    </div>
+
+    <!-- Live Telemetry / Aggregation Stats Ribbon -->
+    <div class="stats-ribbon">
+      <div class="stat-pill">
+        <span class="stat-label">Total Pings</span>
+        <span class="stat-value" id="stat-total-pings">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Active Window</span>
+        <span class="stat-value" id="stat-active-pings" style="color: var(--accent-emerald);">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Active H3 Hexes</span>
+        <span class="stat-value" id="stat-active-hexes" style="color: var(--accent-yellow);">0</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">Hotspots (Top-N)</span>
+        <span class="stat-value" id="stat-hotspots-count" style="color: var(--accent-coral);">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left Floating Control Deck: Data Ingestion & Spatiotemporal Controls -->
+  <div class="deck-panel deck-left">
+
+    <!-- Section 1: Ingestion -->
+    <div class="card-box">
+      <div class="section-title">
+        <span>1. Data Ingestion</span>
+        <span style="font-size: 10px; color: var(--text-muted);">POSIX / Drag & Drop</span>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">
+          <span>POSIX Path (JupyterHub / Local)</span>
+        </label>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="input-posix-path" value="data/busan_sample.csv" placeholder="/home/jovyan/data/ais.csv" />
+          <button class="btn btn-sm" id="btn-load-posix" title="Load path">Load</button>
+        </div>
+      </div>
+
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept=".csv" style="display: none;" />
+        <p><strong>Click or Drag &amp; Drop AIS CSV</strong></p>
+        <p style="font-size: 10px; margin-top: 2px;">Supports canonical 10-column or NOAA/MarineCadastre</p>
+      </div>
+
+      <div style="margin-top: 8px; display: flex; gap: 6px;">
+        <button class="btn btn-sm btn-primary" id="btn-load-demo" style="width: 100%;">
+          ⚡ Load Sample AIS Corridor
+        </button>
+      </div>
+    </div>
+
+    <!-- Section 2: Diurnal & Day-of-Week Filters -->
+    <div class="card-box">
+      <div class="section-title">
+        <span>2. Diurnal Temporal Slicing</span>
+        <span id="diurnal-display" style="font-size: 10px; color: var(--accent-emerald);">08:00 - 17:00 UTC</span>
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; font-size: 11px;">
+          <span>Start Hour: <strong id="val-hour-start">08:00</strong></span>
+          <span>End Hour: <strong id="val-hour-end">17:00</strong></span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="range" id="slider-hour-start" min="0" max="23" value="8" />
+          <input type="range" id="slider-hour-end" min="1" max="24" value="17" />
+        </div>
+        <div class="preset-group">
+          <button class="preset-btn" data-diurnal="all">All 24h</button>
+          <button class="preset-btn" data-diurnal="dayshift">Day Shift (08-17)</button>
+          <button class="preset-btn" data-diurnal="nightshift">Night Shift (20-05)</button>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top: 10px;">
+        <label class="form-label">
+          <span>Active Days of Week</span>
+        </label>
+        <div class="day-selector">
+          <div class="day-pill active" data-dow="1">M</div>
+          <div class="day-pill active" data-dow="2">T</div>
+          <div class="day-pill active" data-dow="3">W</div>
+          <div class="day-pill active" data-dow="4">T</div>
+          <div class="day-pill active" data-dow="5">F</div>
+          <div class="day-pill" data-dow="6">S</div>
+          <div class="day-pill" data-dow="0">S</div>
+        </div>
+        <div class="preset-group">
+          <button class="preset-btn" data-dow-preset="all">Every Day</button>
+          <button class="preset-btn" data-dow-preset="weekdays">Weekdays Only</button>
+          <button class="preset-btn" data-dow-preset="weekends">Weekends Only</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: H3 DGGS Spatial Indexing -->
+    <div class="card-box">
+      <div class="section-title">
+        <span>3. Uber H3 Spatial Grid</span>
+        <span id="h3-meta-display" style="font-size: 10px; color: var(--accent-cyan);">Res 8 &bull; ~0.74 km²</span>
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; font-size: 11px;">
+          <span>H3 Resolution: <strong id="val-h3-res">8</strong></span>
+          <span style="color: var(--text-muted); font-size: 10px;">Range: 6 (Macro) &rarr; 10 (Micro)</span>
+        </div>
+        <input type="range" id="slider-h3-res" min="6" max="10" step="1" value="8" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span>Hexagon Choropleth Metric</span>
+        </label>
+        <select id="select-hex-metric">
+          <option value="pings">Point Count (Traffic Density)</option>
+          <option value="vessels">Unique Vessels (Traffic Diversity)</option>
+          <option value="sog">Average SOG (Speed Dynamics)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Section 4: DBSCAN Hotspot Clustering -->
+    <div class="card-box">
+      <div class="section-title">
+        <span>4. Spatial DBSCAN Hotspots</span>
+        <span style="font-size: 10px; color: var(--accent-coral);">Haversine Centroids</span>
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; font-size: 11px;">
+          <span>Neighborhood Radius (&epsilon;):</span>
+          <span><strong id="val-dbscan-eps">3.0</strong> km</span>
+        </div>
+        <input type="range" id="slider-dbscan-eps" min="0.5" max="15.0" step="0.5" value="3.0" />
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; font-size: 11px;">
+          <span>Min Sample Pings:</span>
+          <span><strong id="val-dbscan-minpts">5</strong> pings</span>
+        </div>
+        <input type="range" id="slider-dbscan-minpts" min="2" max="30" step="1" value="5" />
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; font-size: 11px;">
+          <span>Top-N Hotspots to Rank:</span>
+          <span><strong id="val-dbscan-topn">5</strong> clusters</span>
+        </div>
+        <input type="range" id="slider-dbscan-topn" min="1" max="15" step="1" value="5" />
+      </div>
+
+      <button class="btn btn-primary" id="btn-recompute" style="width: 100%; margin-top: 6px;">
+        ✨ Run Spatiotemporal Clustering
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Right Floating Control Deck: Basemap, Layers, & Hotspots Leaderboard -->
+  <div class="deck-panel deck-right">
+    
+    <!-- Basemap & Layer Visibility Settings -->
+    <div class="card-box">
+      <div class="section-title">Basemap &amp; Tactical Overlays</div>
+
+      <div class="form-group">
+        <label class="form-label">CARTO Basemap Theme</label>
+        <select id="select-basemap">
+          <option value="dark">CARTO Dark Matter (Maritime Tactical)</option>
+          <option value="positron">CARTO Positron (High-Contrast Light)</option>
+          <option value="voyager">CARTO Voyager (Nautical Detail)</option>
+        </select>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+        <div class="switch-row">
+          <span>H3 Density Choropleth Grid</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-layer-h3" checked />
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="switch-row">
+          <span>Hotspot Convex Hulls &amp; Badges</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-layer-hulls" checked />
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+        <div class="switch-row">
+          <span>Raw AIS Point Scatter (Subsampled)</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-layer-scatter" checked />
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top-N Activity Hotspots Leaderboard -->
+    <div class="card-box" style="flex: 1; display: flex; flex-direction: column;">
+      <div class="section-title">
+        <span>Top Activity Hotspots</span>
+        <span id="hotspots-summary-label" style="font-size: 10px; color: var(--accent-emerald);">Ranked by Pings</span>
+      </div>
+
+      <div id="hotspots-container" style="display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; padding-right: 4px;">
+        <div style="color: var(--text-muted); font-size: 11.5px; text-align: center; padding: 20px 10px;">
+          Load an AIS dataset and click <em>Run Spatiotemporal Clustering</em> to discover high-density maritime activity nodes.
+        </div>
+      </div>
+    </div>
+
+    <!-- Inspected Hexagon / Hotspot Inspector Box -->
+    <div class="card-box" id="inspector-card" style="display: none;">
+      <div class="section-title">
+        <span>Inspected Spatial Node</span>
+        <button class="btn btn-sm" id="btn-close-inspector" style="padding: 2px 6px;">&times;</button>
+      </div>
+      <div id="inspector-content" style="font-size: 11px; font-family: 'JetBrains Mono', monospace; display: flex; flex-direction: column; gap: 4px;">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast Notification Banner -->
+  <div class="toast" id="toast">Ready</div>
+
+  <script>
+    // =========================================================================
+    // spatA: AIS SPATIOTEMPORAL ANALYTICS ENGINE & LEAFLET CLIENT
+    // =========================================================================
+
+    const H3_SPECS = {
+      6: { area: "~36 km²", edge: "~3.2 km" },
+      7: { area: "~5.16 km²", edge: "~1.2 km" },
+      8: { area: "~0.74 km²", edge: "~460 m" },
+      9: { area: "~0.10 km²", edge: "~174 m" },
+      10: { area: "~0.015 km²", edge: "~66 m" }
+    };
+
+    const HULL_PALETTE = [
+      { border: '#00ffaa', fill: 'rgba(0, 255, 170, 0.22)' }, // Emerald
+      { border: '#00f0ff', fill: 'rgba(0, 240, 255, 0.22)' }, // Cyan
+      { border: '#ffd700', fill: 'rgba(255, 215, 0, 0.22)' }, // Yellow
+      { border: '#ff5252', fill: 'rgba(255, 82, 82, 0.22)' },  // Coral
+      { border: '#c084fc', fill: 'rgba(192, 132, 252, 0.22)' },// Purple
+      { border: '#38bdf8', fill: 'rgba(56, 189, 248, 0.22)' }, // Sky
+      { border: '#f43f5e', fill: 'rgba(244, 63, 94, 0.22)' },  // Rose
+      { border: '#f59e0b', fill: 'rgba(245, 158, 11, 0.22)' }  // Amber
+    ];
+
+    let rawAisPoints = [];
+    let filteredPoints = [];
+    let activeHexSummary = [];
+    let activeClusters = [];
+    let activeHotspots = [];
+    let currentBasemap = 'dark';
+    let BASEMAPS = MapConfig.createSingleLayers();
+
+    const defaultCenter = [35.10, 129.04];
+    const map = L.map('map', {
+      center: defaultCenter,
+      zoom: 11,
+      zoomControl: false,
+      layers: [BASEMAPS[currentBasemap]]
+    });
+    L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+    const hexLayer = L.layerGroup().addTo(map);
+    const hullLayer = L.layerGroup().addTo(map);
+    const scatterLayer = L.layerGroup().addTo(map);
+    const markerLayer = L.layerGroup().addTo(map);
+
+    document.getElementById('select-basemap').addEventListener('change', function(e) {
+      const newType = e.target.value;
+      if (BASEMAPS[newType]) {
+        map.removeLayer(BASEMAPS[currentBasemap]);
+        map.addLayer(BASEMAPS[newType]);
+        currentBasemap = newType;
+        showToast(`Basemap switched to CARTO ${newType.toUpperCase()}`);
+      }
+    });
+
+    document.getElementById('toggle-layer-h3').addEventListener('change', e => {
+      if (e.target.checked) map.addLayer(hexLayer); else map.removeLayer(hexLayer);
+    });
+    document.getElementById('toggle-layer-hulls').addEventListener('change', e => {
+      if (e.target.checked) { map.addLayer(hullLayer); map.addLayer(markerLayer); }
+      else { map.removeLayer(hullLayer); map.removeLayer(markerLayer); }
+    });
+    document.getElementById('toggle-layer-scatter').addEventListener('change', e => {
+      if (e.target.checked) map.addLayer(scatterLayer); else map.removeLayer(scatterLayer);
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2800);
+    }
+
+    function parseAisCsv(csvText) {
+      const lines = csvText.trim().split(/\r?\n/);
+      if (lines.length < 2) return [];
+
+      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+      
+      const idxLat = headers.findIndex(h => ['lat', 'latitude', 'y'].includes(h));
+      const idxLon = headers.findIndex(h => ['lon', 'longitude', 'long', 'x'].includes(h));
+      const idxTime = headers.findIndex(h => ['datetime', 'timestamp', 'basedatetime', 'time', 'epoch_s'].includes(h));
+      const idxId = headers.findIndex(h => ['mmsi', 'imo', 'name', 'vesselid'].includes(h));
+      const idxSog = headers.findIndex(h => ['sog', 'speed'].includes(h));
+      const idxCog = headers.findIndex(h => ['cog', 'course'].includes(h));
+
+      if (idxLat === -1 || idxLon === -1) {
+        showToast('CSV missing LAT / LON columns!');
+        return [];
+      }
+
+      const points = [];
+      for (let i = 1; i < lines.length; i++) {
+        const row = lines[i].split(',');
+        if (row.length <= Math.max(idxLat, idxLon)) continue;
+
+        const lat = parseFloat(row[idxLat]);
+        const lon = parseFloat(row[idxLon]);
+        if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) continue;
+
+        let dateObj = null;
+        if (idxTime !== -1 && row[idxTime]) {
+          const rawTime = row[idxTime].trim();
+          dateObj = new Date(rawTime);
+          if (isNaN(dateObj.getTime())) {
+            const num = Number(rawTime);
+            if (!isNaN(num)) {
+              dateObj = new Date(num > 1e11 ? num : num * 1000);
+            }
+          }
+        }
+
+        const mmsi = idxId !== -1 ? row[idxId].trim() : `VESSEL-${i}`;
+        const sog = idxSog !== -1 ? parseFloat(row[idxSog]) || 0.0 : 0.0;
+        const cog = idxCog !== -1 ? parseFloat(row[idxCog]) || 0.0 : 0.0;
+
+        points.push({
+          lat,
+          lon,
+          mmsi,
+          sog,
+          cog,
+          date: dateObj,
+          hour: dateObj ? dateObj.getUTCHours() : 12,
+          dow: dateObj ? dateObj.getUTCDay() : 1
+        });
+      }
+
+      return points;
+    }
+
+    function getSelectedDays() {
+      const pills = document.querySelectorAll('.day-pill.active');
+      return Array.from(pills).map(p => parseInt(p.dataset.dow, 10));
+    }
+
+    function applyTemporalFilters() {
+      if (rawAisPoints.length === 0) return [];
+
+      const startH = parseInt(document.getElementById('slider-hour-start').value, 10);
+      const endH = parseInt(document.getElementById('slider-hour-end').value, 10);
+      const activeDows = getSelectedDays();
+
+      return rawAisPoints.filter(pt => {
+        if (!activeDows.includes(pt.dow)) return false;
+
+        if (startH <= endH) {
+          if (pt.hour < startH || pt.hour >= endH) return false;
+        } else {
+          if (pt.hour < startH && pt.hour >= endH) return false;
+        }
+
+        return true;
+      });
+    }
+
+    function aggregateToH3(points, resolution) {
+      if (!points.length) return [];
+      
+      const hexMap = new Map();
+      const latLngToCell = (lat, lon, res) => {
+        if (typeof h3.latLngToCell === 'function') {
+          return h3.latLngToCell(lat, lon, res);
+        } else if (typeof h3.geoToH3 === 'function') {
+          return h3.geoToH3(lat, lon, res);
+        }
+        return null;
+      };
+
+      for (let i = 0; i < points.length; i++) {
+        const pt = points[i];
+        const hex = latLngToCell(pt.lat, pt.lon, resolution);
+        if (!hex) continue;
+
+        if (!hexMap.has(hex)) {
+          hexMap.set(hex, {
+            h3_cell: hex,
+            pings: 0,
+            vessels: new Set(),
+            sum_sog: 0,
+            lat_sum: 0,
+            lon_sum: 0
+          });
+        }
+
+        const entry = hexMap.get(hex);
+        entry.pings += 1;
+        entry.vessels.add(pt.mmsi);
+        entry.sum_sog += pt.sog;
+        entry.lat_sum += pt.lat;
+        entry.lon_sum += pt.lon;
+      }
+
+      const summary = [];
+      hexMap.forEach((val, hex) => {
+        summary.push({
+          h3_cell: hex,
+          ping_count: val.pings,
+          unique_vessels: val.vessels.size,
+          avg_sog: (val.sum_sog / val.pings).toFixed(1),
+          lat: val.lat_sum / val.pings,
+          lon: val.lon_sum / val.pings
+        });
+      });
+
+      return summary;
+    }
+
+    function haversineDistanceKm(lat1, lon1, lat2, lon2) {
+      const R = 6371.0088;
+      const dLat = (lat2 - lat1) * Math.PI / 180.0;
+      const dLon = (lon2 - lon1) * Math.PI / 180.0;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180.0) * Math.cos(lat2 * Math.PI / 180.0) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    function runDbscanOnCentroids(hexCentroids, epsKm, minPts) {
+      const n = hexCentroids.length;
+      const visited = new Uint8Array(n);
+      const clusterLabels = new Int32Array(n).fill(-1);
+      let currentCluster = 0;
+
+      function regionQuery(pIdx) {
+        const neighbors = [];
+        const p = hexCentroids[pIdx];
+        for (let j = 0; j < n; j++) {
+          const q = hexCentroids[j];
+          const dist = haversineDistanceKm(p.lat, p.lon, q.lat, q.lon);
+          if (dist <= epsKm) {
+            neighbors.push(j);
+          }
+        }
+        return neighbors;
+      }
+
+      for (let i = 0; i < n; i++) {
+        if (visited[i]) continue;
+        visited[i] = 1;
+
+        const neighbors = regionQuery(i);
+        let totalPings = 0;
+        neighbors.forEach(idx => { totalPings += hexCentroids[idx].ping_count; });
+
+        if (totalPings < minPts) {
+          clusterLabels[i] = -1;
+        } else {
+          clusterLabels[i] = currentCluster;
+          const queue = [...neighbors];
+
+          while (queue.length > 0) {
+            const qIdx = queue.shift();
+            if (!visited[qIdx]) {
+              visited[qIdx] = 1;
+              const qNeighbors = regionQuery(qIdx);
+              let qPings = 0;
+              qNeighbors.forEach(idx => { qPings += hexCentroids[idx].ping_count; });
+              if (qPings >= minPts) {
+                queue.push(...qNeighbors);
+              }
+            }
+            if (clusterLabels[qIdx] === -1) {
+              clusterLabels[qIdx] = currentCluster;
+            }
+          }
+          currentCluster++;
+        }
+      }
+
+      const clusterMap = new Map();
+      for (let i = 0; i < n; i++) {
+        const cId = clusterLabels[i];
+        if (cId === -1) continue;
+
+        if (!clusterMap.has(cId)) {
+          clusterMap.set(cId, []);
+        }
+        hexCentroids[i].cluster = cId;
+        clusterMap.get(cId).push(hexCentroids[i]);
+      }
+
+      return Array.from(clusterMap.entries()).map(([id, members]) => ({
+        id,
+        members,
+        total_pings: members.reduce((sum, m) => sum + m.ping_count, 0),
+        total_vessels: members.reduce((sum, m) => sum + m.unique_vessels, 0),
+        avg_sog: (members.reduce((sum, m) => sum + parseFloat(m.avg_sog), 0) / members.length).toFixed(1),
+        center_lat: members.reduce((sum, m) => sum + m.lat, 0) / members.length,
+        center_lon: members.reduce((sum, m) => sum + m.lon, 0) / members.length
+      }));
+    }
+
+    function computeConvexHull(points) {
+      if (points.length <= 2) return points;
+
+      const pts = [...points].sort((a, b) => a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]);
+      
+      function cross(o, a, b) {
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+      }
+
+      const lower = [];
+      for (let i = 0; i < pts.length; i++) {
+        while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], pts[i]) <= 0) {
+          lower.pop();
+        }
+        lower.push(pts[i]);
+      }
+
+      const upper = [];
+      for (let i = pts.length - 1; i >= 0; i--) {
+        while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], pts[i]) <= 0) {
+          upper.pop();
+        }
+        upper.push(pts[i]);
+      }
+
+      upper.pop();
+      lower.pop();
+      return lower.concat(upper);
+    }
+
+    function renderLayers() {
+      hexLayer.clearLayers();
+      hullLayer.clearLayers();
+      scatterLayer.clearLayers();
+      markerLayer.clearLayers();
+
+      if (!activeHexSummary.length) return;
+
+      const metric = document.getElementById('select-hex-metric').value;
+      let maxVal = 1;
+      activeHexSummary.forEach(h => {
+        const val = metric === 'vessels' ? h.unique_vessels : (metric === 'sog' ? parseFloat(h.avg_sog) : h.ping_count);
+        if (val > maxVal) maxVal = val;
+      });
+
+      const cellToBoundary = hex => {
+        if (typeof h3.cellToBoundary === 'function') {
+          return h3.cellToBoundary(hex);
+        } else if (typeof h3.h3ToGeoBoundary === 'function') {
+          return h3.h3ToGeoBoundary(hex);
+        }
+        return [];
+      };
+
+      activeHexSummary.forEach(h => {
+        const boundary = cellToBoundary(h.h3_cell);
+        if (!boundary || !boundary.length) return;
+
+        const val = metric === 'vessels' ? h.unique_vessels : (metric === 'sog' ? parseFloat(h.avg_sog) : h.ping_count);
+        const ratio = val / maxVal;
+
+        let fillColor = '#00f0ff';
+        if (ratio > 0.75) fillColor = '#ff5252';
+        else if (ratio > 0.50) fillColor = '#ffd700';
+        else if (ratio > 0.25) fillColor = '#00ffaa';
+
+        const polygon = L.polygon(boundary, {
+          color: fillColor,
+          weight: 1,
+          opacity: 0.6,
+          fillColor: fillColor,
+          fillOpacity: 0.35 + ratio * 0.4
+        });
+
+        polygon.bindTooltip(`
+          <div style="font-family:'JetBrains Mono'; font-size:11px; padding:2px 4px;">
+            <strong style="color:var(--accent-cyan);">${h.h3_cell}</strong><br/>
+            &bull; Pings: <b>${h.ping_count.toLocaleString()}</b><br/>
+            &bull; Unique Vessels: <b>${h.unique_vessels}</b><br/>
+            &bull; Avg SOG: <b>${h.avg_sog} kts</b>
+          </div>
+        `, { sticky: true });
+
+        polygon.on('click', () => inspectNode(h, 'hex'));
+        hexLayer.addLayer(polygon);
+      });
+
+      activeHotspots.forEach((hotspot, idx) => {
+        const color = HULL_PALETTE[idx % HULL_PALETTE.length];
+        const clusterBoundaryPoints = [];
+        hotspot.members.forEach(m => {
+          const b = cellToBoundary(m.h3_cell);
+          if (b && b.length) {
+            b.forEach(pt => clusterBoundaryPoints.push(pt));
+          } else {
+            clusterBoundaryPoints.push([m.lat, m.lon]);
+          }
+        });
+
+        const hullCoords = computeConvexHull(clusterBoundaryPoints);
+        if (hullCoords.length >= 3) {
+          const hullPoly = L.polygon(hullCoords, {
+            color: color.border,
+            weight: 2.5,
+            dashArray: '4, 4',
+            opacity: 0.95,
+            fillColor: color.border,
+            fillOpacity: 0.18
+          });
+
+          hullPoly.bindTooltip(`
+            <div style="font-family:'JetBrains Mono'; font-size:11px;">
+              <strong style="color:${color.border};">HOTSPOT #${idx + 1}</strong><br/>
+              Pings: ${hotspot.total_pings.toLocaleString()} | Vessels: ${hotspot.total_vessels}
+            </div>
+          `, { sticky: true });
+
+          hullPoly.on('click', () => inspectNode(hotspot, 'cluster', idx + 1));
+          hullLayer.addLayer(hullPoly);
+        }
+
+        const centroidMarker = L.circleMarker([hotspot.center_lat, hotspot.center_lon], {
+          radius: 8,
+          color: '#fff',
+          weight: 2,
+          fillColor: color.border,
+          fillOpacity: 0.95
+        });
+
+        centroidMarker.bindPopup(`
+          <div style="font-family:'JetBrains Mono'; font-size:11px; color:#111;">
+            <b>Hotspot Node #${idx + 1}</b><br/>
+            Total Traffic: ${hotspot.total_pings.toLocaleString()} pings<br/>
+            Vessels: ${hotspot.total_vessels}<br/>
+            Speed: ${hotspot.avg_sog} kts
+          </div>
+        `);
+        markerLayer.addLayer(centroidMarker);
+      });
+
+      const maxScatter = 2500;
+      const step = Math.max(1, Math.floor(filteredPoints.length / maxScatter));
+      for (let i = 0; i < filteredPoints.length; i += step) {
+        const pt = filteredPoints[i];
+        const dot = L.circleMarker([pt.lat, pt.lon], {
+          radius: 2,
+          color: 'rgba(0, 240, 255, 0.5)',
+          fillColor: '#00f0ff',
+          fillOpacity: 0.6,
+          weight: 0
+        });
+        scatterLayer.addLayer(dot);
+      }
+    }
+
+    function updateLeaderboard() {
+      const container = document.getElementById('hotspots-container');
+      container.innerHTML = '';
+
+      if (!activeHotspots.length) {
+        container.innerHTML = `
+          <div style="color: var(--text-muted); font-size: 11px; text-align: center; padding: 24px 8px;">
+            No clusters formed. Try increasing &epsilon; radius or decreasing min sample pings.
+          </div>
+        `;
+        return;
+      }
+
+      activeHotspots.forEach((h, idx) => {
+        const color = HULL_PALETTE[idx % HULL_PALETTE.length];
+        const card = document.createElement('div');
+        card.className = 'cluster-card';
+        card.innerHTML = `
+          <div class="cluster-header">
+            <span class="cluster-rank" style="color: ${color.border};">#${idx + 1} Activity Node</span>
+            <span class="cluster-badge">${h.members.length} Hex Cells</span>
+          </div>
+          <div class="cluster-stats">
+            <div class="cluster-stat-item">
+              <span>AIS Pings</span>
+              <span>${h.total_pings.toLocaleString()}</span>
+            </div>
+            <div class="cluster-stat-item">
+              <span>Vessels</span>
+              <span>${h.total_vessels}</span>
+            </div>
+            <div class="cluster-stat-item">
+              <span>Avg SOG</span>
+              <span>${h.avg_sog} kts</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+            <button class="btn btn-sm btn-primary fly-btn" style="padding: 2px 8px; font-size: 10px;">
+              ✈ Fly To Hotspot
+            </button>
+          </div>
+        `;
+
+        card.querySelector('.fly-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          map.flyTo([h.center_lat, h.center_lon], 13, { duration: 1.2 });
+          inspectNode(h, 'cluster', idx + 1);
+        });
+
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.cluster-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          map.panTo([h.center_lat, h.center_lon]);
+          inspectNode(h, 'cluster', idx + 1);
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function inspectNode(data, type, rank) {
+      const card = document.getElementById('inspector-card');
+      const content = document.getElementById('inspector-content');
+      card.style.display = 'block';
+
+      if (type === 'cluster') {
+        content.innerHTML = `
+          <div><strong style="color: var(--accent-emerald);">HOTSPOT #${rank} SUMMARY</strong></div>
+          <div>&bull; Centroid: ${data.center_lat.toFixed(5)}, ${data.center_lon.toFixed(5)}</div>
+          <div>&bull; Total Pings: ${data.total_pings.toLocaleString()}</div>
+          <div>&bull; Distinct Vessels: ${data.total_vessels}</div>
+          <div>&bull; Avg Speed: ${data.avg_sog} knots</div>
+          <div>&bull; Comprising H3 Hexes: ${data.members.length} cells</div>
+        `;
+      } else {
+        content.innerHTML = `
+          <div><strong style="color: var(--accent-cyan);">HEXAGON ${data.h3_cell}</strong></div>
+          <div>&bull; Centroid: ${data.lat.toFixed(5)}, ${data.lon.toFixed(5)}</div>
+          <div>&bull; Pings: ${data.ping_count.toLocaleString()}</div>
+          <div>&bull; Vessels: ${data.unique_vessels}</div>
+          <div>&bull; Avg Speed: ${data.avg_sog} knots</div>
+        `;
+      }
+    }
+
+    document.getElementById('btn-close-inspector').addEventListener('click', () => {
+      document.getElementById('inspector-card').style.display = 'none';
+    });
+
+    function runPipeline() {
+      if (!rawAisPoints.length) {
+        showToast('Please load an AIS CSV dataset first!');
+        return;
+      }
+
+      filteredPoints = applyTemporalFilters();
+      document.getElementById('stat-active-pings').textContent = filteredPoints.length.toLocaleString();
+
+      if (!filteredPoints.length) {
+        showToast('No pings matched the selected diurnal or day-of-week filters.');
+        hexLayer.clearLayers();
+        hullLayer.clearLayers();
+        scatterLayer.clearLayers();
+        markerLayer.clearLayers();
+        updateLeaderboard();
+        return;
+      }
+
+      const res = parseInt(document.getElementById('slider-h3-res').value, 10);
+      activeHexSummary = aggregateToH3(filteredPoints, res);
+      document.getElementById('stat-active-hexes').textContent = activeHexSummary.length.toLocaleString();
+
+      const epsKm = parseFloat(document.getElementById('slider-dbscan-eps').value);
+      const minPts = parseInt(document.getElementById('slider-dbscan-minpts').value, 10);
+      const topN = parseInt(document.getElementById('slider-dbscan-topn').value, 10);
+
+      const allClusters = runDbscanOnCentroids(activeHexSummary, epsKm, minPts);
+      allClusters.sort((a, b) => b.total_pings - a.total_pings);
+      activeHotspots = allClusters.slice(0, topN);
+
+      document.getElementById('stat-hotspots-count').textContent = activeHotspots.length;
+
+      renderLayers();
+      updateLeaderboard();
+
+      showToast(`Analyzed ${filteredPoints.length.toLocaleString()} pings &rarr; ${activeHotspots.length} hotspots discovered`);
+    }
+
+    function loadCsvData(csvText, sourceName) {
+      const pts = parseAisCsv(csvText);
+      if (!pts.length) {
+        showToast('Failed to parse AIS points from CSV.');
+        return;
+      }
+
+      rawAisPoints = pts;
+      document.getElementById('stat-total-pings').textContent = pts.length.toLocaleString();
+
+      let minLat = 90, maxLat = -90, minLon = 180, maxLon = -180;
+      pts.forEach(p => {
+        if (p.lat < minLat) minLat = p.lat;
+        if (p.lat > maxLat) maxLat = p.lat;
+        if (p.lon < minLon) minLon = p.lon;
+        if (p.lon > maxLon) maxLon = p.lon;
+      });
+
+      if (minLat < maxLat && minLon < maxLon) {
+        map.fitBounds([[minLat, minLon], [maxLat, maxLon]], { padding: [40, 40] });
+      }
+
+      showToast(`Loaded ${pts.length.toLocaleString()} pings from ${sourceName}`);
+      runPipeline();
+    }
+
+    document.getElementById('btn-load-demo').addEventListener('click', async () => {
+      try {
+        const resp = await fetch('data/busan_sample.csv');
+        if (!resp.ok) throw new Error('File fetch failed');
+        const text = await resp.text();
+        loadCsvData(text, 'Sample AIS Corridor');
+      } catch (err) {
+        showToast('Error loading sample CSV: ' + err.message);
+      }
+    });
+
+    document.getElementById('btn-load-posix').addEventListener('click', async () => {
+      const path = document.getElementById('input-posix-path').value.trim();
+      if (!path) return;
+      try {
+        const resp = await fetch(path);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const text = await resp.text();
+        loadCsvData(text, path);
+      } catch (err) {
+        showToast(`Could not open path ${path}. Try drag-and-drop file upload.`);
+      }
+    });
+
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', e => {
+      if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+      const reader = new FileReader();
+      reader.onload = e => loadCsvData(e.target.result, file.name);
+      reader.readAsText(file);
+    }
+
+    const sliderHourStart = document.getElementById('slider-hour-start');
+    const sliderHourEnd = document.getElementById('slider-hour-end');
+    function updateHourDisplay() {
+      const s = parseInt(sliderHourStart.value, 10);
+      const e = parseInt(sliderHourEnd.value, 10);
+      const sPad = s.toString().padStart(2, '0') + ':00';
+      const ePad = e.toString().padStart(2, '0') + ':00';
+      document.getElementById('val-hour-start').textContent = sPad;
+      document.getElementById('val-hour-end').textContent = ePad;
+      document.getElementById('diurnal-display').textContent = `${sPad} - ${ePad} UTC`;
+    }
+    sliderHourStart.addEventListener('input', () => { updateHourDisplay(); runPipeline(); });
+    sliderHourEnd.addEventListener('input', () => { updateHourDisplay(); runPipeline(); });
+
+    document.querySelectorAll('[data-diurnal]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.diurnal;
+        if (mode === 'all') { sliderHourStart.value = 0; sliderHourEnd.value = 24; }
+        else if (mode === 'dayshift') { sliderHourStart.value = 8; sliderHourEnd.value = 17; }
+        else if (mode === 'nightshift') { sliderHourStart.value = 20; sliderHourEnd.value = 5; }
+        updateHourDisplay();
+        runPipeline();
+      });
+    });
+
+    document.querySelectorAll('.day-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        pill.classList.toggle('active');
+        runPipeline();
+      });
+    });
+
+    document.querySelectorAll('[data-dow-preset]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const preset = btn.dataset.dowPreset;
+        document.querySelectorAll('.day-pill').forEach(p => {
+          const dow = parseInt(p.dataset.dow, 10);
+          if (preset === 'all') p.classList.add('active');
+          else if (preset === 'weekdays') {
+            if (dow >= 1 && dow <= 5) p.classList.add('active'); else p.classList.remove('active');
+          } else if (preset === 'weekends') {
+            if (dow === 0 || dow === 6) p.classList.add('active'); else p.classList.remove('active');
+          }
+        });
+        runPipeline();
+      });
+    });
+
+    const sliderH3 = document.getElementById('slider-h3-res');
+    sliderH3.addEventListener('input', e => {
+      const res = parseInt(e.target.value, 10);
+      document.getElementById('val-h3-res').textContent = res;
+      const spec = H3_SPECS[res] || { area: '', edge: '' };
+      document.getElementById('h3-meta-display').textContent = `Res ${res} &bull; ${spec.area}`;
+      runPipeline();
+    });
+
+    const sliderEps = document.getElementById('slider-dbscan-eps');
+    sliderEps.addEventListener('input', e => {
+      document.getElementById('val-dbscan-eps').textContent = parseFloat(e.target.value).toFixed(1);
+    });
+
+    const sliderMinPts = document.getElementById('slider-dbscan-minpts');
+    sliderMinPts.addEventListener('input', e => {
+      document.getElementById('val-dbscan-minpts').textContent = e.target.value;
+    });
+
+    const sliderTopN = document.getElementById('slider-dbscan-topn');
+    sliderTopN.addEventListener('input', e => {
+      document.getElementById('val-dbscan-topn').textContent = e.target.value;
+    });
+
+    document.getElementById('btn-recompute').addEventListener('click', runPipeline);
+    document.getElementById('select-hex-metric').addEventListener('change', renderLayers);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateHourDisplay();
+      document.getElementById('btn-load-demo').click();
+    });
+  </script>
+</body>
+</html>
