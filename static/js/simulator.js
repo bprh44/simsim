@@ -1,12 +1,10 @@
 /**
  * AIS Route Simulator - Main Client Application Logic
- * Integrates Leaflet with Carto Basemaps API key: cb1_3fzc_1_e47177e320e1c761d456a149
+ * Centralized Leaflet mapping using window.MapConfig (SSOT for CARTO Basemaps)
  * Supports DirectFerries verified corridors (KR <-> JP, KR <-> CN, CN <-> JP, Domestic),
  * Multi-Leg Commute Loops (1 to 50 legs with port dwell times),
  * Interactive Midpoint Handles, Waypoint Sequence Table, and Anomaly Injection.
  */
-
-const CARTO_API_KEY = "cb1_3fzc_1_e47177e320e1c761d456a149";
 
 let map;
 let baseTileLayers = {};
@@ -97,7 +95,7 @@ function setBasemap(style) {
     baseTileLayers[style].addTo(map);
     currentLayerName = style;
   }
-  document.querySelectorAll(".layer-btn").forEach(btn => {
+  document.querySelectorAll(".layer-picker .layer-btn[data-layer]").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.layer === style);
   });
 }

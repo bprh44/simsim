@@ -85,6 +85,7 @@ simsim/
 │   ├── css/
 │   │   └── style.css                       # Modern maritime glassmorphic design system
 │   └── js/
+│       ├── map_config.js                   # Centralized CARTO API key & basemap configuration (SSOT)
 │       ├── simulator.js                    # Studio UI & map interactions
 │       ├── simulator_engine_client.js      # Client-side trajectory engine (GitHub Pages)
 │       ├── viewer.js                       # Viewer playback, HUD, & CSV parser

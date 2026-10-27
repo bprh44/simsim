@@ -4,8 +4,6 @@
  * Displays original drawn route alongside realistic synthesized AIS pings.
  */
 
-const CARTO_API_KEY = "cb1_3fzc_1_e47177e320e1c761d456a149";
-
 let map;
 let baseTileLayers = {};
 let currentLayerName = "dark";
@@ -36,45 +34,29 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initViewerMap() {
+  const region = (window.MapConfig && window.MapConfig.REGIONS.EAST_ASIA) || { center: [36.0, 130.0], zoom: 6 };
   map = L.map("map", {
-    center: [36.0, 130.0],
-    zoom: 6,
+    center: region.center || [36.0, 130.0],
+    zoom: region.zoom || 6,
     zoomControl: false,
     attributionControl: false
   });
 
   L.control.zoom({ position: "topright" }).addTo(map);
 
-  const keyParam = CARTO_API_KEY ? `?key=${encodeURIComponent(CARTO_API_KEY)}` : "";
+  if (window.MapConfig) {
+    baseTileLayers = window.MapConfig.createCompositeLayers();
+    window.MapConfig.onKeyChange(() => {
+      const active = currentLayerName;
+      if (baseTileLayers[active]) map.removeLayer(baseTileLayers[active]);
+      baseTileLayers = window.MapConfig.createCompositeLayers();
+      if (baseTileLayers[active]) baseTileLayers[active].addTo(map);
+    });
+  }
 
-  baseTileLayers.dark = L.layerGroup([
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd"
-    }),
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd", opacity: 0.8
-    })
-  ]);
-
-  baseTileLayers.light = L.layerGroup([
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd"
-    }),
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd", opacity: 0.8
-    })
-  ]);
-
-  baseTileLayers.voyager = L.layerGroup([
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd"
-    }),
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}.png${keyParam}`, {
-      maxZoom: 19, subdomains: "abcd", opacity: 0.8
-    })
-  ]);
-
-  baseTileLayers.dark.addTo(map);
+  if (baseTileLayers.dark) {
+    baseTileLayers.dark.addTo(map);
+  }
 
   drawnRouteLine = L.polyline([], {
     color: "#ffb300",
@@ -94,7 +76,7 @@ function setViewerBasemap(style) {
     baseTileLayers[style].addTo(map);
     currentLayerName = style;
   }
-  document.querySelectorAll(".layer-btn").forEach(btn => {
+  document.querySelectorAll(".layer-picker .layer-btn[data-layer]").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.layer === style);
   });
 }
