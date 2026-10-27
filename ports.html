@@ -437,7 +437,6 @@
   <div class="top-bar">
     <div class="title-card">
       <span class="badge-live">NGA WPI</span>
-      <span class="badge-live" id="carto-badge-status" onclick="MapConfig.openKeyModal()" style="cursor: pointer; background: rgba(0, 255, 170, 0.12); border-color: var(--accent-emerald); color: var(--accent-emerald);" title="Click to manage CARTO API Key">CARTO KEY ACTIVE</span>
       <div>
         <h1>⚓ Asian Maritime Ports &amp; H3 Spatial Grid</h1>
         <p>Interactive spatial indexing via Uber H3 (Res 3-8) on CARTO basemap</p>
@@ -553,9 +552,9 @@
       </div>
     </div>
 
-    <!-- Basemap Selector & API Key -->
+    <!-- Basemap Selector -->
     <div>
-      <div class="section-title">CARTO Basemap &amp; Key</div>
+      <div class="section-title">CARTO Basemap</div>
       <div class="control-group">
         <label>Basemap Theme</label>
         <select id="select-basemap">
@@ -563,13 +562,6 @@
           <option value="positron">CARTO Positron (High Contrast Light)</option>
           <option value="voyager">CARTO Voyager (Nautical Detail)</option>
         </select>
-      </div>
-      <div class="control-group" style="margin-top: 8px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-          <label style="margin: 0;">CARTO Maps API Key</label>
-          <button type="button" onclick="MapConfig.openKeyModal()" style="background: none; border: none; color: var(--accent-cyan); cursor: pointer; font-size: 11px; text-decoration: underline; padding: 0;">Manage</button>
-        </div>
-        <input type="text" id="carto-key-input" placeholder="Enter CARTO API Key..." style="font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 6px 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--panel-border); border-radius: 6px; color: var(--accent-cyan); width: 100%;" />
       </div>
     </div>
 
@@ -871,29 +863,11 @@
       BASEMAPS[activeBasemapType].addTo(map);
     });
 
-    // CARTO API Key Input & MapConfig Binding
-    const keyInput = document.getElementById('carto-key-input');
-    keyInput.value = MapConfig.getApiKey();
-    keyInput.addEventListener('change', (e) => {
-      MapConfig.setApiKey(e.target.value);
-    });
-    keyInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        MapConfig.setApiKey(e.target.value);
-      }
-    });
-
+    // MapConfig Basemap Layer Updates
     MapConfig.onKeyChange((newKey) => {
-      keyInput.value = newKey;
       Object.values(BASEMAPS).forEach(l => map.removeLayer(l));
       BASEMAPS = MapConfig.createSingleLayers(newKey);
       BASEMAPS[activeBasemapType].addTo(map);
-
-      const badge = document.getElementById('carto-badge-status');
-      if (badge) {
-        badge.title = `CARTO API Key: ${newKey || 'None'}`;
-        badge.textContent = MapConfig.isDefaultKey() ? 'CARTO KEY ACTIVE' : 'CUSTOM KEY ACTIVE';
-      }
     });
 
     // Initial Render
