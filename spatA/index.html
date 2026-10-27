@@ -182,6 +182,44 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* Nav Links Box */
+    .nav-links-box {
+      pointer-events: auto;
+      display: flex;
+      gap: 6px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      padding: 6px 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.65);
+    }
+
+    .nav-link-btn {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+
+    .nav-link-btn:hover {
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--accent-cyan);
+    }
+
+    .nav-link-btn.active {
+      background: rgba(0, 240, 255, 0.22);
+      color: var(--accent-cyan);
+      font-weight: 700;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+    }
+
     /* Side Control Decks (Glassmorphic) */
     .deck-panel {
       position: absolute;
@@ -564,6 +602,26 @@
         <span class="stat-label">Hotspots (Top-N)</span>
         <span class="stat-value" id="stat-hotspots-count" style="color: var(--accent-coral);">0</span>
       </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <div class="nav-links-box">
+      <a href="../index.html" class="nav-link-btn" title="AIS Simulator Studio">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        <span>Studio</span>
+      </a>
+      <a href="../viewer.html" class="nav-link-btn" title="AIS Historical Telemetry Viewer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>Viewer</span>
+      </a>
+      <a href="../ports.html" class="nav-link-btn" title="NGA Ports & H3 Spatial Grid Explorer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M5 5l14 14M19 5L5 19"/></svg>
+        <span>Ports Grid</span>
+      </a>
+      <a href="index.html" class="nav-link-btn active" title="spatA — AIS Spatiotemporal Analytics">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span>spatA</span>
+      </a>
     </div>
   </div>
 
