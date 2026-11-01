@@ -1,175 +1,2257 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIS Synthetic Telemetry Viewer & Inspector</title>
-  <meta name="description" content="Inspect, play back, and download synthetic vessel telemetry runs from output CSV files." />
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>ohD • Mission Control & Telemetry Operations</title>
 
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Urbanist, JetBrains Mono, Space Grotesk, Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-  <!-- Leaflet GIS Map CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <!-- Leaflet GIS CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- Custom Maritime Design System -->
-  <link rel="stylesheet" href="static/css/style.css" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              ops: "#1164AF",
+              req: "#F8CE2F",
+              know: "#2A2E80",
+              plan: "#8A17AC",
+              assess: "#117B3D",
+              ai: "#6D4F28",
+              gov: "#BAB8B8"
+            },
+            voyage: {
+              bg: "#090B10",
+              surface: "#0D1117",
+              elevated: "#151A24",
+              border: "rgba(255, 255, 255, 0.08)",
+              accent: "#38bdf8",
+              emerald: "#10b981",
+              amber: "#f59e0b",
+              rose: "#f43f5e"
+            }
+          },
+          fontFamily: {
+            sans: ['Urbanist', 'Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            display: ['Space Grotesk', 'Urbanist', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #090B10;
+        color: #E2E8F0;
+        font-family: 'Urbanist', sans-serif;
+        overscroll-behavior: none;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090B10;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1F293D;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38bdf8;
+    }
+
+    /* User Global Rule 2: Solid Sidebar with Tactile Moving Hover Items */
+    .sidebar-solid-container {
+      margin: 0;
+      height: 100%;
+      border-radius: 0;
+      background-color: #090B10;
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .sidebar-nav-item {
+      position: relative;
+      transform: translateX(0);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.24s ease,
+                  border-color 0.24s ease,
+                  background-color 0.24s ease;
+      cursor: pointer;
+    }
+    .sidebar-nav-item:hover {
+      transform: translateX(6px);
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: #38bdf8;
+      box-shadow: 0 6px 20px -2px rgba(56, 189, 248, 0.2), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
+    }
+    .sidebar-nav-item:hover .item-icon-box {
+      transform: scale(1.1) rotate(1deg);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+    .sidebar-nav-item.active {
+      transform: translateX(4px);
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: #38bdf8;
+    }
+    .sidebar-nav-item.active:hover {
+      transform: translateX(8px);
+    }
+
+    /* Map Viewport Styling */
+    #map {
+      height: 100%;
+      width: 100%;
+      background: #070a12;
+      z-index: 10;
+    }
+    .leaflet-container {
+      background: #070a12 !important;
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+    .leaflet-control-zoom {
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 8px !important;
+      overflow: hidden;
+      background: rgba(13, 17, 23, 0.9) !important;
+      backdrop-filter: blur(10px);
+    }
+    .leaflet-control-zoom a {
+      background: transparent !important;
+      color: #94a3b8 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .leaflet-control-zoom a:hover {
+      background: rgba(56, 189, 248, 0.2) !important;
+      color: #38bdf8 !important;
+    }
+
+    /* Video/HUD Overlay Components */
+    .tactical-glass-card {
+      background: rgba(13, 17, 23, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .tactical-glass-card:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .voyage-card {
+      background: radial-gradient(120% 120% at 50% 0%, rgba(26, 32, 46, 0.6) 0%, rgba(13, 17, 23, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .voyage-card:hover {
+      transform: translateY(-2px);
+      border-color: #38bdf8;
+      box-shadow: 0 8px 26px -2px rgba(56, 189, 248, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .range-progress {
+      accent-color: #38bdf8;
+    }
+
+    /* Palantir Foundry Tactical Dark Leaflet Tooltip */
+    .leaflet-tooltip.tactical-tooltip {
+      background-color: rgba(9, 11, 16, 0.95) !important;
+      border: 1px solid rgba(56, 189, 248, 0.4) !important;
+      color: #e2e8f0 !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.2) !important;
+      border-radius: 8px !important;
+      backdrop-filter: blur(8px) !important;
+      padding: 6px 10px !important;
+    }
+    .leaflet-tooltip-top.tactical-tooltip:before {
+      border-top-color: rgba(56, 189, 248, 0.4) !important;
+    }
+    .leaflet-tooltip-bottom.tactical-tooltip:before {
+      border-bottom-color: rgba(56, 189, 248, 0.4) !important;
+    }
+    .leaflet-tooltip-left.tactical-tooltip:before {
+      border-left-color: rgba(56, 189, 248, 0.4) !important;
+    }
+    .leaflet-tooltip-right.tactical-tooltip:before {
+      border-right-color: rgba(56, 189, 248, 0.4) !important;
+    }
+
+    /* H3 Res 8 Sequence Label at Hex Centroid */
+    .h3-hex-label {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      text-shadow: 0 0 3px #000, 0 0 5px #000, 0 0 7px #090B10;
+      pointer-events: none;
+    }
+
+    /* Pulsing active vessel marker ring */
+    @keyframes h3PulseRing {
+      0% { opacity: 0.9; stroke-width: 3.5px; }
+      50% { opacity: 0.4; stroke-width: 5.5px; }
+      100% { opacity: 0.9; stroke-width: 3.5px; }
+    }
+    .h3-active-cell {
+      animation: h3PulseRing 1.8s infinite ease-in-out;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-[#090B10] text-[#E2E8F0] antialiased select-none font-sans min-h-screen">
 
-  <!-- Top Global Header -->
-  <header class="top-header">
-    <div class="brand-section">
-      <span class="brand-badge" style="background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff;">
-        <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        AIS VIEWER
-      </span>
-      <div>
-        <h1 class="brand-title">
-          ohD • Telemetry Inspector & Playback
-          <span class="live-beacon" style="color: var(--accent-purple); border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.1);">
-            Playback Engine
-          </span>
-        </h1>
+  <!-- =========================================================================
+       Palantir Foundry Top Navigation / Global Shell Header (STANDARD)
+       ========================================================================= -->
+  <header class="fixed top-0 left-0 right-0 h-14 bg-[#090B10]/95 backdrop-blur-md z-50 flex items-center justify-between px-5 border-b border-white/[0.07]">
+    <!-- Left Workspace Title & Breadcrumbs -->
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 py-1 px-2.5 bg-white/[0.04] border border-white/10 rounded-xl">
+        <span class="material-symbols-outlined text-[#38bdf8] text-[18px]">hub</span>
+        <span class="font-mono text-xs uppercase tracking-wider text-white font-bold">Palantir Foundry</span>
+      </div>
+      <div class="h-4 w-px bg-white/10"></div>
+      <div class="flex items-center gap-1.5 text-xs">
+        <span class="font-mono px-2 py-0.5 rounded-md bg-white/[0.04] text-slate-400 text-[11px]">ROOT</span>
+        <span class="material-symbols-outlined text-slate-500 text-[13px]">chevron_right</span>
+        <span class="font-mono text-slate-400 text-[11px]">MARITIME_OPS</span>
+        <span class="material-symbols-outlined text-slate-500 text-[13px]">chevron_right</span>
+        <span class="text-white font-semibold text-xs tracking-wide">VesselTelemetryCore_v2</span>
+      </div>
+      <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-mono text-[10px] uppercase font-bold tracking-wider">SYNCED: LIVE</span>
       </div>
     </div>
 
-    <!-- Active Vessel Title -->
-    <div class="header-center">
-      <span id="vessel-title-display" style="font-family: var(--font-mono); font-size: 13px; color: var(--accent-cyan); font-weight: 700; letter-spacing: -0.3px;">
-        Select a run to view
-      </span>
+    <!-- Center Cross-Tool Navigation -->
+    <div class="hidden lg:flex items-center gap-1 bg-white/[0.02] border border-white/[0.06] p-1 rounded-xl">
+      <a href="index.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">sensors</span> Studio
+      </a>
+      <a href="viewer.html" class="px-3 py-1 text-xs font-semibold text-[#38bdf8] bg-white/[0.06] rounded-lg border border-white/10 flex items-center gap-1.5 shadow-sm">
+        <span class="material-symbols-outlined text-[15px]">radar</span> Telemetry Viewer
+      </a>
+      <a href="ports.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">anchor</span> Ports & H3
+      </a>
+      <a href="spatA/index.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">analytics</span> spatA Workbench
+      </a>
     </div>
 
-    <!-- Top Navigation Links -->
-    <div class="header-nav">
-      <a href="index.html" class="nav-link">
-        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-        <span>Studio</span>
-      </a>
-      <a href="viewer.html" class="nav-link active">
-        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        <span>Telemetry Viewer</span>
-      </a>
-      <a href="ports.html" class="nav-link" target="_blank" title="Explore Asian Ports on CARTO Basemap with H3 Hexagonal Grid">
-        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        <span>Ports &amp; H3 Grid</span>
-      </a>
-      <a href="spatA/index.html" class="nav-link" title="spatA — AIS Spatiotemporal Analytics Workbench">
-        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        <span>spatA</span>
-      </a>
-      <label class="btn-secondary" style="width: auto; padding: 6px 14px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Upload custom AIS CSV file to inspect">
-        <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        <span>Upload CSV</span>
-        <input type="file" id="input-upload-csv" accept=".csv" style="display: none;" />
-      </label>
-      <button type="button" class="btn-primary" style="width: auto; padding: 6px 14px; font-size: 12px;" id="btn-viewer-download">
-        <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Download CSV</span>
-      </button>
+    <!-- Right Controls: Omnibox & Operator Profile -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center bg-white/[0.03] border border-white/10 px-3 py-1.5 rounded-xl gap-2 text-slate-400 hover:border-white/20 transition cursor-pointer" onclick="document.getElementById('input-search-vessel').focus()">
+        <span class="material-symbols-outlined text-[16px]">search</span>
+        <input type="text" id="input-search-vessel" placeholder="FIND OBJECT [IMO / CALLSIGN / UUID]" class="bg-transparent border-none outline-none text-xs font-mono text-slate-200 placeholder-slate-500 w-52" />
+        <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-slate-300 ml-1">⌘K</kbd>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- Direct File Load Trigger -->
+        <label class="flex items-center justify-center p-2 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] text-slate-300 transition cursor-pointer" title="Open CSV File directly from output/ or disk">
+          <span class="material-symbols-outlined text-[18px]">folder_open</span>
+          <input type="file" id="file-picker-input" accept=".csv" class="hidden" />
+        </label>
+        <button class="flex items-center justify-center p-2 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] text-slate-300 transition" title="Export Current Telemetry CSV" id="btn-export-csv">
+          <span class="material-symbols-outlined text-[18px]">download</span>
+        </button>
+
+        <div class="h-4 w-px bg-white/10"></div>
+        <div class="flex items-center gap-2.5 pl-1">
+          <div class="text-right leading-tight">
+            <div class="font-mono text-[11px] font-semibold text-slate-200">WATCH_OFFICER_04</div>
+            <div class="font-mono text-[9px] text-slate-500 tracking-wider">LEVEL_3_CLEARANCE</div>
+          </div>
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#1164AF] to-[#38bdf8] flex items-center justify-center shadow-lg shadow-[#1164AF]/20 border border-white/20">
+            <span class="material-symbols-outlined text-white text-[17px]">person</span>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- App Main Viewport -->
-  <div class="app-container">
-    
-    <!-- Left Runs List Sidebar -->
-    <aside class="sidebar" id="sidebar" style="width: 380px;">
-      <section class="panel-section">
-        <div class="section-header">
-          <span class="section-title">
-            <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
-            Output Directory Runs
+  <!-- =========================================================================
+       Left Sidebar: Ontology Bindings & Solid Tactile Navigation (STANDARD)
+       ========================================================================= -->
+  <aside class="fixed left-0 top-14 bottom-0 w-64 sidebar-solid-container z-40 flex flex-col justify-between backdrop-blur-md select-none">
+    <div class="flex flex-col p-3">
+      <div class="px-3 py-2 mb-2 flex items-center justify-between border-b border-white/[0.06]">
+        <span class="font-mono text-[10px] tracking-widest uppercase text-slate-500 font-semibold">ONTOLOGY BINDINGS</span>
+        <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[#1164AF]/20 text-[#38bdf8] font-semibold border border-[#1164AF]/30">v4.18</span>
+      </div>
+
+      <nav class="space-y-1" id="sidebar-nav">
+        <!-- 1. Fleet Overview -->
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group" data-view="fleet-overview">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">directions_boat</span>
+            <span>Fleet Overview</span>
           </span>
-          <button type="button" class="btn-icon" id="btn-refresh-runs" title="Refresh list">
-            <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-          </button>
-        </div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">
-          Saved in <code style="color: var(--accent-cyan); font-family: var(--font-mono);">output/</code>
+          <span class="font-mono text-[11px] text-slate-500">1,402</span>
         </div>
 
-        <!-- Scrollable list of runs -->
-        <div id="runs-list-container"></div>
+        <!-- 2. Voyage Telemetry (Default Active) -->
+        <div class="sidebar-nav-item active flex items-center justify-between px-3 py-2 rounded-xl text-white border border-white/10 transition group shadow-sm" data-view="voyage-telemetry">
+          <span class="flex items-center gap-2.5 text-sm font-semibold">
+            <span class="material-symbols-outlined text-[18px] text-[#38bdf8] item-icon-box transition-transform">radar</span>
+            <span>Voyage Telemetry</span>
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400 animate-pulse"></span>
+          </span>
+        </div>
+
+        <!-- 3. Geospatial Radar -->
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group" data-view="geospatial-radar">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">explore</span>
+            <span>Geospatial Radar</span>
+          </span>
+        </div>
+
+        <!-- 4. Anomaly Queue -->
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group" data-view="anomaly-queue">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">warning</span>
+            <span>Anomaly Queue</span>
+          </span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold">12</span>
+        </div>
+
+        <!-- 5. Compliance Audit -->
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group" data-view="compliance-audit">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">verified</span>
+            <span>Compliance Audit</span>
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></span>
+        </div>
+
+        <!-- 6. Simulation Deck -->
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group" data-view="simulation-deck">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">schema</span>
+            <span>Simulation Deck</span>
+          </span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Sidebar Bottom Status Widget -->
+    <div class="p-3 border-t border-white/[0.06] space-y-2">
+      <div class="flex items-center justify-between text-[11px] font-mono">
+        <span class="text-slate-500 uppercase tracking-wider">WORKSHOP ENGINE</span>
+        <span class="text-emerald-400 font-medium flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> CONNECTED
+        </span>
+      </div>
+      <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5 text-[11px] font-mono">
+        <div class="flex justify-between text-slate-400">
+          <span>OUTPUT FILES</span>
+          <span class="text-slate-200" id="sidebar-output-count">4 Available</span>
+        </div>
+        <div class="flex justify-between text-slate-400">
+          <span>H3 GRID LEVEL</span>
+          <span class="text-[#38bdf8]">Res 8 (~0.74km²)</span>
+        </div>
+        <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden mt-1.5">
+          <div class="bg-gradient-to-r from-[#1164AF] to-[#38bdf8] h-full w-3/4 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       Main Content Viewport Canvas (DYNAMIC ROUTING VIA SIDEBAR)
+       ========================================================================= -->
+  <div class="pl-64">
+    <main class="pt-14 w-full min-h-screen bg-[#090B10] text-[#E2E8F0]">
+
+      <!-- =====================================================================
+           VIEW 1: VOYAGE TELEMETRY (HERO OPERATIONAL RUN VIEWER)
+           ===================================================================== -->
+      <section id="view-voyage-telemetry" class="view-panel flex flex-col w-full">
+
+        <!-- Top Telemetry Subheader & Run Selector Strip -->
+        <div class="bg-[#0D1117] border-b border-white/[0.06] px-5 py-3 flex flex-col gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+            <div class="flex items-center gap-3">
+              <!-- Mode Toggle: All Voyages List vs Cockpit Inspector -->
+              <div class="flex items-center gap-1 bg-white/[0.04] border border-white/10 p-0.5 rounded-lg">
+                <button type="button" class="px-3 py-1 rounded text-xs font-mono font-medium transition active bg-white/10 text-white flex items-center gap-1.5" id="btn-mode-directory">
+                  <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">list_alt</span> All Voyages (<span id="voyages-count-pill">0</span>)
+                </button>
+                <button type="button" class="px-3 py-1 rounded text-xs font-mono font-medium transition text-slate-400 hover:text-white flex items-center gap-1.5" id="btn-mode-cockpit">
+                  <span class="material-symbols-outlined text-[15px] text-emerald-400">radar</span> Telemetry Cockpit
+                </button>
+              </div>
+
+              <div class="h-3.5 w-px bg-white/10"></div>
+              <div class="flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-mono text-[10px] text-emerald-400 font-bold tracking-wide" id="telemetry-status-badge">H3 RES 8 IDLE CLUSTERING ACTIVE</span>
+              </div>
+            </div>
+
+            <!-- Run Selector Dropdown & File Controls -->
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2 bg-white/[0.04] border border-white/10 rounded-lg px-2.5 py-1">
+                <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">history</span>
+                <label for="select-output-run" class="text-[11px] font-mono text-slate-400 uppercase">Run:</label>
+                <select id="select-output-run" class="bg-transparent text-xs font-mono text-white border-none outline-none cursor-pointer pr-4">
+                  <option value="new_camellia_30days.csv" class="bg-[#0D1117] text-white">new_camellia_30days.csv (30-day Multi-Voyage)</option>
+                  <option value="ais_KOREAVOYAGER8_IMO9876543_20261027_010703.csv" class="bg-[#0D1117] text-white">ais_KOREAVOYAGER8 (IMO 9876543)</option>
+                  <option value="test_canonical_10col.csv" class="bg-[#0D1117] text-white">test_canonical_10col.csv (Pacific Glory)</option>
+                  <option value="busan test.csv" class="bg-[#0D1117] text-white">busan test.csv (Single Voyage)</option>
+                </select>
+              </div>
+
+              <!-- Basemap Switcher (ZERO-UI EXPOSURE FOR KEY) -->
+              <div class="flex items-center gap-1 bg-white/[0.04] border border-white/10 rounded-lg p-0.5">
+                <button type="button" class="px-2 py-0.5 rounded text-[11px] font-mono basemap-toggle active bg-white/10 text-white" data-theme="dark">Dark</button>
+                <button type="button" class="px-2 py-0.5 rounded text-[11px] font-mono basemap-toggle text-slate-400 hover:text-white" data-theme="light">Light</button>
+                <button type="button" class="px-2 py-0.5 rounded text-[11px] font-mono basemap-toggle text-slate-400 hover:text-white" data-theme="voyager">Voyager</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Vessel Bar & Switcher -->
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-white/[0.08] border border-[#38bdf8]/40 text-white shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span class="font-bold text-sm tracking-wide" id="vessel-name-display">NEW CAMELLIA</span>
+                <span class="text-xs text-slate-400 font-mono" id="vessel-imo-display">IMO 9304497</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold font-mono" id="vessel-stat-pill">30-DAY ACTIVE</span>
+              </div>
+
+              <!-- Active Voyage Jump Dropdown (when in Cockpit) -->
+              <div class="flex items-center gap-1.5 bg-white/[0.03] border border-white/10 px-2.5 py-1 rounded-lg text-xs font-mono" id="active-voyage-dropdown-wrapper">
+                <span class="text-slate-400">ACTIVE VOYAGE:</span>
+                <select id="select-active-voyage" class="bg-transparent text-white border-none outline-none font-bold cursor-pointer">
+                  <!-- Dynamically populated with all detected voyages -->
+                </select>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 text-xs font-mono text-slate-400">
+              <span class="flex items-center gap-1 text-slate-300">
+                <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">schedule</span>
+                <span id="telemetry-time-display">2026-09-28 to 2026-10-28</span>
+              </span>
+              <span class="flex items-center gap-1.5 text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span id="telemetry-record-count">25,268 Pings Loaded</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             SUB-VIEW A: ALL VOYAGES DIRECTORY (THE REQUESTED METHOD)
+             =================================================================== -->
+        <div id="subview-voyages-directory" class="p-5 flex flex-col gap-5">
+          <!-- Banner & Metrics Overview -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="tactical-glass-card p-4 rounded-xl">
+              <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">DETECTED VOYAGES</div>
+              <div class="text-3xl font-bold font-mono text-white mt-1" id="stat-total-voyages">0</div>
+              <div class="text-[11px] text-slate-400 font-mono mt-1">Bounded by &ge; 30m H3 Res 8 Dwells</div>
+            </div>
+            <div class="tactical-glass-card p-4 rounded-xl">
+              <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">TOTAL TRANSIT DISTANCE</div>
+              <div class="text-3xl font-bold font-mono text-[#38bdf8] mt-1" id="stat-total-distance">0.0 NM</div>
+              <div class="text-[11px] text-slate-400 font-mono mt-1">Oceanic corridors navigated</div>
+            </div>
+            <div class="tactical-glass-card p-4 rounded-xl">
+              <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">TOTAL TRANSIT HOURS</div>
+              <div class="text-3xl font-bold font-mono text-emerald-400 mt-1" id="stat-total-underway-hrs">0.0 hrs</div>
+              <div class="text-[11px] text-slate-400 font-mono mt-1">Underway SOG &gt; 1.0 kts</div>
+            </div>
+            <div class="tactical-glass-card p-4 rounded-xl">
+              <div class="text-[10px] font-mono text-slate-400 uppercase tracking-wider">PORT DWELL / IDLE TIME</div>
+              <div class="text-3xl font-bold font-mono text-amber-400 mt-1" id="stat-total-idle-hrs">0.0 hrs</div>
+              <div class="text-[11px] text-slate-400 font-mono mt-1">Moored in H3 Res 8 (+ 1-Ring Disk)</div>
+            </div>
+          </div>
+
+          <!-- Section Heading -->
+          <div class="flex items-center justify-between border-b border-white/[0.08] pb-2 mt-2">
+            <div>
+              <h3 class="font-display text-lg font-bold text-white tracking-tight">Voyage History Ledger</h3>
+              <p class="text-xs text-slate-400 font-mono">Select any voyage below to open its dedicated kinematic telemetry window and GIS trajectory playback.</p>
+            </div>
+            <span class="text-xs font-mono text-slate-400" id="voyages-filter-caption">Showing all connected transits</span>
+          </div>
+
+          <!-- Voyage Cards Grid Container -->
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" id="voyages-cards-grid">
+            <!-- Dynamically populated with individual voyage cards -->
+          </div>
+        </div>
+
+        <!-- ===================================================================
+             SUB-VIEW B: VOYAGE TELEMETRY COCKPIT WINDOW (APPEARS ON CLICK)
+             =================================================================== -->
+        <div id="subview-voyage-cockpit" class="hidden flex-col w-full">
+          <!-- Cockpit Sub-strip: Back button & Voyage Identity -->
+          <div class="px-5 py-2.5 bg-white/[0.02] border-b border-white/[0.06] flex items-center justify-between text-xs font-mono">
+            <div class="flex items-center gap-3">
+              <button type="button" class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/[0.06] hover:bg-white/10 text-white font-mono text-xs border border-white/10 transition" id="btn-cockpit-back">
+                <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">arrow_back</span>
+                <span>All Voyages</span>
+              </button>
+              <div class="h-3 w-px bg-white/10"></div>
+              <span class="text-white font-bold" id="cockpit-voyage-title">VOYAGE #1: BUSAN &rarr; FUKUOKA</span>
+              <span class="text-slate-400" id="cockpit-voyage-h3-stats">186 H3 Res 8 Hex Cells Traversed</span>
+            </div>
+            <div class="flex items-center gap-3 text-slate-400">
+              <span>Departure: <strong class="text-slate-200" id="cockpit-dep-time">--</strong></span>
+              <span>Arrival: <strong class="text-slate-200" id="cockpit-arr-time">--</strong></span>
+              <span class="text-emerald-400 font-bold" id="cockpit-dur-tag">5h 22m</span>
+            </div>
+          </div>
+
+          <!-- 4 Mission-Critical Telemetry Tiles (Stitch Specification) -->
+          <div class="px-5 pt-4 pb-2 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+            <!-- 1. Ingestion Frequency -->
+            <div class="tactical-glass-card p-3.5 rounded-xl border border-white/[0.08] flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">cell_tower</span>
+                  INGESTION FREQUENCY
+                </span>
+                <span class="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">100% OK</span>
+              </div>
+              <div class="flex items-baseline gap-2 my-1">
+                <span class="font-mono text-[24px] font-bold text-white leading-none" id="kpi-ingestion-rate">1,240</span>
+                <span class="font-mono text-xs text-slate-400">pings / min</span>
+              </div>
+              <div class="pt-1.5 border-t border-white/[0.06] text-[10px] font-mono text-slate-400 flex justify-between">
+                <span>CH 87B / 88B (161.975MHz)</span>
+                <span class="text-emerald-400">Inmarsat-C Synced</span>
+              </div>
+            </div>
+
+            <!-- 2. Kinematic Vector -->
+            <div class="tactical-glass-card p-3.5 rounded-xl border border-white/[0.08] flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">explore</span>
+                  KINEMATIC VECTOR
+                </span>
+                <span class="font-mono text-[10px] text-[#38bdf8] bg-[#1164AF]/20 border border-[#1164AF]/40 px-1.5 py-0.5 rounded font-bold">LOCKED</span>
+              </div>
+              <div class="flex items-baseline gap-2 my-1">
+                <span class="font-mono text-[24px] font-bold text-[#38bdf8] leading-none" id="kpi-sog-val">18.5 kts</span>
+                <span class="font-mono text-xs text-white font-semibold" id="kpi-cog-val">/ 140° TRUE</span>
+              </div>
+              <div class="pt-1.5 border-t border-white/[0.06] text-[10px] font-mono text-slate-400 flex justify-between">
+                <span>ROT: +0.2°/min</span>
+                <span class="text-slate-200">HDG: <strong id="kpi-hdg-val">140.0°</strong></span>
+              </div>
+            </div>
+
+            <!-- 3. Hydro Bathymetry & UKC -->
+            <div class="tactical-glass-card p-3.5 rounded-xl border border-white/[0.08] flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-amber-400">water</span>
+                  HYDRO BATHYMETRY &amp; UKC
+                </span>
+                <span class="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">SAFE UKC</span>
+              </div>
+              <div class="flex items-baseline gap-2 my-1">
+                <span class="font-mono text-[24px] font-bold text-emerald-400 leading-none">24.8 m</span>
+                <span class="font-mono text-xs text-slate-400">UKC CLEAR</span>
+              </div>
+              <div class="pt-1.5 border-t border-white/[0.06] text-[10px] font-mono text-slate-400 flex justify-between">
+                <span>Charted Depth: 34.2m</span>
+                <span class="text-slate-300">Current: 1.4 kts</span>
+              </div>
+            </div>
+
+            <!-- 4. Sensor Integrity -->
+            <div class="tactical-glass-card p-3.5 rounded-xl border border-white/[0.08] flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-mono text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[15px] text-emerald-400">tune</span>
+                  SENSOR INTEGRITY
+                </span>
+                <span class="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">ONLINE</span>
+              </div>
+              <div class="flex items-baseline gap-2 my-1">
+                <span class="font-mono text-[24px] font-bold text-white leading-none">0.8 OPT</span>
+                <span class="font-mono text-xs text-slate-400">GPS HDOP</span>
+              </div>
+              <div class="pt-1.5 border-t border-white/[0.06] text-[10px] font-mono text-slate-400 flex justify-between">
+                <span>Echo Sounder: Dual</span>
+                <span class="text-emerald-400">S-Band Radar Active</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Telemetry Main View: Map Deck + Real-time Table Grid -->
+          <div class="px-5 py-3 grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
+            <!-- Left: Tactical GIS Deck (7 cols) -->
+            <div class="lg:col-span-7 flex flex-col tactical-glass-card rounded-2xl overflow-hidden border border-white/[0.08] relative min-h-[520px]">
+              <!-- Map Top Bar Left: Telemetry Kinematic Readouts & Live H3 Res 8 Tracker -->
+              <div class="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-2 bg-[#090B10]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-xs font-mono shadow-xl">
+                <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">navigation</span>
+                <span>HDG: <strong class="text-white" id="map-hdg-indicator">--° T</strong></span>
+                <div class="h-3 w-px bg-white/20"></div>
+                <span>LAT: <strong class="text-white" id="map-lat-indicator">--</strong></span>
+                <span>LON: <strong class="text-white" id="map-lon-indicator">--</strong></span>
+                <div class="h-3 w-px bg-white/20"></div>
+                <div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#1164AF]/20 border border-[#1164AF]/40">
+                  <span class="text-[10px] text-slate-400 font-bold">H3 RES 8:</span>
+                  <span class="text-[#38bdf8] font-bold text-[11px]" id="map-active-h3-indicator">--</span>
+                  <span class="text-[10px] text-slate-400" id="map-cell-step-indicator">(#-- / --)</span>
+                </div>
+              </div>
+
+              <!-- Map Top Bar Right: Tactical Layer & Display Controls -->
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-2 bg-[#090B10]/90 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-white/10 text-xs font-mono shadow-xl">
+                <label class="flex items-center gap-1 cursor-pointer text-slate-300 hover:text-white" title="Toggle Traversed H3 Res 8 Hexagons">
+                  <input type="checkbox" id="toggle-h3-hex-layer" checked class="rounded bg-slate-800 text-[#38bdf8] focus:ring-0 w-3 h-3" />
+                  <span class="text-[11px]">H3 Grids</span>
+                </label>
+                <div class="h-3 w-px bg-white/20"></div>
+                <label class="flex items-center gap-1 cursor-pointer text-slate-300 hover:text-white" title="Toggle Departure & Arrival 1-Ring Mooring Zones">
+                  <input type="checkbox" id="toggle-idle-disks" checked class="rounded bg-slate-800 text-amber-400 focus:ring-0 w-3 h-3" />
+                  <span class="text-[11px]">Idle Anchors</span>
+                </label>
+                <div class="h-3 w-px bg-white/20"></div>
+                <label class="flex items-center gap-1 cursor-pointer text-slate-300 hover:text-white" title="Toggle Centerline Trajectory Line">
+                  <input type="checkbox" id="toggle-centerline" checked class="rounded bg-slate-800 text-emerald-400 focus:ring-0 w-3 h-3" />
+                  <span class="text-[11px]">Centerline</span>
+                </label>
+                <div class="h-3 w-px bg-white/20"></div>
+                <label class="flex items-center gap-1 cursor-pointer text-slate-300 hover:text-white" title="Toggle Hexagon Sequence Numbers">
+                  <input type="checkbox" id="toggle-cell-labels" class="rounded bg-slate-800 text-slate-400 focus:ring-0 w-3 h-3" />
+                  <span class="text-[11px]"># Labels</span>
+                </label>
+                <div class="h-3 w-px bg-white/20"></div>
+                <button type="button" id="btn-map-recenter" class="px-2 py-0.5 rounded bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-white text-[11px] transition flex items-center gap-1" title="Fit map view to H3 path">
+                  <span class="material-symbols-outlined text-[13px]">fit_screen</span> Fit
+                </button>
+              </div>
+
+              <!-- Map Bottom-Left Floating Tactical Legend -->
+              <div class="absolute bottom-24 left-3 z-20 flex flex-col gap-1 bg-[#090B10]/90 backdrop-blur-md p-2 rounded-xl border border-white/10 text-[10px] font-mono shadow-xl pointer-events-none">
+                <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider pb-0.5 border-b border-white/10">H3 RES 8 PATH DECK</div>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm border border-amber-400/80 bg-amber-500/20 border-dashed"></span>
+                  <span class="text-slate-300">Departure Mooring (≥30m Dwell)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm border border-[#00f0ff] bg-[#0284c7]/30"></span>
+                  <span class="text-[#38bdf8]">Connected H3 Res 8 Transit Path</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm border border-emerald-400/80 bg-emerald-500/20 border-dashed"></span>
+                  <span class="text-slate-300">Arrival Mooring (≥30m Dwell)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm border-2 border-white bg-[#00f0ff] animate-pulse"></span>
+                  <span class="text-white font-bold">Active Vessel Cell</span>
+                </div>
+              </div>
+
+              <!-- Leaflet Map Container -->
+              <div id="map" class="w-full flex-1 min-h-[480px]"></div>
+
+              <!-- Playback Scrubber Bar (Docked at bottom of map) -->
+              <div class="p-4 bg-[#090B10]/95 backdrop-blur-md border-t border-white/[0.08] flex flex-col gap-2.5 z-20">
+                <div class="flex items-center justify-between text-xs font-mono">
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="w-8 h-8 rounded-lg bg-[#1164AF] hover:bg-[#1772c6] text-white flex items-center justify-center transition shadow-lg shadow-[#1164AF]/30" id="btn-play-pause">
+                      <span class="material-symbols-outlined text-[18px]" id="play-icon">play_arrow</span>
+                    </button>
+                    <button type="button" class="px-2 py-1 rounded bg-white/[0.05] hover:bg-white/10 text-slate-300 text-[11px] font-mono transition" id="btn-speed-toggle">
+                      Speed: 5x
+                    </button>
+                    <span class="text-slate-400 pl-1" id="playback-step-info">Ping 1 / 263</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-slate-300">
+                    <span>Current SOG: <strong class="text-[#38bdf8]" id="playback-sog-display">5.8 kts</strong></span>
+                    <span>Time: <strong class="text-white" id="playback-time-stamp">16:07:03 UTC</strong></span>
+                  </div>
+                </div>
+
+                <!-- Slider -->
+                <input type="range" id="playback-slider" min="0" max="100" value="0" class="w-full range-progress cursor-pointer h-1.5 bg-slate-800 rounded-lg" />
+              </div>
+            </div>
+
+            <!-- Right: Live Telemetry Pings Stream & Schema Inspector (5 cols) -->
+            <div class="lg:col-span-5 flex flex-col tactical-glass-card rounded-2xl overflow-hidden border border-white/[0.08] max-h-[640px]">
+              <div class="p-3 bg-white/[0.02] border-b border-white/[0.08] flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-[#38bdf8]">table_chart</span>
+                  <span class="font-mono text-xs font-bold uppercase text-white tracking-wider">CANONICAL TELEMETRY STREAM</span>
+                </div>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">10-COL CONTRACT</span>
+              </div>
+
+              <!-- Table of Pings -->
+              <div class="overflow-y-auto flex-1 font-mono text-[11px]" id="telemetry-table-container">
+                <table class="w-full text-left border-collapse">
+                  <thead class="sticky top-0 bg-[#090B10] text-slate-400 text-[10px] uppercase border-b border-white/10 z-10">
+                    <tr>
+                      <th class="py-2 px-2.5">Time (UTC)</th>
+                      <th class="py-2 px-2">Lat</th>
+                      <th class="py-2 px-2">Lon</th>
+                      <th class="py-2 px-2 text-right">SOG</th>
+                      <th class="py-2 px-2 text-right">COG</th>
+                      <th class="py-2 px-2 text-right">HDG</th>
+                    </tr>
+                  </thead>
+                  <tbody id="telemetry-table-body" class="divide-y divide-white/[0.04] text-slate-300">
+                    <!-- Generated rows dynamically -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Table Footer: Coordinate Bounding Summary -->
+              <div class="p-2.5 bg-[#090B10] border-t border-white/[0.08] text-[10px] font-mono text-slate-400 flex items-center justify-between">
+                <span>Bounding: <strong class="text-slate-300" id="stat-bbox">--</strong></span>
+                <span>Avg Speed: <strong class="text-white" id="stat-avg-speed">-- kts</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </section>
-    </aside>
 
-    <!-- Sidebar Collapse Toggle Tab -->
-    <button type="button" class="sidebar-toggle-btn" id="sidebar-toggle" style="left: 380px;" title="Toggle Sidebar">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
+      <!-- =====================================================================
+           VIEW 2: FLEET OVERVIEW (STITCH: GLOBAL OPERATIONS & DENSITY)
+           ===================================================================== -->
+      <section id="view-fleet-overview" class="view-panel hidden flex-col w-full p-5 gap-5">
+        <div class="flex items-center justify-between border-b border-white/[0.07] pb-4">
+          <div>
+            <h2 class="font-display text-xl font-bold text-white tracking-tight">Fleet Operations / Global Status</h2>
+            <p class="text-xs text-slate-400 font-mono mt-0.5">1,402 ACTIVE VESSELS MONITORED · DUAL-FEED AIS TELEMETRY</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">DISPATCH: NOMINAL</span>
+          </div>
+        </div>
 
-    <!-- Map Viewport -->
-    <main class="map-container">
-      <div id="map"></div>
+        <!-- Metric Quad -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="tactical-glass-card p-4 rounded-xl">
+            <div class="text-[10px] font-mono text-slate-400 uppercase">ACTIVE FLEET DISPATCH</div>
+            <div class="text-2xl font-bold font-mono text-white mt-1">1,402</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1">1,348 Nom · 42 Elevated · 12 Crit</div>
+          </div>
+          <div class="tactical-glass-card p-4 rounded-xl">
+            <div class="text-[10px] font-mono text-slate-400 uppercase">AVERAGE FLEET ICRS</div>
+            <div class="text-2xl font-bold font-mono text-emerald-400 mt-1">28.4 <span class="text-xs text-slate-400">/ 100</span></div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1">Safe Bounds (-4.1 vs 30D Avg)</div>
+          </div>
+          <div class="tactical-glass-card p-4 rounded-xl">
+            <div class="text-[10px] font-mono text-slate-400 uppercase">AIS STREAM RELIABILITY</div>
+            <div class="text-2xl font-bold font-mono text-white mt-1">99.4%</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1">Optimal · Latency 0.84s</div>
+          </div>
+          <div class="tactical-glass-card p-4 rounded-xl">
+            <div class="text-[10px] font-mono text-slate-400 uppercase">WARRANTY ADHERENCE</div>
+            <div class="text-2xl font-bold font-mono text-[#38bdf8] mt-1">98.2% <span class="text-xs text-slate-400">TIER A+</span></div>
+            <div class="text-[11px] text-slate-400 font-mono mt-1">$1.4B Cargo Safeguarded</div>
+          </div>
+        </div>
 
-      <!-- Floating HUD: Real-time Telemetry Stats -->
-      <div class="map-hud">
-        <div class="hud-item">
-          <span class="hud-label">Ping Count</span>
-          <span class="hud-value" id="hud-viewer-pings">0</span>
+        <!-- Priority Flagged Vessels -->
+        <div class="tactical-glass-card p-4 rounded-xl flex flex-col gap-3">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="font-bold text-white uppercase flex items-center gap-1.5 text-amber-400">
+              <span class="material-symbols-outlined text-[16px]">priority_high</span> PRIORITY ATTENTION VESSELS (4 FLAGGED)
+            </span>
+            <span class="text-slate-400">Updated: Just Now</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 font-mono text-xs">
+            <div class="p-3 bg-white/[0.02] border border-rose-500/30 rounded-lg">
+              <div class="flex justify-between items-center"><span class="font-bold text-white">MT OCEAN RESOLUTE</span><span class="text-rose-400 font-bold">70.5 CRIT</span></div>
+              <div class="text-[10px] text-slate-400 mt-1">Malacca Strait · STS Rendezvous Risk</div>
+            </div>
+            <div class="p-3 bg-white/[0.02] border border-rose-500/30 rounded-lg">
+              <div class="flex justify-between items-center"><span class="font-bold text-white">ARCTIC EXPLORER</span><span class="text-rose-400 font-bold">68.2 CRIT</span></div>
+              <div class="text-[10px] text-slate-400 mt-1">Barents Sea · Draft Anomaly +2.1m</div>
+            </div>
+            <div class="p-3 bg-white/[0.02] border border-amber-500/30 rounded-lg">
+              <div class="flex justify-between items-center"><span class="font-bold text-white">NORDIC FREEDOM</span><span class="text-amber-400 font-bold">44.0 WATCH</span></div>
+              <div class="text-[10px] text-slate-400 mt-1">North Sea · 16.2 kts in Eco-zone</div>
+            </div>
+            <div class="p-3 bg-white/[0.02] border border-emerald-500/30 rounded-lg">
+              <div class="flex justify-between items-center"><span class="font-bold text-white">PACIFIC VOYAGER</span><span class="text-emerald-400 font-bold">24.2 NOM</span></div>
+              <div class="text-[10px] text-slate-400 mt-1">Singapore Appr. · War-Risk Compliant</div>
+            </div>
+          </div>
         </div>
-        <div class="hud-item">
-          <span class="hud-label">Total Distance</span>
-          <span class="hud-value" id="hud-viewer-dist">0.0 NM</span>
-        </div>
-        <div class="hud-item">
-          <span class="hud-label">Speed Stats</span>
-          <span class="hud-value" id="hud-viewer-speed">-- kts</span>
-        </div>
-      </div>
 
-      <!-- Playback Animation Scrubber Bar -->
-      <div class="viewer-playback-bar">
-        <div class="playback-controls-row">
-          <button type="button" class="btn-play" id="btn-play-pause" title="Play / Pause Playback">
-            <svg class="ui-icon" id="play-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          </button>
-          <input type="range" class="timeline-slider" id="timeline-slider" min="0" max="100" value="0" />
+        <!-- Fleet Table -->
+        <div class="tactical-glass-card rounded-xl overflow-hidden">
+          <div class="p-3 bg-white/[0.02] border-b border-white/[0.08] flex items-center justify-between text-xs font-mono">
+            <span class="font-bold text-white uppercase">FLEET REGISTRY SAMPLE (1,402 TOTAL)</span>
+            <span class="text-slate-400">100% AIS INGESTION</span>
+          </div>
+          <table class="w-full text-left font-mono text-xs">
+            <thead class="bg-[#090B10] text-slate-400 text-[10px] uppercase border-b border-white/10">
+              <tr>
+                <th class="py-2.5 px-4">Vessel & IMO</th>
+                <th class="py-2.5 px-4">Type</th>
+                <th class="py-2.5 px-4">Flag</th>
+                <th class="py-2.5 px-4">Corridor</th>
+                <th class="py-2.5 px-4">Speed / Heading</th>
+                <th class="py-2.5 px-4">Risk Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/[0.04] text-slate-300">
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-2.5 px-4 font-bold text-white">NEW CAMELLIA (IMO 9304497)</td>
+                <td class="py-2.5 px-4">Ro-Ro Passenger</td>
+                <td class="py-2.5 px-4">PA · Panama</td>
+                <td class="py-2.5 px-4">Busan - Fukuoka (30 Days)</td>
+                <td class="py-2.5 px-4">18.5 kts / 140°</td>
+                <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px]">NOMINAL</span></td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-2.5 px-4 font-bold text-white">KOREA VOYAGER 8 (IMO 9876543)</td>
+                <td class="py-2.5 px-4">Passenger / Ferry</td>
+                <td class="py-2.5 px-4">KR · South Korea</td>
+                <td class="py-2.5 px-4">Busan - Fukuoka</td>
+                <td class="py-2.5 px-4">21.2 kts / 133°</td>
+                <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px]">NOMINAL</span></td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-2.5 px-4 font-bold text-white">PACIFIC GLORY 12 (IMO 9382104)</td>
+                <td class="py-2.5 px-4">Cargo Vessel</td>
+                <td class="py-2.5 px-4">LR · Liberia</td>
+                <td class="py-2.5 px-4">Korea Strait South</td>
+                <td class="py-2.5 px-4">14.8 kts / 126°</td>
+                <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px]">NOMINAL</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="playback-telemetry-row">
-          <div>Leg: <strong id="playback-leg">--</strong></div>
-          <div>Time: <strong id="playback-time">--</strong></div>
-          <div>SOG: <strong id="playback-sog">-- kts</strong></div>
-          <div>COG: <strong id="playback-cog">--°</strong></div>
-          <div>Coords: <strong id="playback-pos">--</strong></div>
-        </div>
-      </div>
+      </section>
 
-      <!-- Carto Layer Picker -->
-      <div class="layer-picker">
-        <button type="button" class="layer-btn active" data-layer="dark" onclick="setViewerBasemap('dark')">Carto Dark</button>
-        <button type="button" class="layer-btn" data-layer="light" onclick="setViewerBasemap('light')">Carto Light</button>
-        <button type="button" class="layer-btn" data-layer="voyager" onclick="setViewerBasemap('voyager')">Voyager</button>
-      </div>
+      <!-- =====================================================================
+           VIEW 3: ANOMALY QUEUE (STITCH: TRIAGE & POLICY BREACHES)
+           ===================================================================== -->
+      <section id="view-anomaly-queue" class="view-panel hidden flex-col w-full p-5 gap-5">
+        <div class="flex items-center justify-between border-b border-white/[0.07] pb-4">
+          <div>
+            <h2 class="font-display text-xl font-bold text-white tracking-tight">Anomaly Investigation Queue</h2>
+            <p class="text-xs text-rose-400 font-mono mt-0.5">12 ACTIVE FLEET POLICY BREACHES REQUIRING TRIAGE</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-bold transition flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[15px]">gavel</span> Escalate to Underwriter
+            </button>
+          </div>
+        </div>
+
+        <div class="tactical-glass-card rounded-xl overflow-hidden">
+          <table class="w-full text-left font-mono text-xs">
+            <thead class="bg-[#090B10] text-slate-400 text-[10px] uppercase border-b border-white/10">
+              <tr>
+                <th class="py-3 px-4">Incident ID</th>
+                <th class="py-3 px-4">Vessel</th>
+                <th class="py-3 px-4">Anomaly Class</th>
+                <th class="py-3 px-4">Location</th>
+                <th class="py-3 px-4">Detected</th>
+                <th class="py-3 px-4">Severity</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/[0.04] text-slate-300">
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4 text-[#38bdf8]">INC-2026-8812</td>
+                <td class="py-3 px-4 font-bold text-white">MT OCEAN RESOLUTE</td>
+                <td class="py-3 px-4">STS Rendezvous (Dark Activity)</td>
+                <td class="py-3 px-4">Malacca Strait TSS</td>
+                <td class="py-3 px-4">12 mins ago</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold border border-rose-500/40 text-[10px]">P1 CRITICAL</span></td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4 text-[#38bdf8]">INC-2026-8794</td>
+                <td class="py-3 px-4 font-bold text-white">ARCTIC EXPLORER</td>
+                <td class="py-3 px-4">Acoustic Draft Mismatch (+2.1m)</td>
+                <td class="py-3 px-4">Barents Sea</td>
+                <td class="py-3 px-4">41 mins ago</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold border border-rose-500/40 text-[10px]">P1 CRITICAL</span></td>
+              </tr>
+              <tr class="hover:bg-white/[0.02]">
+                <td class="py-3 px-4 text-[#38bdf8]">INC-2026-8720</td>
+                <td class="py-3 px-4 font-bold text-white">NORDIC FREEDOM</td>
+                <td class="py-3 px-4">Speed Limit Breach (16.2 vs 10 kts)</td>
+                <td class="py-3 px-4">North Sea Eco-Zone</td>
+                <td class="py-3 px-4">1h 05m ago</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold border border-amber-500/40 text-[10px]">P2 WARNING</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 4: COMPLIANCE AUDIT (STITCH: CLEAN ANALYST AUDIT DOSSIER)
+           ===================================================================== -->
+      <section id="view-compliance-audit" class="view-panel hidden flex-col w-full p-5 gap-5">
+        <div class="flex items-center justify-between border-b border-white/[0.07] pb-4">
+          <div>
+            <h2 class="font-display text-xl font-bold text-white tracking-tight">Compliance & Warranty Audit Dossier</h2>
+            <p class="text-xs text-slate-400 font-mono mt-0.5">UNDERWRITER RISK VERIFICATION · IMO 9304497</p>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs font-bold">AUDIT: VERIFIED</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+          <div class="tactical-glass-card p-4 rounded-xl flex flex-col gap-2">
+            <span class="text-slate-400 uppercase text-[10px]">CORRIDOR TSS ADHERENCE</span>
+            <span class="text-lg font-bold text-emerald-400">100% COMPLIANT</span>
+            <p class="text-slate-400 text-[11px]">Strict lane separation maintained across Tsushima corridor.</p>
+          </div>
+          <div class="tactical-glass-card p-4 rounded-xl flex flex-col gap-2">
+            <span class="text-slate-400 uppercase text-[10px]">HULL & DRAFT TOLERANCE</span>
+            <span class="text-lg font-bold text-emerald-400">&plusmn; 0.1m WITHIN SPECS</span>
+            <p class="text-slate-400 text-[11px]">Acoustic echo depth readings align with declared ballast manifest.</p>
+          </div>
+          <div class="tactical-glass-card p-4 rounded-xl flex flex-col gap-2">
+            <span class="text-slate-400 uppercase text-[10px]">SANCTIONS & GEOSHADOWING</span>
+            <span class="text-lg font-bold text-[#38bdf8]">ZERO DARK GAPS</span>
+            <p class="text-slate-400 text-[11px]">Continuous AIS transponder transmission throughout voyage.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 5: GEOSPATIAL RADAR & SIMULATION DECK
+           ===================================================================== -->
+      <section id="view-geospatial-radar" class="view-panel hidden flex-col w-full p-5 gap-4">
+        <h2 class="font-display text-xl font-bold text-white">Geospatial Radar Operations</h2>
+        <p class="text-xs text-slate-400 font-mono">Global chokepoint surveillance and density clustering.</p>
+        <div class="tactical-glass-card p-6 rounded-xl text-center">
+          <p class="text-slate-400 text-sm font-mono mb-4">Connect directly with the high-resolution Spatiotemporal Hotspot Workbench:</p>
+          <a href="spatA/index.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1164AF] text-white font-mono text-xs font-bold hover:bg-[#1772c6] transition">
+            <span class="material-symbols-outlined text-[16px]">open_in_new</span> Launch spatA H3 Clustering Workbench
+          </a>
+        </div>
+      </section>
+
+      <section id="view-simulation-deck" class="view-panel hidden flex-col w-full p-5 gap-4">
+        <h2 class="font-display text-xl font-bold text-white">Synthetic Route Simulation Deck</h2>
+        <p class="text-xs text-slate-400 font-mono">Create and synthesize new commercial vessel AIS corridors.</p>
+        <div class="tactical-glass-card p-6 rounded-xl text-center">
+          <p class="text-slate-400 text-sm font-mono mb-4">Open the interactive route generator and waypoint editor:</p>
+          <a href="index.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1164AF] text-white font-mono text-xs font-bold hover:bg-[#1772c6] transition">
+            <span class="material-symbols-outlined text-[16px]">arrow_forward</span> Enter Simulator Studio
+          </a>
+        </div>
+      </section>
+
     </main>
-
   </div>
 
-  <!-- Leaflet GIS JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- =========================================================================
+       SCRIPTS: Leaflet, PapaParse, Uber H3-JS, MapConfig, and Telemetry Engine
+       ========================================================================= -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <!-- Uber H3 Discrete Global Grid System (v4 UMD) -->
+  <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
   <!-- Centralized CARTO Map Config -->
   <script src="static/js/map_config.js"></script>
-  <!-- Viewer Script -->
-  <script src="static/js/viewer.js"></script>
 
-  <!-- Sidebar Toggle Script -->
   <script>
-    const toggleBtn = document.getElementById('sidebar-toggle');
-    const sidebar = document.getElementById('sidebar');
-    if (toggleBtn && sidebar) {
-      toggleBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        setTimeout(() => {
-          if (typeof map !== 'undefined' && map.invalidateSize) {
-            map.invalidateSize();
+    /* --------------------------------------------------------------------------
+       1. Application State & Telemetry Playback Engine
+       -------------------------------------------------------------------------- */
+    let map = null;
+    let baseLayers = {};
+    let activeBasemapKey = 'dark';
+    let trajectoryLine = null;
+    let vesselMarker = null;
+    let waypointMarkers = [];
+    let h3HexLayerGroup = null;
+    let h3IdleClustersLayerGroup = null;
+    let h3LabelsLayerGroup = null;
+    let h3ActiveCellLayerGroup = null;
+    let h3VoyageBounds = null;
+    let h3PolyMap = new Map();
+
+    // Full dataset and segmented voyages
+    let rawLoadedPings = [];
+    let detectedVoyages = [];
+    let currentVoyage = null;
+    let currentPings = [];
+
+    // Playback state
+    let isPlaying = false;
+    let playIndex = 0;
+    let playTimer = null;
+    let playSpeed = 5;
+
+    // View mode state in Voyage Telemetry
+    let activeTelemetrySubView = 'directory'; // 'directory' or 'cockpit'
+
+    // Escapes CSV strings to prevent XSS (Lesson Learned)
+    function escapeHtml(val) {
+      return String(val == null ? '' : val)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    // Great-circle distance helper (in Nautical Miles)
+    function calcDistanceNm(lat1, lon1, lat2, lon2) {
+      const R = 3440.065; // Earth radius in NM
+      const dLat = (lat2 - lat1) * Math.PI / 180.0;
+      const dLon = (lon2 - lon1) * Math.PI / 180.0;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180.0) * Math.cos(lat2 * Math.PI / 180.0) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+
+    // Resolves coordinates to known maritime ports or anchorages
+    function resolvePortName(lat, lon) {
+      if (lat >= 35.05 && lat <= 35.18 && lon >= 129.00 && lon <= 129.15) {
+        return "Busan Port Terminal";
+      }
+      if (lat >= 33.55 && lat <= 33.65 && lon >= 130.35 && lon <= 130.46) {
+        return "Fukuoka Hakata Port";
+      }
+      if (lat >= 34.15 && lat <= 34.25 && lon >= 129.25 && lon <= 129.35) {
+        return "Tsushima Izuhara Anchorage";
+      }
+      if (lat >= 35.40 && lat <= 35.50 && lon >= 129.30 && lon <= 129.45) {
+        return "Ulsan Deepwater Anchorage";
+      }
+      return `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
+    }
+
+    /* --------------------------------------------------------------------------
+       2. H3 Resolution 8 Spatial Clustering & Voyage Segmentation Algorithm
+          - Defined as: Connected H3 Res 8 path between two instances of idle time.
+          - Idle time: Vessel stays in an H3 Res 8 grid cell or within 1-ring neighbor
+            for at least 30 minutes (>= 1,800,000 ms).
+       -------------------------------------------------------------------------- */
+    function segmentPingsIntoVoyages(pings) {
+      if (!pings || pings.length === 0) return [];
+
+      const H3_RES = 8;
+      const IDLE_MIN_DURATION_MS = 30 * 60 * 1000; // 30 minutes
+
+      // Safe H3 cell resolution helper (handles v3 / v4)
+      const getH3Cell = (lat, lon) => {
+        try {
+          if (typeof h3 !== 'undefined' && h3.latLngToCell) {
+            return h3.latLngToCell(lat, lon, H3_RES);
+          } else if (typeof h3 !== 'undefined' && h3.geoToH3) {
+            return h3.geoToH3(lat, lon, H3_RES);
           }
-        }, 320);
+        } catch (e) {}
+        // Fallback grid cell key if H3 library is not loaded
+        return `${lat.toFixed(3)}_${lon.toFixed(3)}`;
+      };
+
+      const getDisk1Set = (cell) => {
+        try {
+          if (typeof h3 !== 'undefined' && h3.gridDisk) {
+            return new Set(h3.gridDisk(cell, 1));
+          } else if (typeof h3 !== 'undefined' && h3.kRing) {
+            return new Set(h3.kRing(cell, 1));
+          }
+        } catch (e) {}
+        return new Set([cell]);
+      };
+
+      // Continuous connected H3 Res 8 path segmenter between pings
+      const getConnectingH3Cells = (lat1, lon1, cell1, lat2, lon2, cell2) => {
+        if (cell1 === cell2) return [cell1];
+        try {
+          if (typeof h3 !== 'undefined' && typeof h3.gridPathCells === 'function') {
+            const path = h3.gridPathCells(cell1, cell2);
+            if (path && path.length > 0) return path;
+          } else if (typeof h3 !== 'undefined' && typeof h3.h3Line === 'function') {
+            const path = h3.h3Line(cell1, cell2);
+            if (path && path.length > 0) return path;
+          }
+        } catch (err) {}
+        
+        // Sampling fallback for distant or irregular jumps across coordinate space
+        const dist = calcDistanceNm(lat1, lon1, lat2, lon2);
+        const steps = Math.min(Math.max(2, Math.ceil(dist / 0.2)), 20);
+        const cells = [];
+        let last = null;
+        for (let s = 0; s <= steps; s++) {
+          const f = s / steps;
+          const c = getH3Cell(lat1 + (lat2 - lat1) * f, lon1 + (lon2 - lon1) * f);
+          if (c && c !== last) {
+            cells.push(c);
+            last = c;
+          }
+        }
+        return cells.length ? cells : [cell1, cell2];
+      };
+
+      // Step 1: Precompute H3 Res 8 cell and parse timestamps
+      const enriched = pings.map((p, idx) => ({
+        ...p,
+        idx,
+        timeMs: new Date(p.DateTime).getTime(),
+        h3Cell: getH3Cell(p.LAT, p.LON)
+      }));
+
+      // Step 2: Detect all Idle Clusters (stays in cell or 1-ring disk for >= 30m)
+      const idleIntervals = [];
+      let anchorCell = null;
+      let disk1Set = null;
+      let clusterStartIndex = 0;
+      let clusterPings = [];
+
+      for (let i = 0; i < enriched.length; i++) {
+        const pt = enriched[i];
+
+        if (anchorCell === null) {
+          anchorCell = pt.h3Cell;
+          disk1Set = getDisk1Set(anchorCell);
+          clusterStartIndex = i;
+          clusterPings = [pt];
+          continue;
+        }
+
+        // Check if point remains within 1-ring neighbor disk
+        if (disk1Set.has(pt.h3Cell)) {
+          clusterPings.push(pt);
+        } else {
+          // Check duration of previous cluster
+          const startTime = clusterPings[0].timeMs;
+          const endTime = clusterPings[clusterPings.length - 1].timeMs;
+          const durationMs = endTime - startTime;
+
+          if (durationMs >= IDLE_MIN_DURATION_MS) {
+            const avgLat = clusterPings.reduce((s, p) => s + p.LAT, 0) / clusterPings.length;
+            const avgLon = clusterPings.reduce((s, p) => s + p.LON, 0) / clusterPings.length;
+            idleIntervals.push({
+              startIndex: clusterStartIndex,
+              endIndex: i - 1,
+              startTime: clusterPings[0].DateTime,
+              endTime: clusterPings[clusterPings.length - 1].DateTime,
+              durationMs: durationMs,
+              durationMin: Math.round(durationMs / 60000),
+              anchorCell: anchorCell,
+              lat: avgLat,
+              lon: avgLon,
+              portName: resolvePortName(avgLat, avgLon),
+              pingsCount: clusterPings.length
+            });
+          }
+
+          // Reset cluster with new anchor point
+          anchorCell = pt.h3Cell;
+          disk1Set = getDisk1Set(anchorCell);
+          clusterStartIndex = i;
+          clusterPings = [pt];
+        }
+      }
+
+      // Check final trailing cluster
+      if (clusterPings.length > 0) {
+        const startTime = clusterPings[0].timeMs;
+        const endTime = clusterPings[clusterPings.length - 1].timeMs;
+        const durationMs = endTime - startTime;
+        if (durationMs >= IDLE_MIN_DURATION_MS) {
+          const avgLat = clusterPings.reduce((s, p) => s + p.LAT, 0) / clusterPings.length;
+          const avgLon = clusterPings.reduce((s, p) => s + p.LON, 0) / clusterPings.length;
+          idleIntervals.push({
+            startIndex: clusterStartIndex,
+            endIndex: enriched.length - 1,
+            startTime: clusterPings[0].DateTime,
+            endTime: clusterPings[clusterPings.length - 1].DateTime,
+            durationMs: durationMs,
+            durationMin: Math.round(durationMs / 60000),
+            anchorCell: anchorCell,
+            lat: avgLat,
+            lon: avgLon,
+            portName: resolvePortName(avgLat, avgLon),
+            pingsCount: clusterPings.length
+          });
+        }
+      }
+
+      // Step 3: Connect H3 Paths between Idle Intervals to form distinct Voyages
+      const voyages = [];
+
+      function buildVoyage(fromIdle, toIdle, startIdx, endIdx, voyNum) {
+        const voyagePings = pings.slice(startIdx, endIdx + 1);
+        if (voyagePings.length < 2) return null;
+
+        // Compute total distance & SOG stats & build continuous connected H3 Res 8 path
+        let totalDistNm = 0;
+        const orderedPathCells = [];
+        const visitedSet = new Set();
+        const cellPingMap = new Map();
+        const speeds = [];
+
+        for (let j = 0; j < voyagePings.length; j++) {
+          const cur = voyagePings[j];
+          speeds.push(cur.SOG);
+          const curCell = cur.h3Cell || getH3Cell(cur.LAT, cur.LON);
+          cur.h3Cell = curCell;
+
+          if (j === 0) {
+            orderedPathCells.push(curCell);
+            visitedSet.add(curCell);
+          } else {
+            const prev = voyagePings[j - 1];
+            const prevCell = prev.h3Cell || getH3Cell(prev.LAT, prev.LON);
+            totalDistNm += calcDistanceNm(prev.LAT, prev.LON, cur.LAT, cur.LON);
+
+            const line = getConnectingH3Cells(prev.LAT, prev.LON, prevCell, cur.LAT, cur.LON, curCell);
+            for (let m = 1; m < line.length; m++) {
+              const stepCell = line[m];
+              if (!visitedSet.has(stepCell)) {
+                orderedPathCells.push(stepCell);
+                visitedSet.add(stepCell);
+              }
+            }
+          }
+
+          if (!cellPingMap.has(curCell)) {
+            cellPingMap.set(curCell, { pings: [], sogSum: 0, firstPingIdx: j });
+          }
+          const entry = cellPingMap.get(curCell);
+          entry.pings.push(cur);
+          entry.sogSum += (cur.SOG || 0);
+        }
+
+        const validSpeeds = speeds.filter(s => !isNaN(s));
+        const avgSog = validSpeeds.length ? (validSpeeds.reduce((a, b) => a + b, 0) / validSpeeds.length).toFixed(1) : 0;
+        const maxSog = validSpeeds.length ? Math.max(...validSpeeds).toFixed(1) : 0;
+
+        const depTime = voyagePings[0].DateTime;
+        const arrTime = voyagePings[voyagePings.length - 1].DateTime;
+        const durMs = new Date(arrTime).getTime() - new Date(depTime).getTime();
+        const durHours = (durMs / (1000 * 3600)).toFixed(1);
+        const durMinutesTotal = Math.round(durMs / (1000 * 60));
+        const h = Math.floor(durMinutesTotal / 60);
+        const m = durMinutesTotal % 60;
+
+        const originPort = fromIdle ? fromIdle.portName : resolvePortName(voyagePings[0].LAT, voyagePings[0].LON);
+        const destPort = toIdle ? toIdle.portName : resolvePortName(voyagePings[voyagePings.length - 1].LAT, voyagePings[voyagePings.length - 1].LON);
+
+        const depDiskSet = fromIdle ? getDisk1Set(fromIdle.anchorCell) : new Set();
+        const arrDiskSet = toIdle ? getDisk1Set(toIdle.anchorCell) : new Set();
+
+        // Build rich H3 metadata objects for every traversed hexagon
+        const richH3Path = orderedPathCells.map((cell, idx) => {
+          let centroid = [0, 0];
+          let boundary = [];
+          try {
+            if (typeof h3 !== 'undefined' && h3.cellToLatLng) centroid = h3.cellToLatLng(cell);
+            if (typeof h3 !== 'undefined' && h3.cellToBoundary) boundary = h3.cellToBoundary(cell);
+          } catch(e) {}
+
+          const stats = cellPingMap.get(cell) || { pings: [], sogSum: 0, firstPingIdx: -1 };
+          const pCount = stats.pings.length;
+          const cellAvgSog = pCount > 0 ? (stats.sogSum / pCount).toFixed(1) : avgSog;
+          const firstTime = stats.pings[0] ? (stats.pings[0].DateTime.split('T')[1]?.replace('Z', ' UTC') || stats.pings[0].DateTime) : '';
+
+          const isDepIdle = depDiskSet.has(cell);
+          const isArrIdle = arrDiskSet.has(cell);
+
+          return {
+            cell: cell,
+            seq: idx + 1,
+            lat: centroid[0] || 0,
+            lon: centroid[1] || 0,
+            boundary: boundary,
+            pingsCount: pCount,
+            avgSog: parseFloat(cellAvgSog),
+            firstPingIdx: stats.firstPingIdx >= 0 ? stats.firstPingIdx : 0,
+            firstPingTime: firstTime,
+            isDepartureIdle: isDepIdle,
+            isArrivalIdle: isArrIdle,
+            zoneType: isDepIdle ? 'DEPARTURE_IDLE' : (isArrIdle ? 'ARRIVAL_IDLE' : 'TRANSIT')
+          };
+        });
+
+        // 1-Ring Mooring Disk Hexagons
+        const departureIdleDisk = fromIdle ? Array.from(depDiskSet).map(cell => {
+          let boundary = [];
+          try { if (typeof h3 !== 'undefined' && h3.cellToBoundary) boundary = h3.cellToBoundary(cell); } catch(e) {}
+          return { cell, boundary, durMin: fromIdle.durationMin, portName: fromIdle.portName };
+        }) : [];
+
+        const arrivalIdleDisk = toIdle ? Array.from(arrDiskSet).map(cell => {
+          let boundary = [];
+          try { if (typeof h3 !== 'undefined' && h3.cellToBoundary) boundary = h3.cellToBoundary(cell); } catch(e) {}
+          return { cell, boundary, durMin: toIdle.durationMin, portName: toIdle.portName };
+        }) : [];
+
+        return {
+          voyageId: `VOY-${String(voyNum).padStart(2, '0')}`,
+          voyageNumber: voyNum,
+          pings: voyagePings,
+          startIdx,
+          endIdx,
+          origin: originPort,
+          destination: destPort,
+          departureTime: depTime,
+          arrivalTime: arrTime,
+          durationFormatted: `${h}h ${m}m`,
+          durationHours: parseFloat(durHours),
+          totalDistanceNm: parseFloat(totalDistNm.toFixed(1)),
+          avgSog: parseFloat(avgSog),
+          maxSog: parseFloat(maxSog),
+          h3Path: richH3Path,
+          h3PathCells: orderedPathCells,
+          departureIdleDisk: departureIdleDisk,
+          arrivalIdleDisk: arrivalIdleDisk,
+          fromIdle: fromIdle,
+          toIdle: toIdle,
+          vesselName: voyagePings[0].Name || 'VESSEL VOYAGER',
+          imo: voyagePings[0].IMO || 'IMO 9876543'
+        };
+      }
+
+      // Case A: Multiple Idle Intervals Detected
+      if (idleIntervals.length >= 2) {
+        let voyCount = 1;
+        // Check if there is underway travel before first idle
+        if (idleIntervals[0].startIndex > 10) {
+          const preVoyage = buildVoyage(null, idleIntervals[0], 0, idleIntervals[0].startIndex, voyCount++);
+          if (preVoyage && preVoyage.totalDistanceNm > 5.0) voyages.push(preVoyage);
+        }
+
+        // Voyages strictly between consecutive idle events
+        for (let k = 0; k < idleIntervals.length - 1; k++) {
+          const fromIdle = idleIntervals[k];
+          const toIdle = idleIntervals[k + 1];
+          const transitStart = fromIdle.endIndex;
+          const transitEnd = toIdle.startIndex;
+
+          const voy = buildVoyage(fromIdle, toIdle, transitStart, transitEnd, voyCount++);
+          if (voy) voyages.push(voy);
+        }
+
+        // Check if underway travel after last idle
+        const lastIdle = idleIntervals[idleIntervals.length - 1];
+        if (lastIdle.endIndex < enriched.length - 10) {
+          const postVoyage = buildVoyage(lastIdle, null, lastIdle.endIndex, enriched.length - 1, voyCount++);
+          if (postVoyage && postVoyage.totalDistanceNm > 5.0) voyages.push(postVoyage);
+        }
+      } 
+      // Case B: Single idle or no long idle periods (single full transit corridor)
+      else {
+        const fullVoyage = buildVoyage(
+          idleIntervals[0] || null,
+          null,
+          0,
+          pings.length - 1,
+          1
+        );
+        if (fullVoyage) voyages.push(fullVoyage);
+      }
+
+      return voyages;
+    }
+
+    /* --------------------------------------------------------------------------
+       3. UI Rendering: Voyages Directory vs Cockpit Window
+       -------------------------------------------------------------------------- */
+    function renderVoyagesDirectory(voyages) {
+      const container = document.getElementById('voyages-cards-grid');
+      container.innerHTML = '';
+
+      if (!voyages || !voyages.length) {
+        container.innerHTML = `
+          <div class="col-span-full p-8 text-center text-slate-500 font-mono text-xs tactical-glass-card rounded-xl">
+            No active voyages segmented in this file. Try loading a dataset with moving AIS telemetry.
+          </div>
+        `;
+        return;
+      }
+
+      // Compute aggregate stats across all voyages
+      const totalDist = voyages.reduce((s, v) => s + v.totalDistanceNm, 0).toFixed(1);
+      const totalUnderway = voyages.reduce((s, v) => s + v.durationHours, 0).toFixed(1);
+
+      document.getElementById('stat-total-voyages').textContent = voyages.length;
+      document.getElementById('stat-total-distance').textContent = `${parseFloat(totalDist).toLocaleString()} NM`;
+      document.getElementById('stat-total-underway-hrs').textContent = `${parseFloat(totalUnderway).toLocaleString()} hrs`;
+      document.getElementById('voyages-count-pill').textContent = voyages.length;
+      document.getElementById('back-voyages-count').textContent = voyages.length;
+
+      // Populate Quick Voyage Dropdown
+      const selectActiveVoy = document.getElementById('select-active-voyage');
+      selectActiveVoy.innerHTML = '';
+      voyages.forEach((v, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.className = 'bg-[#0D1117] text-white';
+        opt.textContent = `${v.voyageId}: ${v.origin} → ${v.destination} (${v.totalDistanceNm} NM)`;
+        selectActiveVoy.appendChild(opt);
+      });
+
+      // Render individual Voyage Cards
+      voyages.forEach((voy, idx) => {
+        const card = document.createElement('div');
+        card.className = 'voyage-card p-4 rounded-xl flex flex-col justify-between gap-3';
+        card.innerHTML = `
+          <!-- Card Header -->
+          <div class="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs px-2 py-0.5 rounded bg-[#1164AF]/20 text-[#38bdf8] font-bold border border-[#1164AF]/40">${voy.voyageId}</span>
+              <span class="font-mono text-[11px] text-emerald-400 flex items-center gap-1 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> COMPLETED
+              </span>
+            </div>
+            <span class="font-mono text-xs text-slate-400">${voy.pings.length.toLocaleString()} pings</span>
+          </div>
+
+          <!-- Route Path Origin -> Destination -->
+          <div class="flex flex-col gap-1 my-1">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-emerald-400">trip_origin</span>
+              <span class="font-bold text-white text-sm tracking-wide">${escapeHtml(voy.origin)}</span>
+            </div>
+            <div class="h-4 border-l border-dashed border-white/20 ml-2 my-0.5"></div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-[#38bdf8]">location_on</span>
+              <span class="font-bold text-white text-sm tracking-wide">${escapeHtml(voy.destination)}</span>
+            </div>
+          </div>
+
+          <!-- Metric Badges -->
+          <div class="grid grid-cols-3 gap-2 py-2 px-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06] font-mono text-[11px]">
+            <div>
+              <span class="text-slate-400 block text-[9px] uppercase">DISTANCE</span>
+              <strong class="text-white">${voy.totalDistanceNm} NM</strong>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[9px] uppercase">DURATION</span>
+              <strong class="text-emerald-400">${voy.durationFormatted}</strong>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[9px] uppercase">AVG SOG</span>
+              <strong class="text-[#38bdf8]">${voy.avgSog} kts</strong>
+            </div>
+          </div>
+
+          <!-- H3 Res 8 Hex Cell Summary & Idle Dwells -->
+          <div class="flex flex-col gap-1 text-[10px] font-mono text-slate-400 pt-1 border-t border-white/[0.06]">
+            <div class="flex justify-between items-center">
+              <span>Connected H3 Res 8 Path:</span>
+              <span class="text-[#38bdf8] font-bold">${voy.h3Path ? voy.h3Path.length : voy.h3PathCells.length} Hex Cells</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Origin Idle Dwell:</span>
+              <span class="text-amber-400 font-semibold">${voy.fromIdle ? voy.fromIdle.durMin + ' min' : 'Initial Depart'}</span>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="pt-2">
+            <button type="button" class="w-full py-2 px-3 rounded-lg bg-white/[0.06] hover:bg-[#1164AF] text-white hover:text-white font-mono text-xs font-bold transition flex items-center justify-center gap-1.5 border border-white/10 shadow-sm">
+              <span class="material-symbols-outlined text-[16px]">radar</span>
+              <span>Inspect Telemetry &amp; Path &rarr;</span>
+            </button>
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          openVoyageCockpit(voy);
+        });
+
+        container.appendChild(card);
       });
     }
+
+    function openVoyageCockpit(voy) {
+      if (!voy) return;
+      currentVoyage = voy;
+
+      // Switch sub-view
+      document.getElementById('subview-voyages-directory').classList.add('hidden');
+      document.getElementById('subview-voyage-cockpit').classList.remove('hidden');
+      document.getElementById('subview-voyage-cockpit').classList.add('flex');
+
+      document.getElementById('btn-mode-directory').classList.remove('bg-white/10', 'text-white');
+      document.getElementById('btn-mode-directory').classList.add('text-slate-400');
+      document.getElementById('btn-mode-cockpit').classList.add('bg-white/10', 'text-white');
+      document.getElementById('btn-mode-cockpit').classList.remove('text-slate-400');
+
+      activeTelemetrySubView = 'cockpit';
+
+      // Update Cockpit Identity Headers
+      const hexCount = voy.h3Path ? voy.h3Path.length : voy.h3PathCells.length;
+      document.getElementById('cockpit-voyage-title').textContent = `${voy.voyageId}: ${voy.origin.toUpperCase()} → ${voy.destination.toUpperCase()}`;
+      document.getElementById('cockpit-voyage-h3-stats').textContent = `${hexCount} Connected H3 Res 8 Hexagons (${voy.totalDistanceNm} NM)`;
+      document.getElementById('cockpit-dep-time').textContent = voy.departureTime.replace('T', ' ').replace('Z', ' UTC');
+      document.getElementById('cockpit-arr-time').textContent = voy.arrivalTime.replace('T', ' ').replace('Z', ' UTC');
+      document.getElementById('cockpit-dur-tag').textContent = voy.durationFormatted;
+
+      // Sync active voyage dropdown
+      const selectActiveVoy = document.getElementById('select-active-voyage');
+      const voyIndex = detectedVoyages.findIndex(v => v.voyageId === voy.voyageId);
+      if (voyIndex >= 0) selectActiveVoy.value = voyIndex;
+
+      // Load voyage pings into interactive map and scrubber
+      loadTelemetryData(voy.pings, voy.voyageId, voy);
+
+      // Invalidate map size and fit to H3 voyage bounds
+      setTimeout(() => {
+        if (map && map.invalidateSize) {
+          map.invalidateSize({ pan: false });
+          if (h3VoyageBounds) map.fitBounds(h3VoyageBounds, { padding: [40, 40], maxZoom: 13 });
+        }
+      }, 120);
+    }
+
+    function returnToVoyagesDirectory() {
+      document.getElementById('subview-voyage-cockpit').classList.add('hidden');
+      document.getElementById('subview-voyage-cockpit').classList.remove('flex');
+      document.getElementById('subview-voyages-directory').classList.remove('hidden');
+
+      document.getElementById('btn-mode-cockpit').classList.remove('bg-white/10', 'text-white');
+      document.getElementById('btn-mode-cockpit').classList.add('text-slate-400');
+      document.getElementById('btn-mode-directory').classList.add('bg-white/10', 'text-white');
+      document.getElementById('btn-mode-directory').classList.remove('text-slate-400');
+
+      activeTelemetrySubView = 'directory';
+      pausePlayback();
+    }
+
+    document.getElementById('btn-cockpit-back').addEventListener('click', returnToVoyagesDirectory);
+    document.getElementById('btn-mode-directory').addEventListener('click', returnToVoyagesDirectory);
+    document.getElementById('btn-mode-cockpit').addEventListener('click', () => {
+      if (currentVoyage) openVoyageCockpit(currentVoyage);
+      else if (detectedVoyages.length) openVoyageCockpit(detectedVoyages[0]);
+    });
+
+    document.getElementById('select-active-voyage').addEventListener('change', (e) => {
+      const idx = parseInt(e.target.value, 10);
+      if (detectedVoyages[idx]) {
+        openVoyageCockpit(detectedVoyages[idx]);
+      }
+    });
+
+    /* --------------------------------------------------------------------------
+       4. Multi-View Navigation (Switching Views while keeping Shell Locked)
+       -------------------------------------------------------------------------- */
+    const navItems = document.querySelectorAll('.sidebar-nav-item');
+    const viewPanels = document.querySelectorAll('.view-panel');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const targetView = item.dataset.view;
+        if (!targetView) return;
+
+        navItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        viewPanels.forEach(p => p.classList.add('hidden'));
+        const activePanel = document.getElementById(`view-${targetView}`);
+        if (activePanel) {
+          activePanel.classList.remove('hidden');
+        }
+
+        // When switching back to Voyage Telemetry, invalidate map size smoothly
+        if (targetView === 'voyage-telemetry' && map && activeTelemetrySubView === 'cockpit') {
+          setTimeout(() => {
+            map.invalidateSize({ pan: false });
+          }, 100);
+        }
+      });
+    });
+
+    /* --------------------------------------------------------------------------
+       5. Leaflet GIS Initialization (Zero-UI API Key Exposure)
+       -------------------------------------------------------------------------- */
+    function initMap() {
+      if (map) return;
+
+      const initialCenter = [34.5, 129.8]; // Tsushima corridor
+      map = L.map('map', {
+        center: initialCenter,
+        zoom: 7,
+        zoomControl: false,
+        attributionControl: false
+      });
+
+      L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+      // Centralized MapConfig factory (Zero-UI Key Exposure)
+      if (window.MapConfig) {
+        baseLayers = window.MapConfig.createCompositeLayers();
+        if (baseLayers[activeBasemapKey]) {
+          baseLayers[activeBasemapKey].addTo(map);
+        }
+      } else {
+        baseLayers['dark'] = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          maxZoom: 19, subdomains: 'abcd'
+        }).addTo(map);
+      }
+
+      // Initialize Dedicated Layer Groups for H3 and Trajectory
+      h3HexLayerGroup = L.layerGroup().addTo(map);
+      h3IdleClustersLayerGroup = L.layerGroup().addTo(map);
+      h3LabelsLayerGroup = L.layerGroup(); // off by default
+      h3ActiveCellLayerGroup = L.layerGroup().addTo(map);
+
+      // Layer Toggles
+      const toggleHex = document.getElementById('toggle-h3-hex-layer');
+      if (toggleHex) {
+        toggleHex.addEventListener('change', (e) => {
+          if (e.target.checked) map.addLayer(h3HexLayerGroup);
+          else map.removeLayer(h3HexLayerGroup);
+        });
+      }
+
+      const toggleIdle = document.getElementById('toggle-idle-disks');
+      if (toggleIdle) {
+        toggleIdle.addEventListener('change', (e) => {
+          if (e.target.checked) map.addLayer(h3IdleClustersLayerGroup);
+          else map.removeLayer(h3IdleClustersLayerGroup);
+        });
+      }
+
+      const toggleCenter = document.getElementById('toggle-centerline');
+      if (toggleCenter) {
+        toggleCenter.addEventListener('change', (e) => {
+          if (trajectoryLine) {
+            if (e.target.checked) map.addLayer(trajectoryLine);
+            else map.removeLayer(trajectoryLine);
+          }
+        });
+      }
+
+      const toggleLabels = document.getElementById('toggle-cell-labels');
+      if (toggleLabels) {
+        toggleLabels.addEventListener('change', (e) => {
+          if (e.target.checked) map.addLayer(h3LabelsLayerGroup);
+          else map.removeLayer(h3LabelsLayerGroup);
+        });
+      }
+
+      const btnFit = document.getElementById('btn-map-recenter');
+      if (btnFit) {
+        btnFit.addEventListener('click', () => {
+          if (h3VoyageBounds && map) {
+            map.fitBounds(h3VoyageBounds, { padding: [40, 40], maxZoom: 13 });
+          }
+        });
+      }
+
+      // ResizeObserver to prevent dynamic resize layout feedback loops (RCA 1)
+      const mapEl = document.getElementById('map');
+      if (mapEl && window.ResizeObserver) {
+        let resizeFrame = null;
+        const ro = new ResizeObserver(() => {
+          if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
+          resizeFrame = requestAnimationFrame(() => {
+            if (map && map.invalidateSize) {
+              map.invalidateSize({ pan: false });
+            }
+            resizeFrame = null;
+          });
+        });
+        ro.observe(mapEl);
+      }
+    }
+
+    // Basemap Switcher (Dark / Light / Voyager)
+    document.querySelectorAll('.basemap-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const theme = btn.dataset.theme;
+        if (!theme || !baseLayers[theme]) return;
+
+        document.querySelectorAll('.basemap-toggle').forEach(b => b.classList.remove('active', 'bg-white/10', 'text-white'));
+        document.querySelectorAll('.basemap-toggle').forEach(b => b.classList.add('text-slate-400'));
+        btn.classList.add('active', 'bg-white/10', 'text-white');
+        btn.classList.remove('text-slate-400');
+
+        if (baseLayers[activeBasemapKey]) map.removeLayer(baseLayers[activeBasemapKey]);
+        baseLayers[theme].addTo(map);
+        activeBasemapKey = theme;
+      });
+    });
+
+    /* --------------------------------------------------------------------------
+       6. Telemetry Playback Engine (Scrubber, Heading, Speed)
+       -------------------------------------------------------------------------- */
+    function loadTelemetryData(pings, sourceName, voyageData) {
+      if (!pings || !pings.length) return;
+
+      currentPings = pings;
+      playIndex = 0;
+      pausePlayback();
+
+      // Extract vessel metadata
+      const first = pings[0];
+      const vesselName = first.Name || 'VESSEL VOYAGER';
+      const vesselImo = first.IMO || 'IMO 9876543';
+
+      document.getElementById('vessel-name-display').textContent = vesselName;
+      document.getElementById('vessel-imo-display').textContent = vesselImo;
+      document.getElementById('telemetry-record-count').textContent = `${pings.length.toLocaleString()} Pings in Voyage`;
+
+      // Slider bounds
+      const slider = document.getElementById('playback-slider');
+      slider.min = 0;
+      slider.max = pings.length - 1;
+      slider.value = 0;
+
+      // Populate raw stream table
+      renderTelemetryTable(pings);
+
+      // Render GIS Trajectory & Connected H3 Res 8 Hexagons
+      renderTrajectoryOnMap(pings, voyageData);
+
+      // Update Top HUD
+      updateTelemetryPlaybackFrame(0);
+    }
+
+    function renderTrajectoryOnMap(pings, voyageData) {
+      if (!map) initMap();
+
+      // Clear existing layers
+      if (trajectoryLine) map.removeLayer(trajectoryLine);
+      if (vesselMarker) map.removeLayer(vesselMarker);
+      waypointMarkers.forEach(m => map.removeLayer(m));
+      waypointMarkers = [];
+      h3HexLayerGroup.clearLayers();
+      h3IdleClustersLayerGroup.clearLayers();
+      h3LabelsLayerGroup.clearLayers();
+      h3ActiveCellLayerGroup.clearLayers();
+      h3PolyMap.clear();
+
+      const latlngs = pings.map(p => [p.LAT, p.LON]);
+
+      const h3Path = voyageData?.h3Path || [];
+      const departureIdleDisk = voyageData?.departureIdleDisk || [];
+      const arrivalIdleDisk = voyageData?.arrivalIdleDisk || [];
+
+      // 1. Render Traversed H3 Res 8 Hexagons along the path
+      h3Path.forEach(cellObj => {
+        const boundary = cellObj.boundary;
+        if (!boundary || boundary.length === 0) return;
+
+        let strokeColor = '#00f0ff';
+        let fillColor = '#0284c7';
+        let fillOpacity = 0.22;
+        let weight = 1.8;
+        let dashArray = null;
+
+        if (cellObj.isDepartureIdle) {
+          strokeColor = '#f59e0b';
+          fillColor = '#d97706';
+          fillOpacity = 0.28;
+          dashArray = '3, 3';
+          weight = 2.0;
+        } else if (cellObj.isArrivalIdle) {
+          strokeColor = '#10b981';
+          fillColor = '#059669';
+          fillOpacity = 0.28;
+          dashArray = '3, 3';
+          weight = 2.0;
+        }
+
+        const defaultStyle = {
+          color: strokeColor,
+          weight: weight,
+          fillColor: fillColor,
+          fillOpacity: fillOpacity,
+          dashArray: dashArray
+        };
+
+        const poly = L.polygon(boundary, defaultStyle);
+
+        // High-density Palantir Foundry Tactical Tooltip
+        const zoneLabel = cellObj.isDepartureIdle ? 'DEPARTURE MOORING DWELL' : (cellObj.isArrivalIdle ? 'ARRIVAL MOORING DWELL' : 'TRANSIT CORRIDOR');
+        const zoneColor = cellObj.isDepartureIdle ? '#f59e0b' : (cellObj.isArrivalIdle ? '#10b981' : '#38bdf8');
+
+        const tooltipHtml = `
+          <div class="font-mono text-xs">
+            <div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between gap-3">
+              <span>H3 RES 8 HEX #${cellObj.seq} / ${h3Path.length}</span>
+              <span style="color: ${zoneColor}; font-weight: bold;">${cellObj.zoneType}</span>
+            </div>
+            <div class="text-white font-bold text-xs mt-0.5">${cellObj.cell}</div>
+            <div class="grid grid-cols-2 gap-x-3 gap-y-1 mt-1.5 pt-1.5 border-t border-white/10 text-[10px]">
+              <div><span class="text-slate-400">ZONE:</span> <strong style="color: ${zoneColor};">${zoneLabel}</strong></div>
+              <div><span class="text-slate-400">AVG SOG:</span> <strong class="text-[#38bdf8]">${cellObj.avgSog} kts</strong></div>
+              <div><span class="text-slate-400">PINGS:</span> <strong class="text-white">${cellObj.pingsCount}</strong></div>
+              <div><span class="text-slate-400">TIME:</span> <strong class="text-slate-200">${cellObj.firstPingTime || '--'}</strong></div>
+            </div>
+            <div class="text-[9px] text-slate-500 mt-1 flex justify-between items-center">
+              <span>${cellObj.lat.toFixed(4)}°N, ${cellObj.lon.toFixed(4)}°E</span>
+              <span class="text-[#38bdf8] font-semibold">Click to seek &rarr;</span>
+            </div>
+          </div>
+        `;
+
+        poly.bindTooltip(tooltipHtml, {
+          sticky: true,
+          className: 'tactical-tooltip',
+          direction: 'top',
+          offset: [0, -10]
+        });
+
+        poly.on('mouseover', () => {
+          poly.setStyle({ weight: 3.0, color: '#ffffff', fillOpacity: 0.50 });
+        });
+        poly.on('mouseout', () => {
+          poly.setStyle(defaultStyle);
+        });
+        poly.on('click', () => {
+          seekToFrame(cellObj.firstPingIdx);
+        });
+
+        h3HexLayerGroup.addLayer(poly);
+        h3PolyMap.set(cellObj.cell, { poly, defaultStyle, cellObj });
+
+        // Sequence number label at centroid (shown when # Labels is enabled)
+        if (cellObj.seq % 5 === 1 || cellObj.seq === h3Path.length) {
+          const labelMarker = L.marker([cellObj.lat, cellObj.lon], {
+            icon: L.divIcon({
+              className: 'h3-hex-label',
+              html: `#${cellObj.seq}`,
+              iconSize: [30, 16],
+              iconAnchor: [15, 8]
+            })
+          });
+          h3LabelsLayerGroup.addLayer(labelMarker);
+        }
+      });
+
+      // 2. Render Idle Mooring Clusters (1-Ring Disks)
+      departureIdleDisk.forEach(d => {
+        if (d.boundary && d.boundary.length) {
+          const diskPoly = L.polygon(d.boundary, {
+            color: '#f59e0b',
+            weight: 1.5,
+            dashArray: '4, 4',
+            fillColor: '#f59e0b',
+            fillOpacity: 0.15
+          }).bindTooltip(`Departure Mooring Dwell: ${d.durMin} mins (${escapeHtml(d.portName)})`, {
+            className: 'tactical-tooltip', sticky: true
+          });
+          h3IdleClustersLayerGroup.addLayer(diskPoly);
+        }
+      });
+
+      arrivalIdleDisk.forEach(d => {
+        if (d.boundary && d.boundary.length) {
+          const diskPoly = L.polygon(d.boundary, {
+            color: '#10b981',
+            weight: 1.5,
+            dashArray: '4, 4',
+            fillColor: '#10b981',
+            fillOpacity: 0.15
+          }).bindTooltip(`Arrival Mooring Dwell: ${d.durMin} mins (${escapeHtml(d.portName)})`, {
+            className: 'tactical-tooltip', sticky: true
+          });
+          h3IdleClustersLayerGroup.addLayer(diskPoly);
+        }
+      });
+
+      // 3. Centerline Trajectory Line
+      trajectoryLine = L.polyline(latlngs, {
+        color: '#00f0ff',
+        weight: 2.5,
+        opacity: 0.75,
+        smoothFactor: 1.0
+      });
+      const toggleCenterline = document.getElementById('toggle-centerline');
+      if (!toggleCenterline || toggleCenterline.checked) {
+        trajectoryLine.addTo(map);
+      }
+
+      // 4. Start & End Waypoint Pins
+      const startPt = latlngs[0];
+      const endPt = latlngs[latlngs.length - 1];
+
+      const startMarker = L.circleMarker(startPt, {
+        radius: 6,
+        color: '#f59e0b',
+        fillColor: '#ffffff',
+        fillOpacity: 1,
+        weight: 2.5
+      }).bindTooltip(`Departure: ${escapeHtml(currentVoyage ? currentVoyage.origin : 'Start')}`, { className: 'tactical-tooltip' }).addTo(map);
+
+      const endMarker = L.circleMarker(endPt, {
+        radius: 6,
+        color: '#10b981',
+        fillColor: '#ffffff',
+        fillOpacity: 1,
+        weight: 2.5
+      }).bindTooltip(`Arrival: ${escapeHtml(currentVoyage ? currentVoyage.destination : 'Destination')}`, { className: 'tactical-tooltip' }).addTo(map);
+
+      waypointMarkers.push(startMarker, endMarker);
+
+      // 5. Oriented Vessel Marker
+      const vesselIcon = L.divIcon({
+        className: 'vessel-live-icon',
+        html: `
+          <div style="transform: rotate(${pings[0].Heading || 0}deg); transition: transform 0.2s ease;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <polygon points="12,2 20,20 12,16 4,20" fill="#38bdf8" stroke="#ffffff" stroke-width="2"/>
+            </svg>
+          </div>
+        `,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      });
+
+      vesselMarker = L.marker(startPt, { icon: vesselIcon }).addTo(map);
+
+      // 6. Calculate Bounding Box covering all pings and hex boundaries
+      const allPts = [...latlngs];
+      h3Path.forEach(h => {
+        if (h.boundary) h.boundary.forEach(pt => allPts.push(pt));
+      });
+      h3VoyageBounds = L.latLngBounds(allPts);
+      map.fitBounds(h3VoyageBounds, { padding: [40, 40], maxZoom: 13 });
+
+      // Update Bounding Box text
+      document.getElementById('stat-bbox').textContent = 
+        `${h3VoyageBounds.getSouth().toFixed(2)}°N - ${h3VoyageBounds.getNorth().toFixed(2)}°N, ${h3VoyageBounds.getWest().toFixed(2)}°E - ${h3VoyageBounds.getEast().toFixed(2)}°E`;
+
+      // Speed stats
+      const speeds = pings.map(p => p.SOG).filter(s => !isNaN(s));
+      const avgSpeed = (speeds.reduce((a, b) => a + b, 0) / speeds.length).toFixed(1);
+      document.getElementById('stat-avg-speed').textContent = `${avgSpeed} kts`;
+    }
+
+    function renderTelemetryTable(pings) {
+      const tbody = document.getElementById('telemetry-table-body');
+      tbody.innerHTML = '';
+
+      const sampleLimit = Math.min(pings.length, 120);
+      for (let i = 0; i < sampleLimit; i++) {
+        const p = pings[i];
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-white/[0.04] cursor-pointer transition';
+        tr.id = `ping-row-${i}`;
+        tr.innerHTML = `
+          <td class="py-1.5 px-2.5 text-slate-400">${escapeHtml(p.DateTime ? p.DateTime.replace('T', ' ').replace('Z', '') : '--')}</td>
+          <td class="py-1.5 px-2 text-slate-300">${p.LAT.toFixed(4)}</td>
+          <td class="py-1.5 px-2 text-slate-300">${p.LON.toFixed(4)}</td>
+          <td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">${p.SOG.toFixed(1)}</td>
+          <td class="py-1.5 px-2 text-right text-slate-400">${p.COG.toFixed(0)}°</td>
+          <td class="py-1.5 px-2 text-right text-white">${p.Heading ? p.Heading.toFixed(0) : '--'}°</td>
+        `;
+        tr.addEventListener('click', () => {
+          seekToFrame(i);
+        });
+        tbody.appendChild(tr);
+      }
+    }
+
+    function updateTelemetryPlaybackFrame(index) {
+      if (!currentPings || index >= currentPings.length) return;
+      playIndex = index;
+
+      const p = currentPings[index];
+      const slider = document.getElementById('playback-slider');
+      slider.value = index;
+
+      // Update Map Marker position & rotation
+      if (vesselMarker) {
+        vesselMarker.setLatLng([p.LAT, p.LON]);
+        const heading = p.Heading !== undefined ? p.Heading : p.COG;
+        const iconDiv = vesselMarker.getElement();
+        if (iconDiv) {
+          const innerSvg = iconDiv.querySelector('div');
+          if (innerSvg) innerSvg.style.transform = `rotate(${heading}deg)`;
+        }
+      }
+
+      // Update Active H3 Res 8 Hex Cell
+      const cellId = p.h3Cell || (typeof getH3Cell === 'function' ? getH3Cell(p.LAT, p.LON) : (typeof h3 !== 'undefined' && h3.latLngToCell ? h3.latLngToCell(p.LAT, p.LON, 8) : null));
+      let cellObj = null;
+      if (currentVoyage && currentVoyage.h3Path) {
+        cellObj = currentVoyage.h3Path.find(c => c.cell === cellId);
+      }
+
+      // Render glowing active hex polygon
+      h3ActiveCellLayerGroup.clearLayers();
+      if (cellId && typeof h3 !== 'undefined' && h3.cellToBoundary) {
+        try {
+          const boundary = h3.cellToBoundary(cellId);
+          const activeHexPoly = L.polygon(boundary, {
+            color: '#ffffff',
+            weight: 3.5,
+            className: 'h3-active-cell',
+            fillColor: '#00f0ff',
+            fillOpacity: 0.60
+          });
+          h3ActiveCellLayerGroup.addLayer(activeHexPoly);
+        } catch(e) {}
+      }
+
+      // Update Map Top Left HUD
+      document.getElementById('map-hdg-indicator').textContent = `${(p.Heading || p.COG).toFixed(0)}° T`;
+      document.getElementById('map-lat-indicator').textContent = p.LAT.toFixed(4);
+      document.getElementById('map-lon-indicator').textContent = p.LON.toFixed(4);
+      document.getElementById('map-active-h3-indicator').textContent = cellId || '--';
+      if (cellObj && currentVoyage && currentVoyage.h3Path) {
+        document.getElementById('map-cell-step-indicator').textContent = `(#${cellObj.seq} / ${currentVoyage.h3Path.length})`;
+      } else {
+        document.getElementById('map-cell-step-indicator').textContent = '';
+      }
+
+      // Update Scrubber Readouts
+      document.getElementById('playback-step-info').textContent = `Ping ${index + 1} / ${currentPings.length}`;
+      document.getElementById('playback-sog-display').textContent = `${p.SOG.toFixed(1)} kts`;
+      const timeStr = p.DateTime ? (p.DateTime.split('T')[1]?.replace('Z', ' UTC') || p.DateTime) : '--';
+      document.getElementById('playback-time-stamp').textContent = timeStr;
+      document.getElementById('telemetry-time-display').textContent = p.DateTime ? p.DateTime.replace('T', ' ') : '--';
+
+      // Update Top KPI Cards
+      document.getElementById('kpi-sog-val').textContent = `${p.SOG.toFixed(1)} kts`;
+      document.getElementById('kpi-cog-val').textContent = `/ ${(p.COG || 0).toFixed(0)}° TRUE`;
+      document.getElementById('kpi-hdg-val').textContent = `${(p.Heading || p.COG).toFixed(0)}°`;
+      document.getElementById('vessel-stat-pill').textContent = `${p.SOG.toFixed(1)} kts ${p.SOG > 0.5 ? 'UNDERWAY' : 'MOORED'}`;
+
+      // Highlight active row in table if visible
+      document.querySelectorAll('#telemetry-table-body tr').forEach(r => r.classList.remove('bg-white/[0.08]'));
+      const activeRow = document.getElementById(`ping-row-${index}`);
+      if (activeRow) {
+        activeRow.classList.add('bg-white/[0.08]');
+      }
+    }
+
+    function playLoop() {
+      if (!isPlaying) return;
+      playIndex += playSpeed;
+      if (playIndex >= currentPings.length) {
+        playIndex = 0; // loop
+      }
+      updateTelemetryPlaybackFrame(playIndex);
+      playTimer = setTimeout(playLoop, 200);
+    }
+
+    function togglePlay() {
+      if (isPlaying) {
+        pausePlayback();
+      } else {
+        startPlayback();
+      }
+    }
+
+    function startPlayback() {
+      if (!currentPings.length) return;
+      isPlaying = true;
+      document.getElementById('play-icon').textContent = 'pause';
+      playLoop();
+    }
+
+    function pausePlayback() {
+      isPlaying = false;
+      if (playTimer) clearTimeout(playTimer);
+      document.getElementById('play-icon').textContent = 'play_arrow';
+    }
+
+    function seekToFrame(index) {
+      pausePlayback();
+      updateTelemetryPlaybackFrame(index);
+    }
+
+    document.getElementById('playback-slider').addEventListener('input', (e) => {
+      seekToFrame(parseInt(e.target.value, 10));
+    });
+
+    document.getElementById('btn-play-pause').addEventListener('click', togglePlay);
+
+    const speedLevels = [1, 2, 5, 10];
+    let speedIdx = 2; // default 5x
+    document.getElementById('btn-speed-toggle').addEventListener('click', () => {
+      speedIdx = (speedIdx + 1) % speedLevels.length;
+      playSpeed = speedLevels[speedIdx];
+      document.getElementById('btn-speed-toggle').textContent = `Speed: ${playSpeed}x`;
+    });
+
+    /* --------------------------------------------------------------------------
+       7. File Ingestion: Local output/ files & Drag-and-Drop
+       -------------------------------------------------------------------------- */
+    async function fetchAndParseCsv(url, filename) {
+      try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const text = await resp.text();
+        processRawCsvText(text, filename);
+      } catch (err) {
+        console.warn(`Could not fetch ${url} directly:`, err.message);
+        loadDefaultSample();
+      }
+    }
+
+    function processRawCsvText(csvText, filename) {
+      Papa.parse(csvText, {
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: 'greedy',
+        complete: function(results) {
+          if (!results.data || !results.data.length) {
+            alert('No valid telemetry rows found in CSV.');
+            return;
+          }
+
+          // Normalize rows according to the 10-column contract
+          const cleanPings = results.data.map(row => ({
+            DateTime: row.DateTime || row.datetime || row.timestamp || '',
+            LAT: parseFloat(row.LAT || row.latitude || row.lat),
+            LON: parseFloat(row.LON || row.longitude || row.lon),
+            SOG: parseFloat(row.SOG || row.sog || 0),
+            COG: parseFloat(row.COG || row.cog || 0),
+            Heading: parseFloat(row.Heading || row.heading || row.COG || 0),
+            Name: row.Name || row.name || 'NEW CAMELLIA',
+            IMO: row.IMO || row.imo || 'IMO 9304497',
+            Type: row.Type || 60,
+            Status: row.Status || 0
+          })).filter(p => !isNaN(p.LAT) && !isNaN(p.LON) && p.LAT >= -90 && p.LAT <= 90);
+
+          if (cleanPings.length > 0) {
+            rawLoadedPings = cleanPings;
+            // Segment into voyages using H3 Res 8 and >= 30m Idle criteria
+            detectedVoyages = segmentPingsIntoVoyages(cleanPings);
+
+            renderVoyagesDirectory(detectedVoyages);
+
+            // If file has only 1 voyage, open cockpit directly.
+            // If multi-voyage file, stay in directory view so user can choose.
+            if (detectedVoyages.length === 1) {
+              openVoyageCockpit(detectedVoyages[0]);
+            } else {
+              returnToVoyagesDirectory();
+            }
+          } else {
+            alert('Parsed CSV did not contain valid latitude/longitude coordinates.');
+          }
+        }
+      });
+    }
+
+    // Select dropdown handler
+    document.getElementById('select-output-run').addEventListener('change', (e) => {
+      const selected = e.target.value;
+      fetchAndParseCsv(`output/${selected}`, selected);
+    });
+
+    // File picker upload
+    document.getElementById('file-picker-input').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        processRawCsvText(event.target.result, file.name);
+      };
+      reader.readAsText(file);
+    });
+
+    // CSV Download
+    document.getElementById('btn-export-csv').addEventListener('click', () => {
+      const dataToExport = currentPings.length ? currentPings : rawLoadedPings;
+      if (!dataToExport || !dataToExport.length) return;
+      const csv = Papa.unparse(dataToExport);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `telemetry_export_${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    /* --------------------------------------------------------------------------
+       8. Fallback Multi-Voyage Synthesis (Guarantees Instant Offline Load)
+       -------------------------------------------------------------------------- */
+    function loadDefaultSample() {
+      // Synthesize 2 round-trip voyages with 30-min port idle dwells in between
+      const sample = [];
+      let curTime = new Date('2026-10-26T12:00:00Z').getTime();
+
+      // Voyage 1: Busan -> Fukuoka
+      for (let i = 0; i <= 60; i++) {
+        const r = i / 60;
+        const lat = 35.1028 + (33.6064 - 35.1028) * r;
+        const lon = 129.0403 + (130.4181 - 129.0403) * r;
+        sample.push({
+          DateTime: new Date(curTime).toISOString(),
+          LAT: lat, LON: lon, SOG: 21.4, COG: 135.0, Heading: 135.0,
+          Name: 'NEW CAMELLIA', IMO: 'IMO 9304497', Type: 60, Status: 0
+        });
+        curTime += 5 * 60 * 1000;
+      }
+
+      // Idle at Fukuoka for 45 minutes (>= 30 mins)
+      for (let j = 0; j < 10; j++) {
+        sample.push({
+          DateTime: new Date(curTime).toISOString(),
+          LAT: 33.6064, LON: 130.4181, SOG: 0.1, COG: 0.0, Heading: 140.0,
+          Name: 'NEW CAMELLIA', IMO: 'IMO 9304497', Type: 60, Status: 5
+        });
+        curTime += 5 * 60 * 1000;
+      }
+
+      // Voyage 2: Fukuoka -> Busan
+      for (let i = 0; i <= 60; i++) {
+        const r = i / 60;
+        const lat = 33.6064 + (35.1028 - 33.6064) * r;
+        const lon = 130.4181 + (129.0403 - 130.4181) * r;
+        sample.push({
+          DateTime: new Date(curTime).toISOString(),
+          LAT: lat, LON: lon, SOG: 20.8, COG: 315.0, Heading: 315.0,
+          Name: 'NEW CAMELLIA', IMO: 'IMO 9304497', Type: 60, Status: 0
+        });
+        curTime += 5 * 60 * 1000;
+      }
+
+      rawLoadedPings = sample;
+      detectedVoyages = segmentPingsIntoVoyages(sample);
+      renderVoyagesDirectory(detectedVoyages);
+    }
+
+    /* --------------------------------------------------------------------------
+       9. Bootstrapping
+       -------------------------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      initMap();
+
+      // Load 30-day multi-voyage file by default
+      const defaultFilename = 'new_camellia_30days.csv';
+      fetchAndParseCsv(`output/${defaultFilename}`, defaultFilename);
+    });
   </script>
 </body>
 </html>

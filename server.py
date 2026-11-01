@@ -437,6 +437,8 @@ def serve_asia_ports_js():
 
 # Mount Static Assets & Pages
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+if os.path.exists(OUTPUT_DIR):
+    app.mount("/output", StaticFiles(directory=OUTPUT_DIR), name="output")
 
 
 @app.get("/")

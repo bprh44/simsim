@@ -1,0 +1,685 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_dashboard" name="shell-type">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Urbanist', 'Plus Jakarta Sans', sans-serif;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .voyage-card {
+      background: radial-gradient(120% 120% at 50% 0%, rgba(26, 32, 46, 0.6) 0%, rgba(13, 17, 23, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+    }
+    .voyage-card-subtle {
+      background: rgba(18, 22, 31, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+    }
+    .voyage-pill-active {
+      background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .split-flap-box {
+      background: linear-gradient(180deg, #131720 0%, #0c0f16 100%);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0,0,0,0.6);
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              ops: "#1164AF",
+              req: "#F8CE2F",
+              know: "#2A2E80",
+              plan: "#8A17AC",
+              assess: "#117B3D",
+              ai: "#6D4F28",
+              gov: "#BAB8B8"
+            },
+            voyage: {
+              bg: "#090B10",
+              surface: "#0D1117",
+              elevated: "#151A24",
+              border: "rgba(255, 255, 255, 0.08)",
+              accent: "#38bdf8",
+              emerald: "#10b981",
+              amber: "#f59e0b",
+              rose: "#f43f5e"
+            }
+          },
+          fontFamily: {
+            sans: ['Urbanist', 'Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            display: ['Space Grotesk', 'Urbanist', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#090B10] text-[#E2E8F0] antialiased select-none font-sans min-h-screen">
+<!-- Palantir Foundry Top Navigation / Global Shell Header -->
+<header class="fixed top-0 left-0 right-0 h-14 bg-[#090B10]/95 backdrop-blur-md z-50 flex items-center justify-between px-5 border-b border-white/[0.07]">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 py-1 px-2.5 bg-white/[0.04] border border-white/10 rounded-xl">
+<span class="material-symbols-outlined text-[#38bdf8] text-[18px]">hub</span>
+<span class="font-mono text-xs uppercase tracking-wider text-white font-bold">Palantir Foundry</span>
+</div>
+<div class="h-4 w-px bg-white/10"></div>
+<div class="flex items-center gap-1.5 text-xs">
+<span class="font-mono px-2 py-0.5 rounded-md bg-white/[0.04] text-slate-400 text-[11px]">ROOT</span>
+<span class="material-symbols-outlined text-slate-500 text-[13px]">chevron_right</span>
+<span class="font-mono text-slate-400 text-[11px]">MARITIME_OPS</span>
+<span class="material-symbols-outlined text-slate-500 text-[13px]">chevron_right</span>
+<span class="text-white font-semibold text-xs tracking-wide">VesselTelemetryCore_v2</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+<span class="font-mono text-[10px] uppercase font-bold tracking-wider">SYNCED: LIVE</span>
+</div>
+</div>
+<!-- Right Controls -->
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-white/[0.03] border border-white/10 px-3 py-1.5 rounded-xl gap-2 text-slate-400 hover:border-white/20 transition">
+<span class="material-symbols-outlined text-[16px]">search</span>
+<span class="text-xs font-mono tracking-wider text-slate-400">FIND OBJECT [IMO / CALLSIGN / UUID]</span>
+<kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-slate-300 ml-1">⌘K</kbd>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center p-2 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] text-slate-300 transition" title="Workshop Settings">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+<button class="flex items-center justify-center p-2 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] text-slate-300 transition" title="Audit Ledger">
+<span class="material-symbols-outlined text-[18px]">history_toggle_off</span>
+</button>
+<div class="h-4 w-px bg-white/10"></div>
+<div class="flex items-center gap-2.5 pl-1">
+<div class="text-right leading-tight">
+<div class="font-mono text-[11px] font-semibold text-slate-200">WATCH_OFFICER_04</div>
+<div class="font-mono text-[9px] text-slate-500 tracking-wider">LEVEL_3_CLEARANCE</div>
+</div>
+<div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#1164AF] to-[#38bdf8] flex items-center justify-center shadow-lg shadow-[#1164AF]/20 border border-white/20">
+<span class="material-symbols-outlined text-white text-[17px]">person</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Left Sidebar (Ontology Bindings & Navigation) -->
+<aside class="fixed left-0 top-14 bottom-0 w-64 bg-[#090B10]/95 border-r border-white/[0.07] z-40 flex flex-col justify-between backdrop-blur-md">
+<div class="flex flex-col p-3">
+<div class="px-3 py-2 mb-2 flex items-center justify-between border-b border-white/[0.06]">
+<span class="font-mono text-[10px] tracking-widest uppercase text-slate-500 font-semibold">ONTOLOGY BINDINGS</span>
+<span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[#1164AF]/20 text-[#38bdf8] font-semibold border border-[#1164AF]/30">v4.18</span>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.04] transition group" data-path="fleet-overview" href="#">
+<span class="flex items-center gap-2.5 text-sm font-medium">
+<span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white">directions_boat</span>
+<span class="">Fleet Overview</span>
+</span>
+<span class="font-mono text-[11px] text-slate-500">1,402</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.04] transition group" data-path="voyage-telemetry" href="#">
+<span class="flex items-center gap-2.5 text-sm font-medium">
+<span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white">radar</span>
+<span class="">Voyage Telemetry</span>
+</span>
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.04] transition group" data-path="geospatial-surveillance" href="#">
+<span class="flex items-center gap-2.5 text-sm font-medium">
+<span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white">explore</span>
+<span class="">Geospatial Radar</span>
+</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.04] transition group" data-path="anomaly-detection" href="#">
+<span class="flex items-center gap-2.5 text-sm font-medium">
+<span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white">warning</span>
+<span class="">Anomaly Queue</span>
+</span>
+<span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold">12</span>
+</a>
+<a class="flex items-center justify-between px-3 py-2 rounded-xl bg-white/[0.06] text-white border border-white/10 transition group shadow-sm" data-path="compliance-audit" href="#"><span class="flex items-center gap-2.5 text-sm font-semibold"><span class="material-symbols-outlined text-[18px] text-[#38bdf8]">verified</span><span class="">Compliance Audit</span></span><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#38bdf8] shadow-md shadow-[#38bdf8]/50 animate-pulse"></span></span></a>
+<a class="flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.04] transition group" data-path="scenario-simulation" href="#">
+<span class="flex items-center gap-2.5 text-sm font-medium">
+<span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white">schema</span>
+<span class="">Simulation Deck</span>
+</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Bottom Status Widget -->
+<div class="p-3 border-t border-white/[0.06] space-y-2">
+<div class="flex items-center justify-between text-[11px] font-mono">
+<span class="text-slate-500 uppercase tracking-wider">WORKSHOP ENGINE</span>
+<span class="text-emerald-400 font-medium flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> CONNECTED
+        </span>
+</div>
+<div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5 text-[11px] font-mono">
+<div class="flex justify-between text-slate-400">
+<span class="">LATENCY</span>
+<span class="text-slate-200">18ms</span>
+</div>
+<div class="flex justify-between text-slate-400">
+<span class="">GRAPH OBJECTS</span>
+<span class="text-slate-200">82.4K</span>
+</div>
+<div class="w-full bg-white/10 h-1 rounded-full overflow-hidden mt-1.5">
+<div class="bg-gradient-to-r from-[#1164AF] to-[#38bdf8] h-full w-3/4 rounded-full"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Viewport Canvas -->
+<div class="pl-64">
+<main class="pt-14 w-full min-h-screen bg-[#090B10] text-[#E2E8F0] p-5 pb-12"><div class="max-w-7xl mx-auto flex flex-col gap-6">
+<!-- Header: Minimalist Top Console Bar & Vessel Switcher -->
+<div class="flex flex-col gap-4 bg-surface-container-low/50 border border-white/[0.06] rounded-xl p-4 backdrop-blur">
+<div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 text-slate-400 font-body-sm">
+<span class="material-symbols-outlined text-[18px] text-primary">explore</span>
+<span class="hover:text-white transition">Voyages</span>
+<span class="text-outline">/</span>
+<span class="hover:text-white transition">Q1-2025</span>
+<span class="text-outline">/</span>
+<span class="text-white font-medium">Leg-02 Singapore Strait</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold tracking-wide">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          CLEARED · NOMINAL OPERATION
+        </span>
+</div>
+<div class="flex items-center gap-3 text-xs text-slate-400">
+<span class="font-mono">2025-02-28 04:12 UTC</span>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-white/10 text-white font-medium transition" id="btn-sync-telemetry">
+<span class="material-symbols-outlined text-[15px] text-primary">sync</span>
+<span class="">Sync Telemetry</span>
+</button>
+</div>
+</div>
+<!-- Vessel Tabs -->
+<div class="flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2.5 px-4 py-2 rounded-lg bg-surface-container border border-primary/40 text-white shadow-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-semibold text-sm tracking-wide">PACIFIC VOYAGER</span>
+<span class="text-xs text-slate-400 font-mono">IMO 9732104</span>
+<span class="px-2 py-0.5 rounded bg-tertiary-container/30 text-emerald-400 text-xs font-bold">24.2 Cleared</span>
+</button>
+<button class="flex items-center gap-2.5 px-4 py-2 rounded-lg bg-surface-container-lowest/60 border border-white/[0.04] text-slate-400 hover:text-white hover:bg-surface-container transition">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-medium text-sm">MT OCEAN RESOLUTE</span>
+<span class="text-xs text-slate-500 font-mono">IMO 9845129</span>
+<span class="px-2 py-0.5 rounded bg-error-container/40 text-error text-xs font-bold">70.5 Alert</span>
+</button>
+</div><div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary-container/20 border border-secondary/40 text-secondary text-xs font-mono font-medium tracking-wide uppercase shadow-sm"><span class="material-symbols-outlined text-[15px] text-secondary animate-pulse">verified_user</span><span class="">CURRENTLY AUDITING RISK DOSSIER</span></div>
+<div class="flex items-center gap-4 text-xs text-slate-400">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-tertiary">shield</span> Corridor: Eastbound TSS Lane
+        </span>
+<span class="flex items-center gap-1.5 text-emerald-400">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> AIS Stream Active
+        </span>
+</div>
+</div>
+</div>
+<!-- Row 1: 4 High-Hierarchy, Spacious Key Metric Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Card 1: Vessel Dossier -->
+<div class="bg-surface-container/90 border border-white/[0.06] rounded-xl p-5 flex flex-col justify-between shadow-sm hover:border-white/10 transition">
+<div>
+<div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+<span class="uppercase tracking-wider font-semibold font-mono text-[10px]">Vessel Dossier</span>
+<span class="px-2 py-0.5 rounded bg-primary-container/30 text-primary text-[11px] font-medium">LNG Carrier</span>
+</div>
+<h2 class="text-xl font-bold text-white tracking-tight">Pacific Voyager</h2>
+<p class="text-xs text-slate-400 mt-0.5 font-mono">IMO 9732104 · MMSI 563042000</p>
+</div>
+<div class="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-white/[0.06] text-xs">
+<div>
+<span class="text-slate-500 block text-[11px]">Flag &amp; Class</span>
+<span class="text-slate-200 font-medium">SG · Q-Flex</span>
+</div>
+<div>
+<span class="text-slate-500 block text-[11px]">Capacity</span>
+<span class="text-slate-200 font-medium">216k m³ / 118k DWT</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Risk Score -->
+<div class="bg-surface-container/90 border border-white/[0.06] rounded-xl p-5 flex flex-col justify-between shadow-sm hover:border-white/10 transition">
+<div>
+<div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+<span class="uppercase tracking-wider font-semibold font-mono text-[10px]">ICRS Claim Risk Score</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-semibold text-[11px]">CLEARED</span>
+</div>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="text-3xl font-extrabold text-emerald-400 font-mono tracking-tight">24.2</span>
+<span class="text-xs text-slate-500 font-mono">/ 100.0</span>
+</div>
+<div class="w-full bg-surface-container-highest/60 h-2 rounded-full overflow-hidden mt-3">
+<div class="bg-emerald-400 h-full rounded-full" style="width: 24.2%;"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-white/[0.06] mt-4">
+<span class="">Baseline Variance:</span>
+<span class="text-emerald-400 font-medium font-mono">-12.4 vs Baseline</span>
+</div>
+</div>
+<!-- Card 3: Underwriting Compliance -->
+<div class="bg-surface-container/90 border border-white/[0.06] rounded-xl p-5 flex flex-col justify-between shadow-sm hover:border-white/10 transition">
+<div>
+<div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+<span class="uppercase tracking-wider font-semibold font-mono text-[10px]">Underwriting Compliance</span>
+<span class="px-2 py-0.5 rounded bg-white/[0.04] text-slate-300 text-[11px]">In Full Force</span>
+</div>
+<div class="flex items-baseline gap-1 mt-2">
+<span class="text-3xl font-bold text-white tracking-tight">0</span>
+<span class="text-sm text-slate-400 font-medium ml-1.5">Clause Deviations</span>
+</div>
+<p class="text-xs text-emerald-400 font-medium mt-1.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">verified</span> Warranty Adherence 100%
+        </p>
+</div>
+<div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-white/[0.06] mt-4">
+<span class="">Security Classification:</span>
+<span class="text-slate-200 font-medium">Lloyd's Class A-1</span>
+</div>
+</div>
+<!-- Card 4: Telemetry Health -->
+<div class="bg-surface-container/90 border border-white/[0.06] rounded-xl p-5 flex flex-col justify-between shadow-sm hover:border-white/10 transition">
+<div>
+<div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+<span class="uppercase tracking-wider font-semibold font-mono text-[10px]">Sensor Health</span>
+<span class="text-emerald-400 text-[11px] font-medium flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 100% Online
+          </span>
+</div>
+<div class="mt-3 space-y-2 text-xs">
+<div class="flex justify-between items-center text-slate-300">
+<span class="text-slate-400">AIS Coverage Gap</span>
+<span class="font-mono font-medium text-emerald-400">0.0h (Continuous)</span>
+</div>
+<div class="flex justify-between items-center text-slate-300">
+<span class="text-slate-400">Draft Variance</span>
+<span class="font-mono font-medium text-slate-200">±0.0m (Manifest Match)</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-white/[0.06] mt-4">
+<span class="">Radar Validation:</span>
+<span class="text-primary font-medium">Sentinel-1 SAR Aligned</span>
+</div>
+</div>
+</div>
+<!-- Central Focus: Elegant Geospatial Radar Replay -->
+<div class="bg-surface-container/90 border border-white/[0.06] rounded-xl overflow-hidden shadow-sm flex flex-col">
+<!-- Clean Top Radar Control Bar -->
+<div class="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-white/[0.06] bg-surface-container-low/40">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center p-2 rounded-lg bg-primary-container text-on-primary hover:bg-inverse-primary transition" id="btn-replay-play" title="Play/Pause">
+<span class="material-symbols-outlined text-[18px]" id="play-icon">pause</span>
+</button>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-sm font-semibold text-white">Singapore Strait Transit Replay</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-white/[0.05] text-slate-400 font-mono">TSS SECTOR BRAVO</span>
+</div>
+<span class="text-xs text-slate-400">Continuous AIS &amp; Radar Reconstruction</span>
+</div>
+</div>
+<!-- Clean Scrubber -->
+<div class="flex items-center gap-3 flex-1 max-w-md mx-2">
+<span class="text-xs text-slate-500 font-mono">00:00</span>
+<input class="w-full h-1.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-tertiary" id="replay-scrubber" max="6" min="1" type="range" value="4">
+<span class="text-xs text-slate-300 font-mono whitespace-nowrap" id="scrubber-label">WP 4/6 (04:12 UTC)</span>
+</div>
+<!-- Telemetry Readouts -->
+<div class="flex items-center gap-3 text-xs">
+<div class="flex items-center gap-2 bg-surface-container-lowest/80 px-3 py-1.5 rounded-lg border border-white/[0.04]">
+<span class="text-slate-400">SOG:</span>
+<span class="font-mono font-bold text-emerald-400" id="telemetry-sog">16.4 kts</span>
+<span class="text-slate-600">|</span>
+<span class="text-slate-400">COG:</span>
+<span class="font-mono font-bold text-white" id="telemetry-cog">078°</span>
+</div>
+<div class="flex items-center bg-surface-container rounded-lg p-0.5 border border-white/10">
+<button class="px-2 py-0.5 rounded text-xs text-slate-400 hover:text-white speed-btn" data-speed="1">1x</button>
+<button class="px-2 py-0.5 rounded text-xs bg-primary-container text-white font-bold speed-btn" data-speed="5">5x</button>
+<button class="px-2 py-0.5 rounded text-xs text-slate-400 hover:text-white speed-btn" data-speed="20">20x</button>
+</div>
+</div>
+</div>
+<!-- Radar Viewport Canvas -->
+<div class="relative w-full h-[460px] bg-[#07090E] overflow-hidden flex flex-col justify-between p-5 select-none">
+<!-- Radar SVG Grid and Lanes -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="48" id="radarGridMinimal" patternUnits="userSpaceOnUse" width="48">
+<path class="text-white/[0.03]" d="M 48 0 L 0 0 0 48" fill="none" stroke="currentColor" stroke-width="0.75"></path>
+</pattern>
+<linearGradient id="corridorFill" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop class="text-primary" offset="0%" stop-color="currentColor" stop-opacity="0.06"></stop>
+<stop class="text-emerald-400" offset="100%" stop-color="currentColor" stop-opacity="0.04"></stop>
+</linearGradient>
+</defs>
+<rect fill="url(#radarGridMinimal)" height="100%" width="100%"></rect>
+<!-- Range Rings -->
+<circle class="text-white/[0.04]" cx="50%" cy="50%" fill="none" r="120" stroke="currentColor" stroke-dasharray="3 6"></circle>
+<circle class="text-white/[0.03]" cx="50%" cy="50%" fill="none" r="240" stroke="currentColor" stroke-dasharray="4 8"></circle>
+<!-- TSS Transit Lane Corridor -->
+<polygon class="text-emerald-500/20" fill="url(#corridorFill)" points="60,320 940,110 970,200 80,410" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1"></polygon>
+<!-- Centerline -->
+<path class="text-white/10" d="M 70 365 L 955 155" fill="none" stroke="currentColor" stroke-dasharray="6 6" stroke-width="1"></path>
+<!-- Smooth Vessel Trajectory -->
+<path class="text-emerald-400" d="M 80 390 Q 320 300 540 220 T 920 130" fill="none" stroke="currentColor" stroke-dasharray="3 3" stroke-width="2"></path>
+<!-- Waypoints along trajectory -->
+<circle class="fill-emerald-400" cx="80" cy="390" r="3"></circle>
+<circle class="fill-emerald-400" cx="230" cy="335" r="3"></circle>
+<circle class="fill-emerald-400" cx="380" cy="280" r="3"></circle>
+<circle class="fill-emerald-400" cx="540" cy="220" r="4.5"></circle>
+<circle class="fill-white/30 stroke-emerald-400" cx="730" cy="175" r="3" stroke-width="1"></circle>
+<circle class="fill-white/30 stroke-emerald-400" cx="920" cy="130" r="3" stroke-width="1"></circle>
+<!-- Vessel Heading vector -->
+<line class="text-emerald-400" stroke="currentColor" stroke-width="1.5" x1="540" x2="580" y1="220" y2="205"></line>
+</svg>
+<!-- Top Info Badges in Canvas -->
+<div class="relative z-10 flex items-start justify-between">
+<div class="bg-surface-container-high/90 border border-white/10 px-3 py-2 rounded-lg backdrop-blur text-xs flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-400 text-[16px]">verified</span>
+<span class="text-white font-medium">Approved TSS Transit Lane</span>
+<span class="text-slate-400">· 100% Adherence</span>
+</div>
+<div class="bg-surface-container-high/90 border border-white/10 px-3 py-2 rounded-lg backdrop-blur text-right text-xs">
+<div class="text-slate-200 font-mono font-medium">N 01° 14' 22" · E 103° 55' 10"</div>
+<div class="text-slate-400 text-[11px]">Water Depth: 34.2m · VTIS Coupler Active</div>
+</div>
+</div>
+<!-- Interactive Vessel Beacon Callout -->
+<div class="relative z-10 w-full h-full pointer-events-none">
+<div class="absolute left-[54%] top-[42%] -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
+<div class="relative flex items-center justify-center">
+<span class="absolute w-7 h-7 rounded-full bg-emerald-400/20 animate-ping"></span>
+<span class="w-3 h-3 rounded-full bg-emerald-400 shadow-md shadow-emerald-400/40"></span>
+<!-- Crisp Clean Vessel Tag -->
+<div class="absolute left-5 top-[-24px] w-64 bg-surface-container-high/95 border border-white/10 p-3 rounded-lg shadow-xl backdrop-blur text-left">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-bold text-white text-xs">Pacific Voyager</span>
+<span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase">Live</span>
+</div>
+<div class="space-y-1 text-[11px] text-slate-300">
+<div class="flex justify-between">
+<span class="text-slate-400">Speed &amp; Heading:</span>
+<span class="text-emerald-400 font-mono">16.4 kts / 078°</span>
+</div>
+<div class="flex justify-between">
+<span class="text-slate-400">Channel:</span>
+<span class="text-slate-200 font-mono">CH 87B/88B</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Surrounding Safe Traffic Indicators -->
+<div class="absolute left-[70%] top-[34%] -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
+<div class="flex items-center gap-1.5 px-2 py-1 rounded bg-surface-container/80 border border-white/[0.06] text-[10px] text-slate-400 backdrop-blur">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+<span class="">Container_741 (+2.8 nm)</span>
+</div>
+</div>
+</div>
+<!-- Radar Bottom Assurance Bar -->
+<div class="relative z-10 flex flex-wrap items-center justify-between gap-3 bg-surface-container-high/90 border border-white/10 px-4 py-2.5 rounded-lg backdrop-blur text-xs">
+<div class="flex items-center gap-4 text-slate-300">
+<span class="flex items-center gap-1.5 text-emerald-400 font-medium">
+<span class="material-symbols-outlined text-[15px]">check_circle</span> Safe Separation Maintained
+          </span>
+<span class="text-slate-600">|</span>
+<span class="text-slate-400">Radar Confidence: 99.4% (Sentinel-1 SAR)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 rounded bg-surface-container hover:bg-surface-container-highest border border-white/10 text-slate-200 text-xs font-medium transition" id="btn-inquest-rfi">
+            Request Inquest Log
+          </button>
+<button class="px-3 py-1 rounded bg-primary-container text-white text-xs font-medium hover:bg-inverse-primary transition" id="btn-simulate-recalc">
+            Re-calculate ICRS
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Lower Section: Clean 2-Column Split (Audit Trail & Underwriting Assurance) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left 2 Cols: Chronological Waypoint Trail -->
+<div class="bg-surface-container/90 border border-white/[0.06] rounded-xl p-5 shadow-sm flex flex-col justify-between lg:col-span-3">
+<div>
+<div class="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">history</span>
+<h3 class="text-sm font-bold text-white">Chronological Waypoint Trail</h3>
+</div>
+<span class="text-xs text-slate-400 font-mono">12 / 12 Waypoints Verified</span>
+</div>
+<div class="overflow-x-auto mt-3">
+<table class="w-full text-left text-xs">
+<thead>
+<tr class="text-slate-400 border-b border-white/[0.06] font-mono text-[11px]">
+<th class="pb-2 font-medium">TIME (UTC)</th>
+<th class="pb-2 font-medium">WAYPOINT EVENT</th>
+<th class="pb-2 font-medium">COORDINATES</th>
+<th class="pb-2 font-medium">SOG / DRAFT</th>
+<th class="pb-2 font-medium text-right">STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/[0.04]">
+<tr class="hover:bg-white/[0.02] transition">
+<td class="py-3 font-mono text-slate-300">04:12:30</td>
+<td class="py-3 font-medium text-white">TSS Waypoint 04 Ingress</td>
+<td class="py-3 font-mono text-slate-400">1.2394° N, 103.9194° E</td>
+<td class="py-3 font-mono text-emerald-400">16.4 kts / 11.8m</td>
+<td class="py-3 text-right">
+<span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold text-[11px]">NOMINAL</span>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.02] transition">
+<td class="py-3 font-mono text-slate-300">03:30:15</td>
+<td class="py-3 font-medium text-white">VTIS Sector Handover Confirm</td>
+<td class="py-3 font-mono text-slate-400">1.2011° N, 103.8458° E</td>
+<td class="py-3 font-mono text-slate-300">15.8 kts / 11.8m</td>
+<td class="py-3 text-right">
+<span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold text-[11px]">CONFIRMED</span>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.02] transition">
+<td class="py-3 font-mono text-slate-300">02:45:00</td>
+<td class="py-3 font-medium text-white">TSS Eastbound Lane Entry</td>
+<td class="py-3 font-mono text-slate-400">1.1700° N, 103.7389° E</td>
+<td class="py-3 font-mono text-slate-300">16.1 kts / 11.8m</td>
+<td class="py-3 text-right">
+<span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-semibold text-[11px]">VERIFIED</span>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.02] transition">
+<td class="py-3 font-mono text-slate-300">01:15:22</td>
+<td class="py-3 font-medium text-white">SAR Satellite Re-acquisition</td>
+<td class="py-3 font-mono text-slate-400">1.1444° N, 103.6014° E</td>
+<td class="py-3 font-mono text-slate-300">15.9 kts / 11.8m</td>
+<td class="py-3 text-right">
+<span class="px-2 py-0.5 rounded bg-primary-container/30 text-primary font-semibold text-[11px]">SAR ALIGNED</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="pt-4 flex items-center justify-between text-xs text-slate-400 border-t border-white/[0.06] mt-4">
+<span class="">Showing latest 4 of 128 recorded events</span>
+<button class="text-primary hover:underline font-medium">View Full Telemetry Log →</button>
+</div>
+</div>
+<!-- Right Col: Underwriter Assurance Summary -->
+
+</div>
+</div></main>
+</div>
+<!-- Interactive JavaScript Engine for Dynamic Simulator and Palantir Actions -->
+<script>
+    (function initMaritimeSimulator() {
+      const sliderSts = document.getElementById('slider-sts');
+      const sliderAis = document.getElementById('slider-ais');
+      const sliderDraft = document.getElementById('slider-draft');
+      const sliderGeo = document.getElementById('slider-geo');
+
+      const lblSts = document.getElementById('lbl-sts');
+      const lblAis = document.getElementById('lbl-ais');
+      const lblDraft = document.getElementById('lbl-draft');
+      const lblGeo = document.getElementById('lbl-geo');
+
+      const valPartialSts = document.getElementById('val-partial-sts');
+      const valPartialAis = document.getElementById('val-partial-ais');
+      const valPartialDraft = document.getElementById('val-partial-draft');
+      const valPartialGeo = document.getElementById('val-partial-geo');
+
+      const lblCalculatedIcrs = document.getElementById('lbl-calculated-icrs');
+      const formulaDisplayOutput = document.getElementById('formula-display-output');
+      const kpiCompositeScore = document.getElementById('kpi-composite-score');
+      const kpiProgressBar = document.getElementById('kpi-progress-bar');
+      const lblStatusTier = document.getElementById('lbl-status-tier');
+      const btnResetSim = document.getElementById('btn-reset-sim');
+      const toast = document.getElementById('action-toast');
+
+      function calculateRisk() {
+        const sts = parseFloat(sliderSts.value);
+        const aisHours = parseFloat(sliderAis.value);
+        const draft = parseFloat(sliderDraft.value);
+        const geo = parseFloat(sliderGeo.value);
+
+        // Update labels
+        lblSts.textContent = sts.toFixed(2) + ' nm (' + (sts < 0.5 ? 'CRITICAL PROXIMITY' : 'STAND-OFF') + ')';
+        lblAis.textContent = aisHours.toFixed(1) + ' hrs (Δt_dark)';
+        lblDraft.textContent = '+' + draft.toFixed(2) + ' m (' + (draft > 1.0 ? 'Substantial Load' : 'Normal') + ')';
+        lblGeo.textContent = geo.toFixed(2) + ' (INGRESS BUFFER)';
+
+        // Mathematical Formula breakdown:
+        // w_sts = 0.35: Proximity scalar (closer than 0.5nm gives maximum penalty)
+        let stsPenalty = sts <= 0.5 ? (1.0 - (sts / 1.5)) : Math.max(0, 0.5 - (sts / 3.0));
+        stsPenalty = Math.min(1.0, Math.max(0, stsPenalty));
+        const partialSts = (0.35 * stsPenalty * 100);
+
+        // w_ais = 0.25: continuous blackout hours penalty curve: (Δt / 24)^1.5 normalized
+        const aisRatio = Math.min(2.0, aisHours / 24.0);
+        const aisPenalty = Math.min(1.0, Math.pow(aisRatio, 1.5));
+        const partialAis = (0.25 * aisPenalty * 100);
+
+        // w_draft = 0.20: draft variance discrepancy post-darkness
+        const draftPenalty = Math.min(1.0, draft / 2.5);
+        const partialDraft = (0.20 * draftPenalty * 100);
+
+        // w_geo = 0.20: OFAC buffer ingress scalar
+        const geoPenalty = Math.min(1.0, geo);
+        const partialGeo = (0.20 * geoPenalty * 100);
+
+        const composite = partialSts + partialAis + partialDraft + partialGeo;
+        const finalScore = Math.min(100.0, Math.max(0.0, composite)).toFixed(1);
+
+        // Update partial outputs in table
+        valPartialSts.textContent = (partialSts).toFixed(1) + ' / 35';
+        valPartialAis.textContent = (partialAis).toFixed(1) + ' / 25';
+        valPartialDraft.textContent = (partialDraft).toFixed(1) + ' / 20';
+        valPartialGeo.textContent = (partialGeo).toFixed(1) + ' / 20';
+
+        // Update score indicators
+        lblCalculatedIcrs.textContent = finalScore;
+        formulaDisplayOutput.textContent = finalScore + ' / 100.00';
+        kpiCompositeScore.textContent = finalScore;
+        kpiProgressBar.style.width = finalScore + '%';
+
+        // Determine Status Tier & Styling
+        if (composite >= 66.0) {
+          lblStatusTier.textContent = 'CRITICAL: COVERAGE SUSPENSION';
+          lblStatusTier.className = 'font-display text-sm font-bold text-rose-400 uppercase tracking-wide mt-0.5';
+          kpiCompositeScore.className = 'font-mono text-2xl font-extrabold text-rose-400 tracking-tight';
+          kpiProgressBar.className = 'bg-gradient-to-r from-amber-500 to-rose-500 h-full rounded-full transition-all duration-300';
+        } else if (composite >= 31.0) {
+          lblStatusTier.textContent = 'WARNING: UNDERWRITER REVIEW REQ';
+          lblStatusTier.className = 'font-display text-sm font-bold text-amber-400 uppercase tracking-wide mt-0.5';
+          kpiCompositeScore.className = 'font-mono text-2xl font-extrabold text-amber-400 tracking-tight';
+          kpiProgressBar.className = 'bg-gradient-to-r from-emerald-500 to-amber-500 h-full rounded-full transition-all duration-300';
+        } else {
+          lblStatusTier.textContent = 'NOMINAL: AUTO-CLEARED BY POLICY';
+          lblStatusTier.className = 'font-display text-sm font-bold text-emerald-400 uppercase tracking-wide mt-0.5';
+          kpiCompositeScore.className = 'font-mono text-2xl font-extrabold text-emerald-400 tracking-tight';
+          kpiProgressBar.className = 'bg-emerald-500 h-full rounded-full transition-all duration-300';
+        }
+      }
+
+      // Bind listener events
+      [sliderSts, sliderAis, sliderDraft, sliderGeo].forEach(el => {
+        el.addEventListener('input', calculateRisk);
+      });
+
+      btnResetSim.addEventListener('click', () => {
+        sliderSts.value = 0.32;
+        sliderAis.value = 14.2;
+        sliderDraft.value = 1.8;
+        sliderGeo.value = 0.85;
+        calculateRisk();
+      });
+
+      function showFeedback(msg) {
+        toast.textContent = msg;
+        toast.classList.remove('hidden');
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 3200);
+      }
+
+      document.getElementById('btn-export-dossier').addEventListener('click', () => {
+        showFeedback('AUDIT DOSSIER GENERATED: PDF ENCRYPTED TO COMPLIANCE VAULT');
+      });
+
+      document.getElementById('btn-inquest-rfi').addEventListener('click', () => {
+        showFeedback('OFFICIAL RFI INQUEST DISPATCHED TO VESSEL MASTER VIA INMARSAT-C');
+      });
+
+      document.getElementById('btn-simulate-recalc').addEventListener('click', () => {
+        sliderSts.value = (Math.random() * 1.5).toFixed(2);
+        sliderAis.value = (Math.random() * 24.0).toFixed(1);
+        sliderDraft.value = (Math.random() * 2.5).toFixed(1);
+        sliderGeo.value = (Math.random() * 0.9).toFixed(2);
+        calculateRisk();
+        showFeedback('MONTE CARLO SCENARIO ADJUSTMENT EXECUTED');
+      });
+
+      // Run initial computation
+      calculateRisk();
+    })();
+  </script>
+
+
+</body></html>
