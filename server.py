@@ -15,7 +15,7 @@ import glob
 import json
 import random
 import csv
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -527,8 +527,23 @@ def list_runs():
             except Exception:
                 pass
 
+        # Determine tier and relative path for client
+        tier = "output"
+        rel_path = f"output/{fname}"
+        if SILVER_DIR in cf:
+            tier = "silver"
+            rel_path = f"data/silver/{fname}"
+        elif BRONZE_DIR in cf:
+            tier = "bronze"
+            rel_path = f"data/bronze/{fname}"
+        elif RAW_DIR in cf:
+            tier = "raw"
+            rel_path = f"data/raw/{fname}"
+
         runs.append({
             "filename": fname,
+            "rel_path": rel_path,
+            "tier": tier,
             "modified_at": mtime,
             "size_kb": size_kb,
             "vessel_name": vessel_name,
@@ -604,18 +619,21 @@ def get_run_details(filename: str):
     })
 
 
-@app.get("/api/download/{filename}")
+@app.get("/api/download/{filename:path}")
 def download_csv(filename: str):
-    """Directly streams the requested CSV file to browser for download."""
+    """Directly streams the requested CSV file to browser for download across any lakehouse tier."""
     clean_name = os.path.basename(filename)
-    csv_path = os.path.join(OUTPUT_DIR, clean_name)
-    if not os.path.exists(csv_path):
-        raise HTTPException(status_code=404, detail="File not found.")
-    return FileResponse(
-        csv_path,
-        media_type="text/csv",
-        filename=clean_name
-    )
+    possible_paths = [
+        os.path.join(OUTPUT_DIR, clean_name),
+        os.path.join(SILVER_DIR, clean_name),
+        os.path.join(BRONZE_DIR, clean_name),
+        os.path.join(RAW_DIR, clean_name),
+        os.path.join(BASE_DIR, clean_name)
+    ]
+    for p in possible_paths:
+        if os.path.exists(p):
+            return FileResponse(p, media_type="text/csv", filename=clean_name)
+    raise HTTPException(status_code=404, detail="File not found.")
 
 
 # Serve Ports Visualizer standalone page
@@ -661,13 +679,73 @@ def get_datalake_status():
 
 
 @app.get("/api/datalake/voyages")
-def get_datalake_voyages():
-    """Returns curated Gold-tier voyage summaries including 4 key metrics."""
+def get_datalake_voyages(vessel: Optional[str] = Query(None), imo: Optional[str] = Query(None)):
+    """Returns Silver-tier stop-to-stop voyages (or Gold summary fallback)."""
+    silver_voyages_path = os.path.join(SILVER_DIR, "silver_voyages.json")
+    if os.path.exists(silver_voyages_path):
+        try:
+            with open(silver_voyages_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if vessel:
+                    data = [v for v in data if vessel.lower() in (v.get("vessel") or v.get("Name") or "").lower()]
+                if imo:
+                    data = [v for v in data if imo.lower() in (v.get("imo") or v.get("IMO") or "").lower()]
+                return JSONResponse(content=data)
+        except Exception:
+            pass
     summary_path = os.path.join(GOLD_DIR, "voyages_summary.json")
     if os.path.exists(summary_path):
         with open(summary_path, "r", encoding="utf-8") as f:
             return JSONResponse(content=json.load(f))
     return JSONResponse(content=[])
+
+
+@app.get("/api/duckdb/status")
+def get_duckdb_status():
+    """Returns DuckDB OLAP engine status, row counts across Medallion tables, and 100GB+ scale readiness."""
+    try:
+        import duckdb_engine
+        return JSONResponse(content=duckdb_engine.query_lakehouse_status())
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+
+@app.get("/api/duckdb/voyages")
+def get_duckdb_voyages(
+    imo: Optional[str] = Query(None),
+    source_file: Optional[str] = Query(None),
+    limit: int = Query(100, ge=1, le=1000)
+):
+    """Queries silver_voyages / gold_voyages directly from DuckDB."""
+    try:
+        import duckdb_engine
+        return JSONResponse(content=duckdb_engine.query_voyages(vessel_imo=imo, source_file=source_file, limit=limit))
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+
+@app.get("/api/duckdb/pings")
+def get_duckdb_pings(
+    voyage_id: str = Query("VOY-01"),
+    source_file: Optional[str] = Query(None),
+    limit: int = Query(10000, ge=1, le=50000)
+):
+    """Queries silver_kinematics telemetry pings directly from DuckDB."""
+    try:
+        import duckdb_engine
+        return JSONResponse(content=duckdb_engine.query_voyage_pings(voyage_id=voyage_id, source_file=source_file, limit=limit))
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
+
+
+@app.get("/api/duckdb/markov")
+def get_duckdb_markov(limit: int = Query(15, ge=1, le=200)):
+    """Queries 3rd-order Markov transition models directly from DuckDB."""
+    try:
+        import duckdb_engine
+        return JSONResponse(content=duckdb_engine.query_markov_predictions(limit=limit))
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"status": "error", "message": str(e)})
 
 
 @app.get("/api/datalake/markov")
@@ -678,6 +756,45 @@ def get_datalake_markov():
     top3 = json.load(open(top3_path, "r", encoding="utf-8")) if os.path.exists(top3_path) else {}
     matrix = json.load(open(matrix_path, "r", encoding="utf-8")) if os.path.exists(matrix_path) else {}
     return JSONResponse(content={"top3_predictions": top3, "transition_matrix": matrix})
+
+
+@app.get("/api/datalake/audits")
+def get_datalake_audits():
+    """Returns data lake audit files (bronze_ingestion_audit and silver_kinematics_audit)."""
+    bronze_audit_path = os.path.join(BRONZE_DIR, "bronze_ingestion_audit.json")
+    silver_audit_path = os.path.join(SILVER_DIR, "silver_kinematics_audit.json")
+    bronze_audit = json.load(open(bronze_audit_path, "r", encoding="utf-8")) if os.path.exists(bronze_audit_path) else {}
+    silver_audit = json.load(open(silver_audit_path, "r", encoding="utf-8")) if os.path.exists(silver_audit_path) else {}
+    return JSONResponse(content={
+        "bronze_audit": bronze_audit,
+        "silver_audit": silver_audit
+    })
+
+
+@app.get("/api/datalake/predictability")
+def get_datalake_predictability():
+    """Returns Gold-tier JSD predictability metrics."""
+    jsd_path = os.path.join(GOLD_DIR, "predictability", "jsd_metrics.json")
+    jsd_data = json.load(open(jsd_path, "r", encoding="utf-8")) if os.path.exists(jsd_path) else {}
+    return JSONResponse(content=jsd_data)
+
+
+@app.post("/api/datalake/run_pipeline")
+def trigger_datalake_pipeline():
+    """Triggers end-to-end execution of Medallion Lakehouse pipeline (Bronze -> Silver -> Gold)."""
+    try:
+        import lakehouse_pipeline
+        lakehouse_pipeline.run_pipeline()
+        return JSONResponse(content={
+            "status": "success",
+            "message": "Lakehouse pipeline executed successfully across all tiers.",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        })
+    except Exception as e:
+        return JSONResponse(status_code=500, content={
+            "status": "error",
+            "message": str(e)
+        })
 
 
 @app.get("/ports-visualizer")

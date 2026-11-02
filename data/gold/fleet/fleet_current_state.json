@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T16:23:34.266312+00:00",
+  "generated_at": "2026-11-02T18:35:59.247704+00:00",
   "total_active_vessels": 4,
   "vessels": [
     {
@@ -17,7 +17,7 @@
       "h3_res8": "8830ced257fffff",
       "status": "Moored",
       "corridor": "Busan <-> Hakata Ferry Route",
-      "safety_index": 62.3
+      "safety_index": 88.9
     },
     {
       "vessel": "QUEEN BEETLE",

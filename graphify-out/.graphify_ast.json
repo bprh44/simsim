@@ -1,0 +1,6505 @@
+{
+  "nodes": [
+    {
+      "id": "github_workflows_python_package",
+      "label": "python-package.yml",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L4",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_on",
+      "label": "on",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L6",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_on_push",
+      "label": "push",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L7",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_push_branches",
+      "label": "branches",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L8",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_on_pull_request",
+      "label": "pull_request",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L9",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_pull_request_branches",
+      "label": "branches",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L10",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_jobs",
+      "label": "jobs",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L12",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_jobs_build",
+      "label": "build",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L13",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_build_runs_on",
+      "label": "runs-on",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L15",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_build_strategy",
+      "label": "strategy",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L16",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_strategy_fail_fast",
+      "label": "fail-fast",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L17",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_strategy_matrix",
+      "label": "matrix",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L18",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_matrix_python_version",
+      "label": "python-version",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L19",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_build_steps",
+      "label": "steps",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L21",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_steps_uses",
+      "label": "uses",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L22",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_steps_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L23",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_steps_with",
+      "label": "with",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L25",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_with_python_version",
+      "label": "python-version",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L26",
+      "_origin": "ast"
+    },
+    {
+      "id": "github_workflows_python_package_steps_run",
+      "label": "run",
+      "file_type": "code",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L28",
+      "_origin": "ast"
+    },
+    {
+      "id": "generate_test_routes",
+      "label": "generate_test_routes.py",
+      "file_type": "code",
+      "source_file": "generate_test_routes.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline",
+      "label": "lakehouse_pipeline.py",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_ensure_directories",
+      "label": "ensure_directories()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L30",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_haversine_nm",
+      "label": "haversine_nm()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L40",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_calculate_bearing",
+      "label": "calculate_bearing()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L50",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_parse_iso_dt",
+      "label": "parse_iso_dt()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L59",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_py_datetime",
+      "label": "datetime",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_populate_raw_tier",
+      "label": "populate_raw_tier()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L72",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_process_bronze_tier",
+      "label": "process_bronze_tier()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L105",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_compute_kinematics_for_series",
+      "label": "compute_kinematics_for_series()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L212",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_py_any",
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_segment_into_voyages",
+      "label": "segment_into_voyages()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L338",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_process_silver_tier",
+      "label": "process_silver_tier()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L370",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_process_gold_tier",
+      "label": "process_gold_tier()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L470",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_write_root_readme",
+      "label": "write_root_readme()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L765",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_run_pipeline",
+      "label": "run_pipeline()",
+      "file_type": "code",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L818",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_1",
+      "label": "Maritime AIS Data Lakehouse Pipeline (Raw -> Bronze -> Silver -> Gold).…",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_31",
+      "label": "Creates the Medallion Data Lake folder hierarchy.",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L31",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_41",
+      "label": "Great-circle distance between two geographic coordinates in Nautical Miles.",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L41",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_51",
+      "label": "Initial great-circle forward azimuth/bearing in degrees [0, 360).",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L51",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_60",
+      "label": "Parses ISO-8601 UTC timestamp safely.",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L60",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_73",
+      "label": "Copies pristine source files into data/raw/.",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L73",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_106",
+      "label": "Standardizes raw files into canonical 10-column schema: [DateTime, LAT, LON,…",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L106",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_213",
+      "label": "Computes derived point-to-point kinematics directly from coordinates and…",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L213",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_339",
+      "label": "Segments a continuous series of AIS pings into discrete voyages. A new voyage…",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L339",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_371",
+      "label": "Builds Silver Tier enriched files with derived kinematics and spatial indices.",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L371",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_471",
+      "label": "Constructs Gold Tier Analytical Serving Layer: 1. Voyage Summaries (Distance,…",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L471",
+      "_origin": "ast"
+    },
+    {
+      "id": "lakehouse_pipeline_rationale_766",
+      "label": "Generates the main Data Lakehouse architectural README.",
+      "file_type": "rationale",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L766",
+      "_origin": "ast"
+    },
+    {
+      "id": "server",
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_simulaterequest",
+      "label": "SimulateRequest",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L56",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "basemodel",
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_py_get",
+      "label": "get",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_corridors",
+      "label": "get_corridors()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L75",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_vessel_types",
+      "label": "get_vessel_types()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L81",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_ports",
+      "label": "get_ports()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L87",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_generate_mmsi",
+      "label": "_generate_mmsi()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L100",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_fleet_positions",
+      "label": "get_fleet_positions()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L117",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_vessels_history",
+      "label": "get_vessels_history()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L275",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_random_vessel",
+      "label": "get_random_vessel()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L343",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "post",
+      "label": "post",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_simulate_ais",
+      "label": "simulate_ais()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L365",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_list_runs",
+      "label": "list_runs()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L479",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_run_details",
+      "label": "get_run_details()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L547",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_download_csv",
+      "label": "download_csv()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L608",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_datalake_status",
+      "label": "get_datalake_status()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L623",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_datalake_status_list_files",
+      "label": "_list_files()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L625",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_datalake_voyages",
+      "label": "get_datalake_voyages()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L664",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_get_datalake_markov",
+      "label": "get_datalake_markov()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L674",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_serve_ports_visualizer",
+      "label": "serve_ports_visualizer()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L684",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_serve_asia_ports_js",
+      "label": "serve_asia_ports_js()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L692",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_serve_index",
+      "label": "serve_index()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L713",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_serve_viewer",
+      "label": "serve_viewer()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L722",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_serve_ports",
+      "label": "serve_ports()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L731",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_serve_analytics",
+      "label": "serve_analytics()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L740",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_serve_any_html",
+      "label": "serve_any_html()",
+      "file_type": "code",
+      "source_file": "server.py",
+      "source_location": "L748",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_1",
+      "label": "AIS Simulator Web Application Server. Exposes endpoints for: - Canonical…",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_76",
+      "label": "Returns curated authentic maritime corridors for Japan, Korea, and China.",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L76",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_82",
+      "label": "Returns historical vessel types and typical dimensional specs.",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L82",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_90",
+      "label": "Returns authoritative ports from reference/wpi_nga_ports.csv.",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L90",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_118",
+      "label": "Returns the most current positions based on active time of all unique vessels…",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L118",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_276",
+      "label": "Scans the output/ directory for unique vessels previously simulated. Returns…",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L276",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_344",
+      "label": "Generates an authentic commercial vessel identity with randomized Name, valid…",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L344",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_366",
+      "label": "Executes the simulation engine and writes the strictly 10-column CSV output.",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L366",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_480",
+      "label": "Lists all previously simulated runs saved in the output directory.",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L480",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_548",
+      "label": "Retrieves full telemetry pings and metadata for a specific saved run.",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L548",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_609",
+      "label": "Directly streams the requested CSV file to browser for download.",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L609",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_624",
+      "label": "Returns overview of Medallion Data Lake tiers (Raw, Bronze, Silver, Gold).",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L624",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_665",
+      "label": "Returns curated Gold-tier voyage summaries including 4 key metrics.",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L665",
+      "_origin": "ast"
+    },
+    {
+      "id": "server_rationale_675",
+      "label": "Returns 3rd-order Markov transition matrices and Top-3 predictions from Gold…",
+      "file_type": "rationale",
+      "source_file": "server.py",
+      "source_location": "L675",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine",
+      "label": "simulator_engine.py",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_haversine_distance_m",
+      "label": "haversine_distance_m()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L59",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_initial_bearing_deg",
+      "label": "initial_bearing_deg()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L71",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_destination_point",
+      "label": "destination_point()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L83",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_generate_random_mmsi",
+      "label": "generate_random_mmsi()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L445",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_generate_random_imo",
+      "label": "generate_random_imo()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L456",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_generate_random_name",
+      "label": "generate_random_name()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L465",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_generate_random_callsign",
+      "label": "generate_random_callsign()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L473",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_get_vessel_type_metadata",
+      "label": "get_vessel_type_metadata()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L487",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_py_any",
+      "label": "Any",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_auto_generate_dimensions",
+      "label": "auto_generate_dimensions()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L506",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_smooth_polyline_catmull_rom",
+      "label": "smooth_polyline_catmull_rom()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L521",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_build_trajectory",
+      "label": "build_trajectory()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L562",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_py_datetime",
+      "label": "datetime",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_build_trajectory_get_target_sog",
+      "label": "get_target_sog()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L609",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_build_trajectory_interpolate_coord_at_dist",
+      "label": "interpolate_coord_at_dist()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L661",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_generate_multi_leg_simulation",
+      "label": "generate_multi_leg_simulation()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L766",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_save_trajectory_to_csv",
+      "label": "save_trajectory_to_csv()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L975",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_load_wpi_ports",
+      "label": "load_wpi_ports()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1019",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_compute_searoute",
+      "label": "compute_searoute()",
+      "file_type": "code",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1063",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_1",
+      "label": "High-Fidelity AIS Synthetic Trajectory & Kinematics Generator. Produces…",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_60",
+      "label": "Computes great-circle distance between two points in meters.",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L60",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_72",
+      "label": "Computes the initial azimuth (bearing) from point 1 to point 2 in degrees [0,…",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L72",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_84",
+      "label": "Computes destination point given start point, bearing, and distance.",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L84",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_446",
+      "label": "Generates a realistic 9-digit MMSI with valid maritime identification digits…",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L446",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_457",
+      "label": "Generates an authentic 7-digit IMO number starting with 9 (IMO9xxxxxx).",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L457",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_466",
+      "label": "Generates a realistic commercial vessel name.",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L466",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_474",
+      "label": "Generates a realistic 4 to 6 character radio call sign.",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L474",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_488",
+      "label": "Retrieves typical dimensions and speed profile for a given vessel type.",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L488",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_507",
+      "label": "Generates realistic dimensions with slight natural variation.",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L507",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_522",
+      "label": "Applies Catmull-Rom spline interpolation through waypoints to simulate natural…",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L522",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_575",
+      "label": "Generates a full synthetic AIS telemetry sequence along the provided waypoints.",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L575",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_780",
+      "label": "Simulates a multi-leg scheduled ferry/commute voyage between two ports (Port A…",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L780",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_976",
+      "label": "Saves the generated telemetry pings to a standardized CSV file with strictly 10…",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L976",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_1020",
+      "label": "Loads and filters authoritative maritime ports from reference/wpi_nga_ports.csv.",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1020",
+      "_origin": "ast"
+    },
+    {
+      "id": "simulator_engine_rationale_1064",
+      "label": "Computes a guaranteed maritime-only route between two points avoiding…",
+      "file_type": "rationale",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1064",
+      "_origin": "ast"
+    },
+    {
+      "id": "spata_server",
+      "label": "server.py",
+      "file_type": "code",
+      "source_file": "spatA/server.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "spata_server_py_get",
+      "label": "get",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "spata_server_serve_index",
+      "label": "serve_index()",
+      "file_type": "code",
+      "source_file": "spatA/server.py",
+      "source_location": "L40",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "spata_server_health_check",
+      "label": "health_check()",
+      "file_type": "code",
+      "source_file": "spatA/server.py",
+      "source_location": "L48",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "spata_server_rationale_1",
+      "label": "spatA — AIS Spatiotemporal Analytics Workbench Server Dedicated FastAPI server…",
+      "file_type": "rationale",
+      "source_file": "spatA/server.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "spata_static_js_map_config",
+      "label": "map_config.js",
+      "file_type": "code",
+      "source_file": "spatA/static/js/map_config.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "spata_static_js_map_config_geturlparamkey",
+      "label": "getUrlParamKey()",
+      "file_type": "code",
+      "source_file": "spatA/static/js/map_config.js",
+      "source_location": "L14",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "spata_static_js_map_config_rationale_105",
+      "label": "NOTE: CARTO officially requires \"?key=YOUR_API_KEY\".",
+      "file_type": "rationale",
+      "source_file": "spatA/static/js/map_config.js",
+      "source_location": "L105",
+      "_origin": "ast"
+    },
+    {
+      "id": "specs_001_simplified_telemetry_and_vessel_picker_asia_ports",
+      "label": "asia_ports.js",
+      "file_type": "code",
+      "source_file": "specs/001-simplified-telemetry-and-vessel-picker/asia_ports.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_app_shell",
+      "label": "app_shell.js",
+      "file_type": "code",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_app_shell_renderheaderhtml",
+      "label": "renderHeaderHtml()",
+      "file_type": "code",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L133",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_app_shell_rendersidebarhtml",
+      "label": "renderSidebarHtml()",
+      "file_type": "code",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L210",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_app_shell_mountappshell",
+      "label": "mountAppShell()",
+      "file_type": "code",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L260",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_asia_ports",
+      "label": "asia_ports.js",
+      "file_type": "code",
+      "source_file": "static/js/asia_ports.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_commercial_ferry_routes",
+      "label": "commercial_ferry_routes.js",
+      "file_type": "code",
+      "source_file": "static/js/commercial_ferry_routes.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_corridors_data",
+      "label": "corridors_data.js",
+      "file_type": "code",
+      "source_file": "static/js/corridors_data.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_map_config",
+      "label": "map_config.js",
+      "file_type": "code",
+      "source_file": "static/js/map_config.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_map_config_geturlparamkey",
+      "label": "getUrlParamKey()",
+      "file_type": "code",
+      "source_file": "static/js/map_config.js",
+      "source_location": "L14",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_map_config_rationale_105",
+      "label": "NOTE: CARTO officially requires \"?key=YOUR_API_KEY\".",
+      "file_type": "rationale",
+      "source_file": "static/js/map_config.js",
+      "source_location": "L105",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator",
+      "label": "simulator.js",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_basetilelayers",
+      "label": "baseTileLayers",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L10",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_waypoints",
+      "label": "waypoints",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L14",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_waypointmarkers",
+      "label": "waypointMarkers",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L15",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_midpointmarkers",
+      "label": "midpointMarkers",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L16",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_freehandrawpoints",
+      "label": "freehandRawPoints",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L23",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_currentvesselspecs",
+      "label": "currentVesselSpecs",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L25",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_availablecorridors",
+      "label": "availableCorridors",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L26",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_initmap",
+      "label": "initMap()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L41",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_setbasemap",
+      "label": "setBasemap()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L90",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_loadcorridors",
+      "label": "loadCorridors()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L107",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_loadcorridor",
+      "label": "loadCorridor()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L125",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_reverseroute",
+      "label": "reverseRoute()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L158",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_loadvesselspecs",
+      "label": "loadVesselSpecs()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L177",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_historicalvessels",
+      "label": "historicalVessels",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L215",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_loadvesselhistory",
+      "label": "loadVesselHistory()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L217",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_populatevesseltypedropdown",
+      "label": "populateVesselTypeDropdown()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L259",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_onvesseltypechanged",
+      "label": "onVesselTypeChanged()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L283",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_randomizeallvesselfields",
+      "label": "randomizeAllVesselFields()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L293",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_randomizesinglefield",
+      "label": "randomizeSingleField()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L332",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_setdrawingmode",
+      "label": "setDrawingMode()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L353",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_onmapclick",
+      "label": "onMapClick()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L369",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_addwaypoint",
+      "label": "addWaypoint()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L374",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_insertwaypointat",
+      "label": "insertWaypointAt()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L379",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_deletewaypointat",
+      "label": "deleteWaypointAt()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L384",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_removelastwaypoint",
+      "label": "removeLastWaypoint()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L391",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_clearroute",
+      "label": "clearRoute()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L398",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_renderroute",
+      "label": "renderRoute()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L408",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_updatewaypointtable",
+      "label": "updateWaypointTable()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L491",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_onmousedownfreehand",
+      "label": "onMouseDownFreehand()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L540",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_onmousemovefreehand",
+      "label": "onMouseMoveFreehand()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L548",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_onmouseupfreehand",
+      "label": "onMouseUpFreehand()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L558",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_simplifypath",
+      "label": "simplifyPath()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L569",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_perpendiculardistance",
+      "label": "perpendicularDistance()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L594",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_calculatetotaldistancenm",
+      "label": "calculateTotalDistanceNM()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L607",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_updateestimatedhud",
+      "label": "updateEstimatedHUD()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L616",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_setlocaldefaulttimestamp",
+      "label": "setLocalDefaultTimestamp()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L656",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_executesimulation",
+      "label": "executeSimulation()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L666",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_rendersimulationresults",
+      "label": "renderSimulationResults()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L799",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_getsogcolor",
+      "label": "getSogColor()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L843",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_showresultmodal",
+      "label": "showResultModal()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L851",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_closeresultmodal",
+      "label": "closeResultModal()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L901",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_initformcontrols",
+      "label": "initFormControls()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L911",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_initdrawingtools",
+      "label": "initDrawingTools()",
+      "file_type": "code",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1006",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client",
+      "label": "simulator_engine_client.js",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_haversinedistancem",
+      "label": "haversineDistanceM()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L27",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_initialbearingdeg",
+      "label": "initialBearingDeg()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L40",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_generaterandomimo",
+      "label": "generateRandomImo()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L54",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_generaterandomname",
+      "label": "generateRandomName()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L64",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_catmullromspline",
+      "label": "catmullRomSpline()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L72",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_simulatetrajectoryclient",
+      "label": "simulateTrajectoryClient()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L122",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_pingstocsvstring",
+      "label": "pingsToCsvString()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L298",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_downloadcsvblob",
+      "label": "downloadCsvBlob()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L325",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_saveruntolocalstorage",
+      "label": "saveRunToLocalStorage()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L339",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_getsavedrunsfromlocalstorage",
+      "label": "getSavedRunsFromLocalStorage()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L385",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_simulator_engine_client_gethistoricalvesselsfromlocalstorage",
+      "label": "getHistoricalVesselsFromLocalStorage()",
+      "file_type": "code",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L395",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "docref_rfc_4180",
+      "label": "RFC-4180",
+      "file_type": "doc_ref",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L297",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_vessel_specs_data",
+      "label": "vessel_specs_data.js",
+      "file_type": "code",
+      "source_file": "static/js/vessel_specs_data.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer",
+      "label": "viewer.js",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_basetilelayers",
+      "label": "baseTileLayers",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L8",
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_initviewermap",
+      "label": "initViewerMap()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L36",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_setviewerbasemap",
+      "label": "setViewerBasemap()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L71",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_loadrunslist",
+      "label": "loadRunsList()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L88",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_loadrundetails",
+      "label": "loadRunDetails()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L146",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_renderrunonmap",
+      "label": "renderRunOnMap()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L159",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_calculatedistancenm",
+      "label": "calculateDistanceNM()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L255",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_getsogcolor",
+      "label": "getSogColor()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L263",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_setplaybackposition",
+      "label": "setPlaybackPosition()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L275",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_toggleplayback",
+      "label": "togglePlayback()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L321",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_startplayback",
+      "label": "startPlayback()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L329",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_stopplayback",
+      "label": "stopPlayback()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L346",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_initviewercontrols",
+      "label": "initViewerControls()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L357",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_parseuploadedcsv",
+      "label": "parseUploadedCsv()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L368",
+      "_callable": true,
+      "_origin": "ast"
+    },
+    {
+      "id": "static_js_viewer_initcsvuploadhandlers",
+      "label": "initCsvUploadHandlers()",
+      "file_type": "code",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L452",
+      "_callable": true,
+      "metadata": {
+        "unresolved_calls": [
+          {
+            "callee": "readAsText",
+            "receiver_type": "FileReader",
+            "lang": "typescript",
+            "line": "L462",
+            "file": "static/js/viewer.js"
+          }
+        ]
+      },
+      "_origin": "ast"
+    }
+  ],
+  "edges": [
+    {
+      "source": "github_workflows_python_package",
+      "target": "github_workflows_python_package_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package",
+      "target": "github_workflows_python_package_on",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_on",
+      "target": "github_workflows_python_package_on_push",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_on_push",
+      "target": "github_workflows_python_package_push_branches",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_on",
+      "target": "github_workflows_python_package_on_pull_request",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_on_pull_request",
+      "target": "github_workflows_python_package_pull_request_branches",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package",
+      "target": "github_workflows_python_package_jobs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_jobs",
+      "target": "github_workflows_python_package_jobs_build",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_jobs_build",
+      "target": "github_workflows_python_package_build_runs_on",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_jobs_build",
+      "target": "github_workflows_python_package_build_strategy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_strategy",
+      "target": "github_workflows_python_package_strategy_fail_fast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_strategy",
+      "target": "github_workflows_python_package_strategy_matrix",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_strategy_matrix",
+      "target": "github_workflows_python_package_matrix_python_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_jobs_build",
+      "target": "github_workflows_python_package_build_steps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_uses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_uses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_with",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_steps_with",
+      "target": "github_workflows_python_package_with_python_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "github_workflows_python_package_build_steps",
+      "target": "github_workflows_python_package_steps_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".github/workflows/python-package.yml",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "generate_test_routes",
+      "target": "urllib_request",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "generate_test_routes.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "generate_test_routes",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "generate_test_routes.py",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "os",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "csv",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "math",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_py_datetime",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "typing",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "h3",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_ensure_directories",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_haversine_nm",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_calculate_bearing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_parse_iso_dt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_parse_iso_dt",
+      "target": "lakehouse_pipeline_py_datetime",
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_populate_raw_tier",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_process_bronze_tier",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_compute_kinematics_for_series",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L212",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_compute_kinematics_for_series",
+      "target": "lakehouse_pipeline_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L212",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_segment_into_voyages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L338",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_segment_into_voyages",
+      "target": "lakehouse_pipeline_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L338",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_process_silver_tier",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L370",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_process_gold_tier",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L470",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_write_root_readme",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L765",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline",
+      "target": "lakehouse_pipeline_run_pipeline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L818",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_bronze_tier",
+      "target": "lakehouse_pipeline_parse_iso_dt",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L143",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_compute_kinematics_for_series",
+      "target": "lakehouse_pipeline_parse_iso_dt",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L234",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_compute_kinematics_for_series",
+      "target": "lakehouse_pipeline_haversine_nm",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L251",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_compute_kinematics_for_series",
+      "target": "lakehouse_pipeline_calculate_bearing",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L269",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_silver_tier",
+      "target": "lakehouse_pipeline_compute_kinematics_for_series",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L401",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_silver_tier",
+      "target": "lakehouse_pipeline_segment_into_voyages",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L404",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_run_pipeline",
+      "target": "lakehouse_pipeline_ensure_directories",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L822",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_run_pipeline",
+      "target": "lakehouse_pipeline_populate_raw_tier",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L823",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_run_pipeline",
+      "target": "lakehouse_pipeline_process_bronze_tier",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L824",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_run_pipeline",
+      "target": "lakehouse_pipeline_process_silver_tier",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L825",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_run_pipeline",
+      "target": "lakehouse_pipeline_process_gold_tier",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L826",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_run_pipeline",
+      "target": "lakehouse_pipeline_write_root_readme",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L827",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_1",
+      "target": "lakehouse_pipeline",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_31",
+      "target": "lakehouse_pipeline_ensure_directories",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_41",
+      "target": "lakehouse_pipeline_haversine_nm",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_51",
+      "target": "lakehouse_pipeline_calculate_bearing",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_60",
+      "target": "lakehouse_pipeline_parse_iso_dt",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_73",
+      "target": "lakehouse_pipeline_populate_raw_tier",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_106",
+      "target": "lakehouse_pipeline_process_bronze_tier",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L106",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_213",
+      "target": "lakehouse_pipeline_compute_kinematics_for_series",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L213",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_339",
+      "target": "lakehouse_pipeline_segment_into_voyages",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L339",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_371",
+      "target": "lakehouse_pipeline_process_silver_tier",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L371",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_471",
+      "target": "lakehouse_pipeline_process_gold_tier",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L471",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_rationale_766",
+      "target": "lakehouse_pipeline_write_root_readme",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L766",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "os",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "glob",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "random",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "csv",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "datetime",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "typing",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "fastapi_middleware_cors",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "fastapi_responses",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "fastapi_staticfiles",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "pydantic",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "sys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "simulator_engine",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_simulaterequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_simulaterequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_corridors",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L74",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_corridors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_vessel_types",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L80",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_vessel_types",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L81",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_ports",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L86",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_ports",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_generate_mmsi",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_fleet_positions",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L116",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_fleet_positions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L117",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_vessels_history",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L274",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_vessels_history",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L275",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_random_vessel",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L342",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_random_vessel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L343",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_simulate_ais",
+      "target": "post",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L364",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_simulate_ais",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L365",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_simulate_ais",
+      "target": "server_simulaterequest",
+      "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L365",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_list_runs",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L478",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_list_runs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L479",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_run_details",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L546",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_run_details",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L547",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_download_csv",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L607",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_download_csv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L608",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_datalake_status",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L622",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_datalake_status",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L623",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_datalake_status",
+      "target": "server_get_datalake_status_list_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L625",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_datalake_voyages",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L663",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_datalake_voyages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L664",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_datalake_markov",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L673",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_get_datalake_markov",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L674",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_ports_visualizer",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L683",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_serve_ports_visualizer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L684",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_asia_ports_js",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L691",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_serve_asia_ports_js",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L692",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_index",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L710",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_index",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L711",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_index",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L712",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_serve_index",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L713",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_viewer",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L720",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_viewer",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L721",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_serve_viewer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L722",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_ports",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L729",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_ports",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L730",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_serve_ports",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L731",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_analytics",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L738",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_analytics",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L739",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_serve_analytics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L740",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_serve_any_html",
+      "target": "server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L747",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "server_serve_any_html",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L748",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server",
+      "target": "uvicorn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L756",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_fleet_positions",
+      "target": "server_generate_mmsi",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L140",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_datalake_status",
+      "target": "server_get_datalake_status_list_files",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L644",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_1",
+      "target": "server",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_76",
+      "target": "server_get_corridors",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_82",
+      "target": "server_get_vessel_types",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_90",
+      "target": "server_get_ports",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_118",
+      "target": "server_get_fleet_positions",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L118",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_276",
+      "target": "server_get_vessels_history",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L276",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_344",
+      "target": "server_get_random_vessel",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L344",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_366",
+      "target": "server_simulate_ais",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L366",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_480",
+      "target": "server_list_runs",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L480",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_548",
+      "target": "server_get_run_details",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L548",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_609",
+      "target": "server_download_csv",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L609",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_624",
+      "target": "server_get_datalake_status",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L624",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_665",
+      "target": "server_get_datalake_voyages",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L665",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_rationale_675",
+      "target": "server_get_datalake_markov",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "server.py",
+      "source_location": "L675",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "math",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "random",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "bisect",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "os",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_py_datetime",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "typing",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_haversine_distance_m",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_initial_bearing_deg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_destination_point",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_generate_random_mmsi",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L445",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_generate_random_imo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L456",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_generate_random_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L465",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_generate_random_callsign",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L473",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_get_vessel_type_metadata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L487",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_get_vessel_type_metadata",
+      "target": "simulator_engine_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L487",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_auto_generate_dimensions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L506",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_smooth_polyline_catmull_rom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L521",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_build_trajectory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L562",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L562",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_py_datetime",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L562",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_build_trajectory_get_target_sog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L609",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_build_trajectory_interpolate_coord_at_dist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L661",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_generate_multi_leg_simulation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L766",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_generate_multi_leg_simulation",
+      "target": "simulator_engine_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L766",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_generate_multi_leg_simulation",
+      "target": "simulator_engine_py_datetime",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L766",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_save_trajectory_to_csv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L975",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_save_trajectory_to_csv",
+      "target": "simulator_engine_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L975",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_load_wpi_ports",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1019",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_load_wpi_ports",
+      "target": "simulator_engine_py_any",
+      "relation": "references",
+      "context": "generic_arg",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1019",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine",
+      "target": "simulator_engine_compute_searoute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1063",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_auto_generate_dimensions",
+      "target": "simulator_engine_get_vessel_type_metadata",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L508",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_get_vessel_type_metadata",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L582",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_smooth_polyline_catmull_rom",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L586",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_haversine_distance_m",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L592",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_build_trajectory_get_target_sog",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L641",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory",
+      "target": "simulator_engine_build_trajectory_interpolate_coord_at_dist",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L698",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_build_trajectory_interpolate_coord_at_dist",
+      "target": "simulator_engine_initial_bearing_deg",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L666",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_generate_multi_leg_simulation",
+      "target": "simulator_engine_get_vessel_type_metadata",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L813",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_generate_multi_leg_simulation",
+      "target": "simulator_engine_build_trajectory",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L879",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_generate_multi_leg_simulation",
+      "target": "simulator_engine_haversine_distance_m",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L903",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_1",
+      "target": "simulator_engine",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_60",
+      "target": "simulator_engine_haversine_distance_m",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_72",
+      "target": "simulator_engine_initial_bearing_deg",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_84",
+      "target": "simulator_engine_destination_point",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L84",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_446",
+      "target": "simulator_engine_generate_random_mmsi",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L446",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_457",
+      "target": "simulator_engine_generate_random_imo",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L457",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_466",
+      "target": "simulator_engine_generate_random_name",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L466",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_474",
+      "target": "simulator_engine_generate_random_callsign",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L474",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_488",
+      "target": "simulator_engine_get_vessel_type_metadata",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L488",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_507",
+      "target": "simulator_engine_auto_generate_dimensions",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L507",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_522",
+      "target": "simulator_engine_smooth_polyline_catmull_rom",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L522",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_575",
+      "target": "simulator_engine_build_trajectory",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L575",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_780",
+      "target": "simulator_engine_generate_multi_leg_simulation",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L780",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_976",
+      "target": "simulator_engine_save_trajectory_to_csv",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L976",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_1020",
+      "target": "simulator_engine_load_wpi_ports",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1020",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "simulator_engine_rationale_1064",
+      "target": "simulator_engine_compute_searoute",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "simulator_engine.py",
+      "source_location": "L1064",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "os",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "sys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "fastapi_middleware_cors",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "fastapi_responses",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "fastapi_staticfiles",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server_serve_index",
+      "target": "spata_server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L39",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "spata_server_serve_index",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server_health_check",
+      "target": "spata_server_py_get",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "context": "decorator",
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "spata_server_health_check",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server",
+      "target": "uvicorn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_server_rationale_1",
+      "target": "spata_server",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/server.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_static_js_map_config",
+      "target": "spata_static_js_map_config_geturlparamkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/static/js/map_config.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_static_js_map_config",
+      "target": "spata_static_js_map_config_geturlparamkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/static/js/map_config.js",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "spata_static_js_map_config_rationale_105",
+      "target": "spata_static_js_map_config",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "spatA/static/js/map_config.js",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_app_shell",
+      "target": "static_js_app_shell_renderheaderhtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_app_shell",
+      "target": "static_js_app_shell_rendersidebarhtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L210",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_app_shell",
+      "target": "static_js_app_shell_mountappshell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L260",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_app_shell",
+      "target": "static_js_app_shell_mountappshell",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L287",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_app_shell",
+      "target": "static_js_app_shell_mountappshell",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L289",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_app_shell_mountappshell",
+      "target": "static_js_app_shell_renderheaderhtml",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L265",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_app_shell_mountappshell",
+      "target": "static_js_app_shell_rendersidebarhtml",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/app_shell.js",
+      "source_location": "L272",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_map_config",
+      "target": "static_js_map_config_geturlparamkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/map_config.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_map_config",
+      "target": "static_js_map_config_geturlparamkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/map_config.js",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_map_config_rationale_105",
+      "target": "static_js_map_config",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/map_config.js",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_basetilelayers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L10",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_waypoints",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_waypointmarkers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_midpointmarkers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_freehandrawpoints",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_currentvesselspecs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_availablecorridors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_initmap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_setbasemap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L90",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_loadcorridors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_loadcorridor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L125",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_reverseroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_loadvesselspecs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L177",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_historicalvessels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L215",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_loadvesselhistory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L217",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_populatevesseltypedropdown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L259",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_onvesseltypechanged",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L283",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_randomizeallvesselfields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L293",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_randomizesinglefield",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L332",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_setdrawingmode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L353",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_onmapclick",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L369",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_addwaypoint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L374",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_insertwaypointat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L379",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_deletewaypointat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L384",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_removelastwaypoint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L391",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_clearroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L398",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_renderroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L408",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_updatewaypointtable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L491",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_onmousedownfreehand",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L540",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_onmousemovefreehand",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L548",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_onmouseupfreehand",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L558",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_simplifypath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L569",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_perpendiculardistance",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L594",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_calculatetotaldistancenm",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L607",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_updateestimatedhud",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L616",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_setlocaldefaulttimestamp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L656",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_executesimulation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L666",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_rendersimulationresults",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L799",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_getsogcolor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L843",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_showresultmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L851",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_closeresultmodal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L901",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_initformcontrols",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L911",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_initdrawingtools",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1006",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_initmap",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_loadcorridors",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_loadvesselspecs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L34",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_loadvesselhistory",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L35",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_initformcontrols",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_initdrawingtools",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator",
+      "target": "static_js_simulator_setlocaldefaulttimestamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initmap",
+      "target": "static_js_simulator_onmapclick",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initmap",
+      "target": "static_js_simulator_onmousedownfreehand",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initmap",
+      "target": "static_js_simulator_onmousemovefreehand",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L86",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initmap",
+      "target": "static_js_simulator_onmouseupfreehand",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L87",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadcorridors",
+      "target": "static_js_simulator_loadcorridor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadcorridor",
+      "target": "static_js_simulator_clearroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L136",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadcorridor",
+      "target": "static_js_simulator_addwaypoint",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L137",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadcorridor",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L138",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadcorridor",
+      "target": "static_js_simulator_onvesseltypechanged",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L146",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadcorridor",
+      "target": "static_js_simulator_randomizeallvesselfields",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L154",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadcorridor",
+      "target": "static_js_simulator_updateestimatedhud",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L155",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_reverseroute",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L161",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadvesselspecs",
+      "target": "static_js_simulator_populatevesseltypedropdown",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L212",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_loadvesselhistory",
+      "target": "static_js_simulator_onvesseltypechanged",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L253",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_populatevesseltypedropdown",
+      "target": "static_js_simulator_onvesseltypechanged",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L276",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_populatevesseltypedropdown",
+      "target": "static_js_simulator_randomizeallvesselfields",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L280",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_onvesseltypechanged",
+      "target": "static_js_simulator_updateestimatedhud",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L290",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_randomizeallvesselfields",
+      "target": "static_js_simulator_updateestimatedhud",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L328",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_onmapclick",
+      "target": "static_js_simulator_addwaypoint",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L371",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_addwaypoint",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L376",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_insertwaypointat",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L381",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_deletewaypointat",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L387",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_removelastwaypoint",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L394",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_clearroute",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L400",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_renderroute",
+      "target": "static_js_simulator_updateestimatedhud",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L441",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_renderroute",
+      "target": "static_js_simulator_updatewaypointtable",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L442",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_renderroute",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L446",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_renderroute",
+      "target": "static_js_simulator_deletewaypointat",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L452",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_renderroute",
+      "target": "static_js_simulator_insertwaypointat",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L477",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_onmouseupfreehand",
+      "target": "static_js_simulator_simplifypath",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L562",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_onmouseupfreehand",
+      "target": "static_js_simulator_renderroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L564",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_onmouseupfreehand",
+      "target": "static_js_simulator_setdrawingmode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L566",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_simplifypath",
+      "target": "static_js_simulator_perpendiculardistance",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L578",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_simplifypath",
+      "target": "static_js_simulator_simplifypath",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L586",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_updateestimatedhud",
+      "target": "static_js_simulator_calculatetotaldistancenm",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L617",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_executesimulation",
+      "target": "static_js_simulator_loadvesselhistory",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L774",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_executesimulation",
+      "target": "static_js_simulator_rendersimulationresults",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L782",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_rendersimulationresults",
+      "target": "static_js_simulator_getsogcolor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L811",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_rendersimulationresults",
+      "target": "static_js_simulator_showresultmodal",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L840",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_showresultmodal",
+      "target": "static_js_simulator_getsogcolor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L887",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initformcontrols",
+      "target": "static_js_simulator_updateestimatedhud",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L920",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initformcontrols",
+      "target": "static_js_simulator_loadcorridor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L995",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initformcontrols",
+      "target": "static_js_simulator_reverseroute",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1002",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initdrawingtools",
+      "target": "static_js_simulator_setdrawingmode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1007",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initdrawingtools",
+      "target": "static_js_simulator_removelastwaypoint",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1009",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initdrawingtools",
+      "target": "static_js_simulator_clearroute",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1010",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initdrawingtools",
+      "target": "static_js_simulator_executesimulation",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1011",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_initdrawingtools",
+      "target": "static_js_simulator_closeresultmodal",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator.js",
+      "source_location": "L1015",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_haversinedistancem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_initialbearingdeg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_generaterandomimo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_generaterandomname",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L64",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_catmullromspline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L72",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_simulatetrajectoryclient",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_pingstocsvstring",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L298",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_downloadcsvblob",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L325",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_saveruntolocalstorage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L339",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_getsavedrunsfromlocalstorage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L385",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_gethistoricalvesselsfromlocalstorage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L395",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_simulatetrajectoryclient",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L441",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_generaterandomimo",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L442",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_generaterandomname",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L443",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_pingstocsvstring",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L444",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_downloadcsvblob",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L445",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_saveruntolocalstorage",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L446",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_getsavedrunsfromlocalstorage",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L447",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "static_js_simulator_engine_client_gethistoricalvesselsfromlocalstorage",
+      "relation": "indirect_call",
+      "context": "collection",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L448",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client_simulatetrajectoryclient",
+      "target": "static_js_simulator_engine_client_generaterandomimo",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client_simulatetrajectoryclient",
+      "target": "static_js_simulator_engine_client_catmullromspline",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L142",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client_simulatetrajectoryclient",
+      "target": "static_js_simulator_engine_client_haversinedistancem",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L148",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client_simulatetrajectoryclient",
+      "target": "static_js_simulator_engine_client_initialbearingdeg",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L188",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client_downloadcsvblob",
+      "target": "static_js_simulator_engine_client_pingstocsvstring",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L326",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_simulator_engine_client",
+      "target": "docref_rfc_4180",
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/simulator_engine_client.js",
+      "source_location": "L297",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_basetilelayers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_initviewermap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L36",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_setviewerbasemap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_loadrunslist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L88",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_loadrundetails",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L146",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_renderrunonmap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L159",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_calculatedistancenm",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L255",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_getsogcolor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L263",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_setplaybackposition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L275",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_toggleplayback",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L321",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_startplayback",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L329",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_stopplayback",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L346",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_initviewercontrols",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L357",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_parseuploadedcsv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L368",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_initcsvuploadhandlers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L452",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_initviewermap",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_loadrunslist",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L24",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_initviewercontrols",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L25",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_initcsvuploadhandlers",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer",
+      "target": "static_js_viewer_loadrundetails",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_loadrunslist",
+      "target": "static_js_viewer_loadrundetails",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_loadrundetails",
+      "target": "static_js_viewer_stopplayback",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L147",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_loadrundetails",
+      "target": "static_js_viewer_renderrunonmap",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L153",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_renderrunonmap",
+      "target": "static_js_viewer_getsogcolor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L202",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_renderrunonmap",
+      "target": "static_js_viewer_setplaybackposition",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L223",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_renderrunonmap",
+      "target": "static_js_viewer_calculatedistancenm",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L235",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_setplaybackposition",
+      "target": "static_js_viewer_getsogcolor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L300",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_toggleplayback",
+      "target": "static_js_viewer_stopplayback",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L323",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_toggleplayback",
+      "target": "static_js_viewer_startplayback",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L325",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_startplayback",
+      "target": "static_js_viewer_stopplayback",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L339",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_startplayback",
+      "target": "static_js_viewer_setplaybackposition",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L342",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_initviewercontrols",
+      "target": "static_js_viewer_toggleplayback",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/viewer.js",
+      "source_location": "L358",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_initviewercontrols",
+      "target": "static_js_viewer_setplaybackposition",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L361",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_initviewercontrols",
+      "target": "static_js_viewer_loadrunslist",
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "static/js/viewer.js",
+      "source_location": "L364",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_parseuploadedcsv",
+      "target": "static_js_viewer_renderrunonmap",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L430",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "static_js_viewer_initcsvuploadhandlers",
+      "target": "static_js_viewer_parseuploadedcsv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "static/js/viewer.js",
+      "source_location": "L460",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_ensure_directories",
+      "target": "os",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_haversine_nm",
+      "target": "math",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_calculate_bearing",
+      "target": "math",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_bronze_tier",
+      "target": "csv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L125",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_bronze_tier",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L192",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_compute_kinematics_for_series",
+      "target": "h3",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L238",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_silver_tier",
+      "target": "csv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L385",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_silver_tier",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L417",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_gold_tier",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L484",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "lakehouse_pipeline_process_gold_tier",
+      "target": "h3",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lakehouse_pipeline.py",
+      "source_location": "L557",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_ports",
+      "target": "simulator_engine_load_wpi_ports",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_fleet_positions",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_fleet_positions",
+      "target": "glob",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L161",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_fleet_positions",
+      "target": "csv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L169",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_vessels_history",
+      "target": "glob",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L281",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_vessels_history",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L296",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_vessels_history",
+      "target": "csv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L309",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_vessels_history",
+      "target": "simulator_engine_get_vessel_type_metadata",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L326",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_random_vessel",
+      "target": "random",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L349",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_random_vessel",
+      "target": "simulator_engine_get_vessel_type_metadata",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L351",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_random_vessel",
+      "target": "simulator_engine_generate_random_name",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L354",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_random_vessel",
+      "target": "simulator_engine_generate_random_imo",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L355",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_simulate_ais",
+      "target": "simulator_engine_generate_multi_leg_simulation",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L384",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_simulate_ais",
+      "target": "simulator_engine_build_trajectory",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L400",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_simulate_ais",
+      "target": "simulator_engine_save_trajectory_to_csv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L415",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_simulate_ais",
+      "target": "simulator_engine_haversine_distance_m",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L425",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_simulate_ais",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L459",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_list_runs",
+      "target": "glob",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L483",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_list_runs",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L505",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_list_runs",
+      "target": "csv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L520",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_run_details",
+      "target": "csv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L567",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_run_details",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L596",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_datalake_voyages",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L669",
+      "weight": 1.0,
+      "_origin": "ast"
+    },
+    {
+      "source": "server_get_datalake_markov",
+      "target": "json",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server.py",
+      "source_location": "L678",
+      "weight": 1.0,
+      "_origin": "ast"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0,
+  "failed_sources": [
+    "D:\\Vibe\\simsim\\data\\silver\\new_camellia_silver.json"
+  ],
+  "skipped_sources": [
+    "D:\\Vibe\\simsim\\data\\bronze\\bronze_ingestion_audit.json",
+    "D:\\Vibe\\simsim\\data\\gold\\fleet\\fleet_current_state.json",
+    "D:\\Vibe\\simsim\\data\\gold\\h3_corridors.json",
+    "D:\\Vibe\\simsim\\data\\gold\\markov_models\\top3_predictions.json",
+    "D:\\Vibe\\simsim\\data\\gold\\markov_models\\transition_matrix_res8.json",
+    "D:\\Vibe\\simsim\\data\\gold\\predictability\\jsd_metrics.json",
+    "D:\\Vibe\\simsim\\data\\gold\\voyages_summary.json",
+    "D:\\Vibe\\simsim\\data\\silver\\busan_silver.json",
+    "D:\\Vibe\\simsim\\data\\silver\\silver_kinematics_audit.json",
+    "D:\\Vibe\\simsim\\reference\\commercial_ferry_routes.json",
+    "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\asia_ports.json",
+    "D:\\Vibe\\simsim\\vessel_specs.json"
+  ],
+  "extracted_sources": [
+    "D:\\Vibe\\simsim\\.github\\workflows\\python-package.yml",
+    "D:\\Vibe\\simsim\\data\\bronze\\bronze_ingestion_audit.json",
+    "D:\\Vibe\\simsim\\data\\gold\\fleet\\fleet_current_state.json",
+    "D:\\Vibe\\simsim\\data\\gold\\h3_corridors.json",
+    "D:\\Vibe\\simsim\\data\\gold\\markov_models\\top3_predictions.json",
+    "D:\\Vibe\\simsim\\data\\gold\\markov_models\\transition_matrix_res8.json",
+    "D:\\Vibe\\simsim\\data\\gold\\predictability\\jsd_metrics.json",
+    "D:\\Vibe\\simsim\\data\\gold\\voyages_summary.json",
+    "D:\\Vibe\\simsim\\data\\silver\\busan_silver.json",
+    "D:\\Vibe\\simsim\\data\\silver\\new_camellia_silver.json",
+    "D:\\Vibe\\simsim\\data\\silver\\silver_kinematics_audit.json",
+    "D:\\Vibe\\simsim\\generate_test_routes.py",
+    "D:\\Vibe\\simsim\\lakehouse_pipeline.py",
+    "D:\\Vibe\\simsim\\reference\\commercial_ferry_routes.json",
+    "D:\\Vibe\\simsim\\server.py",
+    "D:\\Vibe\\simsim\\simulator_engine.py",
+    "D:\\Vibe\\simsim\\spatA\\server.py",
+    "D:\\Vibe\\simsim\\spatA\\static\\js\\map_config.js",
+    "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\asia_ports.js",
+    "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\asia_ports.json",
+    "D:\\Vibe\\simsim\\static\\js\\app_shell.js",
+    "D:\\Vibe\\simsim\\static\\js\\asia_ports.js",
+    "D:\\Vibe\\simsim\\static\\js\\commercial_ferry_routes.js",
+    "D:\\Vibe\\simsim\\static\\js\\corridors_data.js",
+    "D:\\Vibe\\simsim\\static\\js\\map_config.js",
+    "D:\\Vibe\\simsim\\static\\js\\simulator.js",
+    "D:\\Vibe\\simsim\\static\\js\\simulator_engine_client.js",
+    "D:\\Vibe\\simsim\\static\\js\\vessel_specs_data.js",
+    "D:\\Vibe\\simsim\\static\\js\\viewer.js",
+    "D:\\Vibe\\simsim\\vessel_specs.json"
+  ]
+}

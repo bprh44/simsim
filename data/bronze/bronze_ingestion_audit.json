@@ -11,6 +11,18 @@
     },
     "canonical_schema": "10-Column IMO A.1106(29) Compliant"
   },
+  "koreavoyager8_bronze.csv": {
+    "record_count": 263,
+    "start_time": "2026-10-26T16:07:03Z",
+    "end_time": "2026-10-26T21:28:39Z",
+    "bbox": {
+      "min_lat": 33.6064,
+      "max_lat": 35.1028,
+      "min_lon": 129.0403,
+      "max_lon": 130.4181
+    },
+    "canonical_schema": "10-Column IMO A.1106(29) Compliant"
+  },
   "new_camellia_bronze.csv": {
     "record_count": 20043,
     "start_time": "2026-09-28T12:00:00Z",
@@ -20,6 +32,54 @@
       "max_lat": 35.115111,
       "min_lon": 129.042894,
       "max_lon": 130.395112
+    },
+    "canonical_schema": "10-Column IMO A.1106(29) Compliant"
+  },
+  "newcamellia_multi_bronze.csv": {
+    "record_count": 492,
+    "start_time": "2026-11-02T17:24:05Z",
+    "end_time": "2026-11-03T07:33:19Z",
+    "bbox": {
+      "min_lat": 33.599941,
+      "max_lat": 35.1,
+      "min_lon": 129.04,
+      "max_lon": 130.400043
+    },
+    "canonical_schema": "10-Column IMO A.1106(29) Compliant"
+  },
+  "newcamellia_single_bronze.csv": {
+    "record_count": 242,
+    "start_time": "2026-11-02T17:26:16Z",
+    "end_time": "2026-11-02T22:30:52Z",
+    "bbox": {
+      "min_lat": 33.600303,
+      "max_lat": 35.1,
+      "min_lon": 129.04,
+      "max_lon": 130.399767
+    },
+    "canonical_schema": "10-Column IMO A.1106(29) Compliant"
+  },
+  "pacificglory_bronze.csv": {
+    "record_count": 352,
+    "start_time": "2026-10-26T16:07:03Z",
+    "end_time": "2026-10-26T23:12:49Z",
+    "bbox": {
+      "min_lat": 33.60737,
+      "max_lat": 35.1028,
+      "min_lon": 129.0403,
+      "max_lon": 130.417361
+    },
+    "canonical_schema": "10-Column IMO A.1106(29) Compliant"
+  },
+  "testferry_bronze.csv": {
+    "record_count": 240,
+    "start_time": "2026-11-02T17:15:36Z",
+    "end_time": "2026-11-02T22:19:37Z",
+    "bbox": {
+      "min_lat": 33.6,
+      "max_lat": 35.1,
+      "min_lon": 129.04,
+      "max_lon": 130.4
     },
     "canonical_schema": "10-Column IMO A.1106(29) Compliant"
   }

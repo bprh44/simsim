@@ -1,0 +1,344 @@
+{
+  ".github/workflows/python-package.yml": {
+    "mtime": 1793031375.5399697,
+    "seen": 1793641143.0706155,
+    "ast_hash": "cf766975da743fd9e850cb28e7207cf0",
+    "semantic_hash": "cf766975da743fd9e850cb28e7207cf0"
+  },
+  "data/bronze/bronze_ingestion_audit.json": {
+    "mtime": 1793640460.7820525,
+    "seen": 1793641143.0706155,
+    "ast_hash": "dfbc76f3faf2982f8d100ad24a83ed8c",
+    "semantic_hash": "dfbc76f3faf2982f8d100ad24a83ed8c"
+  },
+  "data/gold/fleet/fleet_current_state.json": {
+    "mtime": 1793640461.4777088,
+    "seen": 1793641143.0706155,
+    "ast_hash": "005952c073a8fdb144236917b33b591b",
+    "semantic_hash": "005952c073a8fdb144236917b33b591b"
+  },
+  "data/gold/h3_corridors.json": {
+    "mtime": 1793640461.4742045,
+    "seen": 1793641143.0706155,
+    "ast_hash": "936d525a5ac83e15f6843bba19c44dd5",
+    "semantic_hash": "936d525a5ac83e15f6843bba19c44dd5"
+  },
+  "data/gold/markov_models/top3_predictions.json": {
+    "mtime": 1793640461.4777088,
+    "seen": 1793641143.0706155,
+    "ast_hash": "11f0ea93e06025fcdb0b5e01d41b5466",
+    "semantic_hash": "11f0ea93e06025fcdb0b5e01d41b5466"
+  },
+  "data/gold/markov_models/transition_matrix_res8.json": {
+    "mtime": 1793640461.4757066,
+    "seen": 1793641143.0706155,
+    "ast_hash": "be3240706c555c8d7f5e839fc3ecd620",
+    "semantic_hash": "be3240706c555c8d7f5e839fc3ecd620"
+  },
+  "data/gold/predictability/jsd_metrics.json": {
+    "mtime": 1793640461.4777088,
+    "seen": 1793641143.0706155,
+    "ast_hash": "f1f4bc30d3494abe39a4087ef01065a8",
+    "semantic_hash": "f1f4bc30d3494abe39a4087ef01065a8"
+  },
+  "data/gold/voyages_summary.json": {
+    "mtime": 1793640461.470205,
+    "seen": 1793641143.0706155,
+    "ast_hash": "b24c275f5c30293d835eb8b2fcb6ad1c",
+    "semantic_hash": "b24c275f5c30293d835eb8b2fcb6ad1c"
+  },
+  "data/silver/busan_silver.json": {
+    "mtime": 1793640460.8188531,
+    "seen": 1793641143.0706155,
+    "ast_hash": "726b6abb45b107ca7326903610c8e505",
+    "semantic_hash": "726b6abb45b107ca7326903610c8e505"
+  },
+  "data/silver/new_camellia_silver.json": {
+    "mtime": 1793640461.4106057,
+    "seen": 1793641143.0706155,
+    "ast_hash": "4df73055796a2721ba71b3dc93ee07f5",
+    "semantic_hash": "4df73055796a2721ba71b3dc93ee07f5"
+  },
+  "data/silver/silver_kinematics_audit.json": {
+    "mtime": 1793640461.4218183,
+    "seen": 1793641143.0706155,
+    "ast_hash": "a2064a8970d825b80bad5018275fa1fa",
+    "semantic_hash": "a2064a8970d825b80bad5018275fa1fa"
+  },
+  "generate_test_routes.py": {
+    "mtime": 1792148932.4666007,
+    "seen": 1793641143.0706155,
+    "ast_hash": "c73dbcd80ec784d3c095d9f3b14b01d1",
+    "semantic_hash": "c73dbcd80ec784d3c095d9f3b14b01d1"
+  },
+  "lakehouse_pipeline.py": {
+    "mtime": 1793640540.588735,
+    "seen": 1793641143.0706155,
+    "ast_hash": "29bc41dbeb2d59280b625d7a93742969",
+    "semantic_hash": "29bc41dbeb2d59280b625d7a93742969"
+  },
+  "reference/commercial_ferry_routes.json": {
+    "mtime": 1793034469.7137747,
+    "seen": 1793641143.0706155,
+    "ast_hash": "887ac221c1e052c13b247a8217b43baf",
+    "semantic_hash": "887ac221c1e052c13b247a8217b43baf"
+  },
+  "server.py": {
+    "mtime": 1793638297.814627,
+    "seen": 1793641143.0706155,
+    "ast_hash": "dba718c6e3717ca20b160db5f7791458",
+    "semantic_hash": "dba718c6e3717ca20b160db5f7791458"
+  },
+  "simulator_engine.py": {
+    "mtime": 1793629869.0880778,
+    "seen": 1793641143.0706155,
+    "ast_hash": "fa6df7799fa5b27692688b035efca67f",
+    "semantic_hash": "fa6df7799fa5b27692688b035efca67f"
+  },
+  "spatA/server.py": {
+    "mtime": 1793124351.2722423,
+    "seen": 1793641143.0706155,
+    "ast_hash": "c229abbb87b1804fce22457cd19aec89",
+    "semantic_hash": "c229abbb87b1804fce22457cd19aec89"
+  },
+  "spatA/static/js/map_config.js": {
+    "mtime": 1793118543.7564604,
+    "seen": 1793641143.0706155,
+    "ast_hash": "8074d26aadeb607b94cc62a837dfc87c",
+    "semantic_hash": "8074d26aadeb607b94cc62a837dfc87c"
+  },
+  "specs/001-simplified-telemetry-and-vessel-picker/asia_ports.js": {
+    "mtime": 1793031921.7897007,
+    "seen": 1793641143.0706155,
+    "ast_hash": "6e921ba7b1358cd9c3f56d27aec704c0",
+    "semantic_hash": "6e921ba7b1358cd9c3f56d27aec704c0"
+  },
+  "specs/001-simplified-telemetry-and-vessel-picker/asia_ports.json": {
+    "mtime": 1793029951.9079354,
+    "seen": 1793641143.0706155,
+    "ast_hash": "12afcf662ca8c6e8b8ea7b3462d51889",
+    "semantic_hash": "12afcf662ca8c6e8b8ea7b3462d51889"
+  },
+  "static/js/app_shell.js": {
+    "mtime": 1793640061.8386345,
+    "seen": 1793641143.0706155,
+    "ast_hash": "d6b3c9917ebbd23349de1ad5bbc5cba6",
+    "semantic_hash": "d6b3c9917ebbd23349de1ad5bbc5cba6"
+  },
+  "static/js/asia_ports.js": {
+    "mtime": 1793031921.7897007,
+    "seen": 1793641143.0706155,
+    "ast_hash": "6e921ba7b1358cd9c3f56d27aec704c0",
+    "semantic_hash": "6e921ba7b1358cd9c3f56d27aec704c0"
+  },
+  "static/js/commercial_ferry_routes.js": {
+    "mtime": 1793034469.714775,
+    "seen": 1793641143.0706155,
+    "ast_hash": "a8099136f27a0ba4311db7037495fd3a",
+    "semantic_hash": "a8099136f27a0ba4311db7037495fd3a"
+  },
+  "static/js/corridors_data.js": {
+    "mtime": 1793629980.4654636,
+    "seen": 1793641143.0706155,
+    "ast_hash": "56d436f6b170bd689a7ef9a9f35bbd1b",
+    "semantic_hash": "56d436f6b170bd689a7ef9a9f35bbd1b"
+  },
+  "static/js/map_config.js": {
+    "mtime": 1793118543.7564604,
+    "seen": 1793641143.0706155,
+    "ast_hash": "8074d26aadeb607b94cc62a837dfc87c",
+    "semantic_hash": "8074d26aadeb607b94cc62a837dfc87c"
+  },
+  "static/js/simulator.js": {
+    "mtime": 1793640508.8248339,
+    "seen": 1793641143.0706155,
+    "ast_hash": "2ed476c4c6bb590bef63aff03e01c3f4",
+    "semantic_hash": "2ed476c4c6bb590bef63aff03e01c3f4"
+  },
+  "static/js/simulator_engine_client.js": {
+    "mtime": 1793031069.1685603,
+    "seen": 1793641143.0706155,
+    "ast_hash": "eed5260279454a9b57cb3f8c615e8980",
+    "semantic_hash": "eed5260279454a9b57cb3f8c615e8980"
+  },
+  "static/js/vessel_specs_data.js": {
+    "mtime": 1793030953.1462176,
+    "seen": 1793641143.0706155,
+    "ast_hash": "b1480b23805082ecbbb219dcd6c7a2da",
+    "semantic_hash": "b1480b23805082ecbbb219dcd6c7a2da"
+  },
+  "static/js/viewer.js": {
+    "mtime": 1793113557.0347443,
+    "seen": 1793641143.0706155,
+    "ast_hash": "ebde6a28fba6c5fb1b7cee2fd672983a",
+    "semantic_hash": "ebde6a28fba6c5fb1b7cee2fd672983a"
+  },
+  "vessel_specs.json": {
+    "mtime": 1792148526.828235,
+    "seen": 1793641143.0706155,
+    "ast_hash": "0ae2638bbd32d2e3e1f58093f545d599",
+    "semantic_hash": "0ae2638bbd32d2e3e1f58093f545d599"
+  },
+  "GEMINI.md": {
+    "mtime": 1793545714.6642306,
+    "seen": 1793641143.0706155,
+    "ast_hash": "62a3f013c89d9e7cc311f496b97f7eea",
+    "semantic_hash": "62a3f013c89d9e7cc311f496b97f7eea"
+  },
+  "README.md": {
+    "mtime": 1793113717.1242177,
+    "seen": 1793641143.0706155,
+    "ast_hash": "779e54a32d1935c75b2e37111e2ab045",
+    "semantic_hash": "779e54a32d1935c75b2e37111e2ab045"
+  },
+  "analytics.html": {
+    "mtime": 1793124576.435063,
+    "seen": 1793641143.0706155,
+    "ast_hash": "c2c83ffac9224d23e9f66588fcb5a1c0",
+    "semantic_hash": "c2c83ffac9224d23e9f66588fcb5a1c0"
+  },
+  "data/README.md": {
+    "mtime": 1793640461.4787092,
+    "seen": 1793641143.0706155,
+    "ast_hash": "810350d0917d48ff04500a7315a4d97d",
+    "semantic_hash": "810350d0917d48ff04500a7315a4d97d"
+  },
+  "data/bronze/README.md": {
+    "mtime": 1793640460.7820525,
+    "seen": 1793641143.0706155,
+    "ast_hash": "cf8da4d71429160dd722f6e333617d2b",
+    "semantic_hash": "cf8da4d71429160dd722f6e333617d2b"
+  },
+  "data/gold/README.md": {
+    "mtime": 1793640461.4787092,
+    "seen": 1793641143.0706155,
+    "ast_hash": "a4b8a96e6796815d782e0e443ae992be",
+    "semantic_hash": "a4b8a96e6796815d782e0e443ae992be"
+  },
+  "data/raw/README.md": {
+    "mtime": 1793640460.5944698,
+    "seen": 1793641143.0706155,
+    "ast_hash": "7ea2ae8692c7add8a13d4c1b92fa8846",
+    "semantic_hash": "7ea2ae8692c7add8a13d4c1b92fa8846"
+  },
+  "data/silver/README.md": {
+    "mtime": 1793640461.4218183,
+    "seen": 1793641143.0706155,
+    "ast_hash": "fc20ad37332d924c9caec4d6b0ec7b52",
+    "semantic_hash": "fc20ad37332d924c9caec4d6b0ec7b52"
+  },
+  "index.html": {
+    "mtime": 1793639971.6348398,
+    "seen": 1793641143.0706155,
+    "ast_hash": "41f4b63e6fb15e8f468c35cd03726536",
+    "semantic_hash": "41f4b63e6fb15e8f468c35cd03726536"
+  },
+  "ports.html": {
+    "mtime": 1793640085.0270288,
+    "seen": 1793641143.0706155,
+    "ast_hash": "1120bdfcaa295e10e6c3af6ed402b7dd",
+    "semantic_hash": "1120bdfcaa295e10e6c3af6ed402b7dd"
+  },
+  "reference/archive/viewer_legacy.html": {
+    "mtime": 1793125524.376835,
+    "seen": 1793641143.0706155,
+    "ast_hash": "8de61ac3fcc6056a7205d91dac2ec68b",
+    "semantic_hash": "8de61ac3fcc6056a7205d91dac2ec68b"
+  },
+  "spatA/PRD_SDD.md": {
+    "mtime": 1793122645.0997825,
+    "seen": 1793641143.0706155,
+    "ast_hash": "ce38bfab03520da5dd79a2b44bdfb33e",
+    "semantic_hash": "ce38bfab03520da5dd79a2b44bdfb33e"
+  },
+  "spatA/README.md": {
+    "mtime": 1793124368.3215919,
+    "seen": 1793641143.0706155,
+    "ast_hash": "618a64df18e0f0fbed168d27b6385936",
+    "semantic_hash": "618a64df18e0f0fbed168d27b6385936"
+  },
+  "spatA/designs/stitch_maritime_fleet_risk_dashboard/DESIGN.md": {
+    "mtime": 1793552830.0099442,
+    "seen": 1793641143.0706155,
+    "ast_hash": "6d99a114b8b97ef27ed2d3b80bbc0813",
+    "semantic_hash": "6d99a114b8b97ef27ed2d3b80bbc0813"
+  },
+  "spatA/designs/stitch_maritime_fleet_risk_dashboard/code.html": {
+    "mtime": 1793552829.9949439,
+    "seen": 1793641143.0706155,
+    "ast_hash": "2ad1793057124659c85f6be640f94d02",
+    "semantic_hash": "2ad1793057124659c85f6be640f94d02"
+  },
+  "spatA/designs/stitch_telemetry_system_analysis_v2/mission_control_telemetry_operations/code.html": {
+    "mtime": 1793637808.2969747,
+    "seen": 1793641143.0706155,
+    "ast_hash": "18092f02086371edfdaa3ff759b42546",
+    "semantic_hash": "18092f02086371edfdaa3ff759b42546"
+  },
+  "spatA/designs/stitch_telemetry_system_analysis_v2/viewer.html": {
+    "mtime": 1793638116.9376874,
+    "seen": 1793641143.0706155,
+    "ast_hash": "2c5ca01bff08513c71899a53fd1878a3",
+    "semantic_hash": "2c5ca01bff08513c71899a53fd1878a3"
+  },
+  "spatA/index.html": {
+    "mtime": 1793640085.028531,
+    "seen": 1793641143.0706155,
+    "ast_hash": "8dd5194ec8e8f2c0adda1bd76d8c1bd8",
+    "semantic_hash": "8dd5194ec8e8f2c0adda1bd76d8c1bd8"
+  },
+  "spatA/requirements.txt": {
+    "mtime": 1793124357.2289846,
+    "seen": 1793641143.0706155,
+    "ast_hash": "4a103cbaef3a8835a76e9a045778c40c",
+    "semantic_hash": "4a103cbaef3a8835a76e9a045778c40c"
+  },
+  "specs/001-simplified-telemetry-and-vessel-picker/plan.md": {
+    "mtime": 1793030096.339699,
+    "seen": 1793641143.0706155,
+    "ast_hash": "9b8d2866c9928976eb4aea43d55418ec",
+    "semantic_hash": "9b8d2866c9928976eb4aea43d55418ec"
+  },
+  "specs/001-simplified-telemetry-and-vessel-picker/ports_visualizer.html": {
+    "mtime": 1793031992.2979345,
+    "seen": 1793641143.0706155,
+    "ast_hash": "8708ef46ec894df6cd122e842d9d167e",
+    "semantic_hash": "8708ef46ec894df6cd122e842d9d167e"
+  },
+  "specs/001-simplified-telemetry-and-vessel-picker/spec.md": {
+    "mtime": 1793029663.9730444,
+    "seen": 1793641143.0706155,
+    "ast_hash": "101c97d9e3df90704e868290ea259ecb",
+    "semantic_hash": "101c97d9e3df90704e868290ea259ecb"
+  },
+  "specs/001-simplified-telemetry-and-vessel-picker/tasks.md": {
+    "mtime": 1793030846.9008677,
+    "seen": 1793641143.0706155,
+    "ast_hash": "081f0d6718f3b3ac347e25eee08e4ba5",
+    "semantic_hash": "081f0d6718f3b3ac347e25eee08e4ba5"
+  },
+  "specs/ais_spatiotemporal_analytics_tool_prd_sdd.md": {
+    "mtime": 1793122645.0997825,
+    "seen": 1793641143.0706155,
+    "ast_hash": "ce38bfab03520da5dd79a2b44bdfb33e",
+    "semantic_hash": "ce38bfab03520da5dd79a2b44bdfb33e"
+  },
+  "viewer.html": {
+    "mtime": 1793640085.028531,
+    "seen": 1793641143.0706155,
+    "ast_hash": "87c3758cb22a3d8a892ae6a91917fa54",
+    "semantic_hash": "87c3758cb22a3d8a892ae6a91917fa54"
+  },
+  "spatA/designs/stitch_maritime_fleet_risk_dashboard/screen.png": {
+    "mtime": 1793552830.0059428,
+    "seen": 1793641143.0706155,
+    "ast_hash": "378079d64f8a12a3b441b03452e7cfcf",
+    "semantic_hash": "378079d64f8a12a3b441b03452e7cfcf"
+  },
+  "spatA/designs/stitch_telemetry_system_analysis_v2/mission_control_telemetry_operations/screen.png": {
+    "mtime": 1793637808.3205206,
+    "seen": 1793641143.0706155,
+    "ast_hash": "35794b17190bc914742f3dddadd25358",
+    "semantic_hash": "35794b17190bc914742f3dddadd25358"
+  }
+}

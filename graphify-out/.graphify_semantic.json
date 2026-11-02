@@ -1,0 +1,566 @@
+{
+  "nodes": [
+    {
+      "id": "gemini_guidelines_mapconfig",
+      "label": "MapConfig Zero-UI Exposure Standard",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\GEMINI.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Basemap API keys must never be exposed or managed via UI dialogs or inputs."
+    },
+    {
+      "id": "gemini_guidelines_sidebar",
+      "label": "Solid Sidebar Rule 2 Standard",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\GEMINI.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Solid structural sidebar flush against edge with tactile translateX(6px) hover."
+    },
+    {
+      "id": "readme_project_overview",
+      "label": "Palantir Foundry Maritime Simulator",
+      "file_type": "document",
+      "source_file": "D:\\Vibe\\simsim\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "readme_architecture_medallion",
+      "label": "Medallion Data Lake Architecture",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "data_medallion_pipeline",
+      "label": "4-Tier Medallion Data Lakehouse",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "data_raw_tier",
+      "label": "Raw Lake Tier (Pristine Landing)",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\raw\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "data_bronze_tier",
+      "label": "Bronze Lake Tier (Canonical 10-Col Schema)",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\bronze\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "data_silver_tier",
+      "label": "Silver Lake Tier (Derived Kinematics & H3)",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\silver\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "data_gold_tier",
+      "label": "Gold Lake Tier (Curated Maritime Intelligence)",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "data_silver_kinematics",
+      "label": "Point-to-Point Derived Kinematics",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\silver\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Derived speed, heading bearing, acceleration, and ROT calculated directly between consecutive pings."
+    },
+    {
+      "id": "data_gold_4_kpis",
+      "label": "4 Mission-Critical Telemetry KPIs",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Distance, Average Speed, Prior Dwell Time, and Composite Safety Index (0-100)."
+    },
+    {
+      "id": "data_gold_markov_models",
+      "label": "3rd-Order Markov Chain Predictor",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "P(C_t+1 | C_t, C_t-1, C_t-2) transition matrices over Uber H3 Res 8 hexagonal cells."
+    },
+    {
+      "id": "data_gold_top3_spectrum",
+      "label": "Top-3 Hex Prediction Spectrum",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Rank 1 Red (#ef4444), Rank 2 Orange (#f97316), Rank 3 Yellow (#eab308)."
+    },
+    {
+      "id": "data_gold_jsd_metric",
+      "label": "Jensen-Shannon Divergence Predictability",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Measures maritime route canalization predictability from 0.0 (uniform random) to 1.0 (deterministic corridor)."
+    },
+    {
+      "id": "data_gold_fleet_state",
+      "label": "Real-Time Fleet State Deck",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Active vessels state, operational corridors, and real-time risk scores."
+    },
+    {
+      "id": "spata_spatial_analytics_workbench",
+      "label": "spatA Spatial Analytics Workbench",
+      "file_type": "document",
+      "source_file": "D:\\Vibe\\simsim\\spatA\\PRD_SDD.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "spata_spatial_indexing_h3",
+      "label": "Uber H3 Spatial Hexagonal System",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\spatA\\PRD_SDD.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "specs_telemetry_picker",
+      "label": "Telemetry & Vessel Picker Feature",
+      "file_type": "document",
+      "source_file": "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\spec.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ui_telemetry_viewer",
+      "label": "Voyage Telemetry Cockpit & Fleet Overview",
+      "file_type": "document",
+      "source_file": "D:\\Vibe\\simsim\\viewer.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ui_simulation_studio",
+      "label": "AIS Synthetic Route Simulator & Studio",
+      "file_type": "document",
+      "source_file": "D:\\Vibe\\simsim\\index.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ui_ports_geofences",
+      "label": "Ports & H3 Geofences Viewer",
+      "file_type": "document",
+      "source_file": "D:\\Vibe\\simsim\\ports.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ui_universal_app_shell",
+      "label": "Universal Palantir App Shell",
+      "file_type": "concept",
+      "source_file": "D:\\Vibe\\simsim\\static\\js\\app_shell.js",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Single source of truth for header, navigation tabs, User 007 badge, and solid sidebar."
+    }
+  ],
+  "edges": [
+    {
+      "source": "data_raw_tier",
+      "target": "data_bronze_tier",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_bronze_tier",
+      "target": "data_silver_tier",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_silver_tier",
+      "target": "data_gold_tier",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_medallion_pipeline",
+      "target": "data_raw_tier",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_medallion_pipeline",
+      "target": "data_gold_tier",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_silver_tier",
+      "target": "data_silver_kinematics",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\silver\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_gold_tier",
+      "target": "data_gold_4_kpis",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_gold_tier",
+      "target": "data_gold_markov_models",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_gold_markov_models",
+      "target": "data_gold_top3_spectrum",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_gold_tier",
+      "target": "data_gold_jsd_metric",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "data_gold_tier",
+      "target": "data_gold_fleet_state",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\gold\\README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "spata_spatial_analytics_workbench",
+      "target": "spata_spatial_indexing_h3",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\spatA\\PRD_SDD.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "spata_spatial_analytics_workbench",
+      "target": "data_medallion_pipeline",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "D:\\Vibe\\simsim\\spatA\\PRD_SDD.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "specs_telemetry_picker",
+      "target": "data_gold_4_kpis",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\spec.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_telemetry_viewer",
+      "target": "data_gold_4_kpis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\viewer.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_telemetry_viewer",
+      "target": "data_gold_top3_spectrum",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\viewer.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_telemetry_viewer",
+      "target": "data_silver_kinematics",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\viewer.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_telemetry_viewer",
+      "target": "gemini_guidelines_sidebar",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\viewer.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_telemetry_viewer",
+      "target": "gemini_guidelines_mapconfig",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\viewer.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_simulation_studio",
+      "target": "gemini_guidelines_sidebar",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\index.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_simulation_studio",
+      "target": "gemini_guidelines_mapconfig",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\index.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_ports_geofences",
+      "target": "spata_spatial_indexing_h3",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\ports.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_telemetry_viewer",
+      "target": "ui_universal_app_shell",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\viewer.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_simulation_studio",
+      "target": "ui_universal_app_shell",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\index.html",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ui_ports_geofences",
+      "target": "ui_universal_app_shell",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\ports.html",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "medallion_data_flow",
+      "label": "Medallion Trajectory Processing Flow",
+      "nodes": [
+        "data_raw_tier",
+        "data_bronze_tier",
+        "data_silver_tier",
+        "data_gold_tier"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\data\\README.md"
+    },
+    {
+      "id": "cross_screen_app_shell",
+      "label": "Cross-Tool App Shell Integration",
+      "nodes": [
+        "ui_simulation_studio",
+        "ui_telemetry_viewer",
+        "ui_ports_geofences",
+        "ui_universal_app_shell"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "D:\\Vibe\\simsim\\static\\js\\app_shell.js"
+    }
+  ],
+  "input_tokens": 12500,
+  "output_tokens": 3200,
+  "coverage": {
+    "D:\\Vibe\\simsim\\GEMINI.md": 35,
+    "D:\\Vibe\\simsim\\README.md": 100,
+    "D:\\Vibe\\simsim\\data\\README.md": 45,
+    "D:\\Vibe\\simsim\\data\\raw\\README.md": 12,
+    "D:\\Vibe\\simsim\\data\\bronze\\README.md": 10,
+    "D:\\Vibe\\simsim\\data\\silver\\README.md": 15,
+    "D:\\Vibe\\simsim\\data\\gold\\README.md": 16,
+    "D:\\Vibe\\simsim\\spatA\\PRD_SDD.md": 309,
+    "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\spec.md": 121,
+    "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\plan.md": 89,
+    "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\tasks.md": 80,
+    "D:\\Vibe\\simsim\\specs\\ais_spatiotemporal_analytics_tool_prd_sdd.md": 309,
+    "D:\\Vibe\\simsim\\viewer.html": 3601,
+    "D:\\Vibe\\simsim\\index.html": 740,
+    "D:\\Vibe\\simsim\\ports.html": 597,
+    "D:\\Vibe\\simsim\\analytics.html": 14,
+    "D:\\Vibe\\simsim\\spatA\\README.md": 63,
+    "D:\\Vibe\\simsim\\spatA\\requirements.txt": 8,
+    "D:\\Vibe\\simsim\\reference\\archive\\viewer_legacy.html": 175,
+    "D:\\Vibe\\simsim\\spatA\\index.html": 250,
+    "D:\\Vibe\\simsim\\spatA\\designs\\stitch_maritime_fleet_risk_dashboard\\DESIGN.md": 254,
+    "D:\\Vibe\\simsim\\spatA\\designs\\stitch_maritime_fleet_risk_dashboard\\code.html": 685,
+    "D:\\Vibe\\simsim\\spatA\\designs\\stitch_telemetry_system_analysis_v2\\mission_control_telemetry_operations\\code.html": 623,
+    "D:\\Vibe\\simsim\\spatA\\designs\\stitch_telemetry_system_analysis_v2\\viewer.html": 3598,
+    "D:\\Vibe\\simsim\\specs\\001-simplified-telemetry-and-vessel-picker\\ports_visualizer.html": 842
+  }
+}

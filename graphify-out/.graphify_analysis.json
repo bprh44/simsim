@@ -1,0 +1,464 @@
+{
+  "communities": {
+    "0": [
+      "basemodel",
+      "bisect",
+      "post",
+      "random",
+      "server_get_random_vessel",
+      "server_rationale_344",
+      "server_rationale_366",
+      "server_simulate_ais",
+      "server_simulaterequest",
+      "simulator_engine",
+      "simulator_engine_auto_generate_dimensions",
+      "simulator_engine_build_trajectory",
+      "simulator_engine_build_trajectory_get_target_sog",
+      "simulator_engine_build_trajectory_interpolate_coord_at_dist",
+      "simulator_engine_compute_searoute",
+      "simulator_engine_destination_point",
+      "simulator_engine_generate_multi_leg_simulation",
+      "simulator_engine_generate_random_callsign",
+      "simulator_engine_generate_random_imo",
+      "simulator_engine_generate_random_mmsi",
+      "simulator_engine_generate_random_name",
+      "simulator_engine_get_vessel_type_metadata",
+      "simulator_engine_haversine_distance_m",
+      "simulator_engine_initial_bearing_deg",
+      "simulator_engine_load_wpi_ports",
+      "simulator_engine_py_any",
+      "simulator_engine_py_datetime",
+      "simulator_engine_rationale_1",
+      "simulator_engine_rationale_1020",
+      "simulator_engine_rationale_1064",
+      "simulator_engine_rationale_446",
+      "simulator_engine_rationale_457",
+      "simulator_engine_rationale_466",
+      "simulator_engine_rationale_474",
+      "simulator_engine_rationale_488",
+      "simulator_engine_rationale_507",
+      "simulator_engine_rationale_522",
+      "simulator_engine_rationale_575",
+      "simulator_engine_rationale_60",
+      "simulator_engine_rationale_72",
+      "simulator_engine_rationale_780",
+      "simulator_engine_rationale_84",
+      "simulator_engine_rationale_976",
+      "simulator_engine_save_trajectory_to_csv",
+      "simulator_engine_smooth_polyline_catmull_rom",
+      "typing"
+    ],
+    "1": [
+      "datetime",
+      "fastapi",
+      "fastapi_middleware_cors",
+      "fastapi_responses",
+      "fastapi_staticfiles",
+      "glob",
+      "pydantic",
+      "server",
+      "server_download_csv",
+      "server_generate_mmsi",
+      "server_get_corridors",
+      "server_get_datalake_markov",
+      "server_get_datalake_status",
+      "server_get_datalake_status_list_files",
+      "server_get_datalake_voyages",
+      "server_get_fleet_positions",
+      "server_get_ports",
+      "server_get_run_details",
+      "server_get_vessel_types",
+      "server_list_runs",
+      "server_py_get",
+      "server_rationale_1",
+      "server_rationale_118",
+      "server_rationale_480",
+      "server_rationale_548",
+      "server_rationale_609",
+      "server_rationale_624",
+      "server_rationale_665",
+      "server_rationale_675",
+      "server_rationale_76",
+      "server_rationale_82",
+      "server_rationale_90",
+      "server_serve_analytics",
+      "server_serve_any_html",
+      "server_serve_asia_ports_js",
+      "server_serve_index",
+      "server_serve_ports",
+      "server_serve_ports_visualizer",
+      "server_serve_viewer",
+      "spata_server",
+      "spata_server_health_check",
+      "spata_server_py_get",
+      "spata_server_rationale_1",
+      "spata_server_serve_index",
+      "sys",
+      "uvicorn"
+    ],
+    "2": [
+      "static_js_simulator",
+      "static_js_simulator_addwaypoint",
+      "static_js_simulator_availablecorridors",
+      "static_js_simulator_basetilelayers",
+      "static_js_simulator_calculatetotaldistancenm",
+      "static_js_simulator_clearroute",
+      "static_js_simulator_closeresultmodal",
+      "static_js_simulator_currentvesselspecs",
+      "static_js_simulator_deletewaypointat",
+      "static_js_simulator_executesimulation",
+      "static_js_simulator_freehandrawpoints",
+      "static_js_simulator_getsogcolor",
+      "static_js_simulator_historicalvessels",
+      "static_js_simulator_initdrawingtools",
+      "static_js_simulator_initformcontrols",
+      "static_js_simulator_initmap",
+      "static_js_simulator_insertwaypointat",
+      "static_js_simulator_loadcorridor",
+      "static_js_simulator_loadcorridors",
+      "static_js_simulator_loadvesselhistory",
+      "static_js_simulator_loadvesselspecs",
+      "static_js_simulator_midpointmarkers",
+      "static_js_simulator_onmapclick",
+      "static_js_simulator_onmousedownfreehand",
+      "static_js_simulator_onmousemovefreehand",
+      "static_js_simulator_onmouseupfreehand",
+      "static_js_simulator_onvesseltypechanged",
+      "static_js_simulator_perpendiculardistance",
+      "static_js_simulator_populatevesseltypedropdown",
+      "static_js_simulator_randomizeallvesselfields",
+      "static_js_simulator_randomizesinglefield",
+      "static_js_simulator_removelastwaypoint",
+      "static_js_simulator_renderroute",
+      "static_js_simulator_rendersimulationresults",
+      "static_js_simulator_reverseroute",
+      "static_js_simulator_setbasemap",
+      "static_js_simulator_setdrawingmode",
+      "static_js_simulator_setlocaldefaulttimestamp",
+      "static_js_simulator_showresultmodal",
+      "static_js_simulator_simplifypath",
+      "static_js_simulator_updateestimatedhud",
+      "static_js_simulator_updatewaypointtable",
+      "static_js_simulator_waypointmarkers",
+      "static_js_simulator_waypoints"
+    ],
+    "3": [
+      "csv",
+      "generate_test_routes",
+      "h3",
+      "json",
+      "lakehouse_pipeline",
+      "lakehouse_pipeline_calculate_bearing",
+      "lakehouse_pipeline_compute_kinematics_for_series",
+      "lakehouse_pipeline_ensure_directories",
+      "lakehouse_pipeline_haversine_nm",
+      "lakehouse_pipeline_parse_iso_dt",
+      "lakehouse_pipeline_populate_raw_tier",
+      "lakehouse_pipeline_process_bronze_tier",
+      "lakehouse_pipeline_process_gold_tier",
+      "lakehouse_pipeline_process_silver_tier",
+      "lakehouse_pipeline_py_any",
+      "lakehouse_pipeline_py_datetime",
+      "lakehouse_pipeline_rationale_1",
+      "lakehouse_pipeline_rationale_106",
+      "lakehouse_pipeline_rationale_213",
+      "lakehouse_pipeline_rationale_31",
+      "lakehouse_pipeline_rationale_339",
+      "lakehouse_pipeline_rationale_371",
+      "lakehouse_pipeline_rationale_41",
+      "lakehouse_pipeline_rationale_471",
+      "lakehouse_pipeline_rationale_51",
+      "lakehouse_pipeline_rationale_60",
+      "lakehouse_pipeline_rationale_73",
+      "lakehouse_pipeline_rationale_766",
+      "lakehouse_pipeline_run_pipeline",
+      "lakehouse_pipeline_segment_into_voyages",
+      "lakehouse_pipeline_write_root_readme",
+      "math",
+      "os",
+      "server_get_vessels_history",
+      "server_rationale_276",
+      "urllib_request"
+    ],
+    "4": [
+      "data_bronze_tier",
+      "data_gold_4_kpis",
+      "data_gold_fleet_state",
+      "data_gold_jsd_metric",
+      "data_gold_markov_models",
+      "data_gold_tier",
+      "data_gold_top3_spectrum",
+      "data_medallion_pipeline",
+      "data_raw_tier",
+      "data_silver_kinematics",
+      "data_silver_tier",
+      "gemini_guidelines_mapconfig",
+      "gemini_guidelines_sidebar",
+      "spata_spatial_analytics_workbench",
+      "spata_spatial_indexing_h3",
+      "specs_telemetry_picker",
+      "ui_ports_geofences",
+      "ui_simulation_studio",
+      "ui_telemetry_viewer",
+      "ui_universal_app_shell"
+    ],
+    "5": [
+      "github_workflows_python_package",
+      "github_workflows_python_package_build_runs_on",
+      "github_workflows_python_package_build_steps",
+      "github_workflows_python_package_build_strategy",
+      "github_workflows_python_package_jobs",
+      "github_workflows_python_package_jobs_build",
+      "github_workflows_python_package_matrix_python_version",
+      "github_workflows_python_package_name",
+      "github_workflows_python_package_on",
+      "github_workflows_python_package_on_pull_request",
+      "github_workflows_python_package_on_push",
+      "github_workflows_python_package_pull_request_branches",
+      "github_workflows_python_package_push_branches",
+      "github_workflows_python_package_steps_name",
+      "github_workflows_python_package_steps_run",
+      "github_workflows_python_package_steps_uses",
+      "github_workflows_python_package_steps_with",
+      "github_workflows_python_package_strategy_fail_fast",
+      "github_workflows_python_package_strategy_matrix",
+      "github_workflows_python_package_with_python_version"
+    ],
+    "6": [
+      "static_js_viewer",
+      "static_js_viewer_basetilelayers",
+      "static_js_viewer_calculatedistancenm",
+      "static_js_viewer_getsogcolor",
+      "static_js_viewer_initcsvuploadhandlers",
+      "static_js_viewer_initviewercontrols",
+      "static_js_viewer_initviewermap",
+      "static_js_viewer_loadrundetails",
+      "static_js_viewer_loadrunslist",
+      "static_js_viewer_parseuploadedcsv",
+      "static_js_viewer_renderrunonmap",
+      "static_js_viewer_setplaybackposition",
+      "static_js_viewer_setviewerbasemap",
+      "static_js_viewer_startplayback",
+      "static_js_viewer_stopplayback",
+      "static_js_viewer_toggleplayback"
+    ],
+    "7": [
+      "docref_rfc_4180",
+      "static_js_simulator_engine_client",
+      "static_js_simulator_engine_client_catmullromspline",
+      "static_js_simulator_engine_client_downloadcsvblob",
+      "static_js_simulator_engine_client_generaterandomimo",
+      "static_js_simulator_engine_client_generaterandomname",
+      "static_js_simulator_engine_client_gethistoricalvesselsfromlocalstorage",
+      "static_js_simulator_engine_client_getsavedrunsfromlocalstorage",
+      "static_js_simulator_engine_client_haversinedistancem",
+      "static_js_simulator_engine_client_initialbearingdeg",
+      "static_js_simulator_engine_client_pingstocsvstring",
+      "static_js_simulator_engine_client_saveruntolocalstorage",
+      "static_js_simulator_engine_client_simulatetrajectoryclient"
+    ],
+    "8": [
+      "static_js_app_shell",
+      "static_js_app_shell_mountappshell",
+      "static_js_app_shell_renderheaderhtml",
+      "static_js_app_shell_rendersidebarhtml"
+    ],
+    "9": [
+      "spata_static_js_map_config",
+      "spata_static_js_map_config_geturlparamkey",
+      "spata_static_js_map_config_rationale_105"
+    ],
+    "10": [
+      "static_js_map_config",
+      "static_js_map_config_geturlparamkey",
+      "static_js_map_config_rationale_105"
+    ],
+    "11": [
+      "readme_architecture_medallion"
+    ],
+    "12": [
+      "readme_project_overview"
+    ],
+    "13": [
+      "specs_001_simplified_telemetry_and_vessel_picker_asia_ports"
+    ],
+    "14": [
+      "static_js_asia_ports"
+    ],
+    "15": [
+      "static_js_commercial_ferry_routes"
+    ],
+    "16": [
+      "static_js_corridors_data"
+    ],
+    "17": [
+      "static_js_vessel_specs_data"
+    ]
+  },
+  "cohesion": {
+    "0": 0.06280193236714976,
+    "1": 0.06763285024154589,
+    "2": 0.0919661733615222,
+    "3": 0.09523809523809523,
+    "4": 0.13157894736842105,
+    "5": 0.1,
+    "6": 0.25833333333333336,
+    "7": 0.21794871794871795,
+    "8": 0.8333333333333334,
+    "9": 0.6666666666666666,
+    "10": 0.6666666666666666,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0
+  },
+  "gods": [
+    {
+      "id": "static_js_simulator_renderroute",
+      "label": "renderRoute()",
+      "degree": 13
+    },
+    {
+      "id": "simulator_engine_build_trajectory",
+      "label": "build_trajectory()",
+      "degree": 11
+    },
+    {
+      "id": "server_simulate_ais",
+      "label": "simulate_ais()",
+      "degree": 9
+    },
+    {
+      "id": "static_js_simulator_loadcorridor",
+      "label": "loadCorridor()",
+      "degree": 9
+    },
+    {
+      "id": "lakehouse_pipeline_compute_kinematics_for_series",
+      "label": "compute_kinematics_for_series()",
+      "degree": 8
+    },
+    {
+      "id": "simulator_engine_get_vessel_type_metadata",
+      "label": "get_vessel_type_metadata()",
+      "degree": 8
+    },
+    {
+      "id": "simulator_engine_generate_multi_leg_simulation",
+      "label": "generate_multi_leg_simulation()",
+      "degree": 8
+    },
+    {
+      "id": "lakehouse_pipeline_process_silver_tier",
+      "label": "process_silver_tier()",
+      "degree": 7
+    },
+    {
+      "id": "lakehouse_pipeline_run_pipeline",
+      "label": "run_pipeline()",
+      "degree": 7
+    },
+    {
+      "id": "server_get_fleet_positions",
+      "label": "get_fleet_positions()",
+      "degree": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Voyage Telemetry Cockpit & Fleet Overview",
+      "target": "Universal Palantir App Shell",
+      "source_files": [
+        "viewer.html",
+        "static/js/app_shell.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (doc ↔ code); connects across different repos/directories"
+    },
+    {
+      "source": "AIS Synthetic Route Simulator & Studio",
+      "target": "Universal Palantir App Shell",
+      "source_files": [
+        "index.html",
+        "static/js/app_shell.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (doc ↔ code); connects across different repos/directories"
+    },
+    {
+      "source": "Ports & H3 Geofences Viewer",
+      "target": "Universal Palantir App Shell",
+      "source_files": [
+        "ports.html",
+        "static/js/app_shell.js"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "crosses file types (doc ↔ code); connects across different repos/directories"
+    },
+    {
+      "source": "spatA Spatial Analytics Workbench",
+      "target": "4-Tier Medallion Data Lakehouse",
+      "source_files": [
+        "spatA/PRD_SDD.md",
+        "data/README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "references",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Voyage Telemetry Cockpit & Fleet Overview",
+      "target": "Point-to-Point Derived Kinematics",
+      "source_files": [
+        "viewer.html",
+        "data/silver/README.md"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "connects across different repos/directories; peripheral node `Point-to-Point Derived Kinematics` unexpectedly reaches hub `Voyage Telemetry Cockpit & Fleet Overview`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `simulate_ais()` connect `Community 0` to `Community 1`, `Community 3`?",
+      "why": "High betweenness centrality (0.018) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `RFC-4180`, `Palantir Foundry Maritime Simulator`, `Medallion Data Lake Architecture` to the rest of the system?",
+      "why": "6 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06280193236714976 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06763285024154589 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.0919661733615222 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 3` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 4` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.13157894736842105 - nodes in this community are weakly interconnected."
+    }
+  ]
+}

@@ -20,3 +20,11 @@ When integrating third-party basemaps requiring an API key (CARTO, Mapbox, etc.)
 - Consumer code exclusively calls factory methods:
   - `MapConfig.createSingleLayers()` for standard tile layers.
   - `MapConfig.createCompositeLayers()` for composite basemap + label overlay groups.
+
+## Sticky Section Headers / Group Headers (UI Standard)
+
+When designing telemetry tables, chronological log feeds, audit lists, or time-series data streams across the workspace:
+- **Sticky Section Milestone Banners**:
+  - Use sticky section / group headers (`position: sticky; top: ...`) to demarcate calendar dates, voyage milestones, or operational phases (e.g. Departure IDLE / Port Dwell, Open Sea Transit, Arrival IDLE Formed).
+  - Implement colliding/push behavior where incoming section headers naturally push the active header off-screen.
+  - Milestone banners must feature high-contrast tactical styling, clear calendar/clock icons, date stamps, descriptive phase titles, and distinct status badges (e.g., `DWELL / MOORED`, `ACTIVE VOYAGE`, `BERTHED / ARRIVED`).

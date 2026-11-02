@@ -1,36 +1,128 @@
 {
   "busan_silver.csv": {
     "record_count": 746,
-    "voyages_count": 1,
+    "idle_pings_count": 188,
+    "voyages_count": 2,
     "speed_metrics": {
       "avg_calc_speed_kts": 5.02,
       "max_calc_speed_kts": 20.46
     },
     "acceleration_metrics": {
       "mean_accel_kts_min": -0.1,
-      "max_accel_kts_min": 35.83,
-      "min_accel_kts_min": -30.0
+      "max_accel_kts_min": 35.85,
+      "min_accel_kts_min": -30.01
     },
     "rot_metrics": {
-      "max_rot_deg_min": 541.26
+      "max_rot_deg_min": 541.38
     },
-    "safety_index_mean": 90.1
+    "safety_index_mean": 91.7
+  },
+  "koreavoyager8_silver.csv": {
+    "record_count": 263,
+    "idle_pings_count": 0,
+    "voyages_count": 1,
+    "speed_metrics": {
+      "avg_calc_speed_kts": 21.22,
+      "max_calc_speed_kts": 25.58
+    },
+    "acceleration_metrics": {
+      "mean_accel_kts_min": 0.08,
+      "max_accel_kts_min": 12.57,
+      "min_accel_kts_min": -15.1
+    },
+    "rot_metrics": {
+      "max_rot_deg_min": 1.77
+    },
+    "safety_index_mean": 92.8
   },
   "new_camellia_silver.csv": {
     "record_count": 20043,
-    "voyages_count": 1,
+    "idle_pings_count": 3607,
+    "voyages_count": 60,
     "speed_metrics": {
       "avg_calc_speed_kts": 19.72,
       "max_calc_speed_kts": 35.0
     },
     "acceleration_metrics": {
       "mean_accel_kts_min": 3.54,
-      "max_accel_kts_min": 1846.8,
-      "min_accel_kts_min": -391.2
+      "max_accel_kts_min": 1846.58,
+      "min_accel_kts_min": -391.06
     },
     "rot_metrics": {
-      "max_rot_deg_min": 10393.26
+      "max_rot_deg_min": 10395.06
     },
-    "safety_index_mean": 81.2
+    "safety_index_mean": 83.6
+  },
+  "newcamellia_multi_silver.csv": {
+    "record_count": 492,
+    "idle_pings_count": 54,
+    "voyages_count": 2,
+    "speed_metrics": {
+      "avg_calc_speed_kts": 20.05,
+      "max_calc_speed_kts": 35.0
+    },
+    "acceleration_metrics": {
+      "mean_accel_kts_min": 3.44,
+      "max_accel_kts_min": 1655.64,
+      "min_accel_kts_min": -16.48
+    },
+    "rot_metrics": {
+      "max_rot_deg_min": 65.27
+    },
+    "safety_index_mean": 87.1
+  },
+  "newcamellia_single_silver.csv": {
+    "record_count": 242,
+    "idle_pings_count": 0,
+    "voyages_count": 1,
+    "speed_metrics": {
+      "avg_calc_speed_kts": 21.79,
+      "max_calc_speed_kts": 28.9
+    },
+    "acceleration_metrics": {
+      "mean_accel_kts_min": 0.02,
+      "max_accel_kts_min": 14.05,
+      "min_accel_kts_min": -13.01
+    },
+    "rot_metrics": {
+      "max_rot_deg_min": 1.14
+    },
+    "safety_index_mean": 88.8
+  },
+  "pacificglory_silver.csv": {
+    "record_count": 352,
+    "idle_pings_count": 0,
+    "voyages_count": 1,
+    "speed_metrics": {
+      "avg_calc_speed_kts": 16.11,
+      "max_calc_speed_kts": 20.25
+    },
+    "acceleration_metrics": {
+      "mean_accel_kts_min": -0.16,
+      "max_accel_kts_min": 15.06,
+      "min_accel_kts_min": -21.01
+    },
+    "rot_metrics": {
+      "max_rot_deg_min": 11.89
+    },
+    "safety_index_mean": 93.1
+  },
+  "testferry_silver.csv": {
+    "record_count": 240,
+    "idle_pings_count": 0,
+    "voyages_count": 1,
+    "speed_metrics": {
+      "avg_calc_speed_kts": 21.57,
+      "max_calc_speed_kts": 28.56
+    },
+    "acceleration_metrics": {
+      "mean_accel_kts_min": -0.11,
+      "max_accel_kts_min": 18.29,
+      "min_accel_kts_min": -19.36
+    },
+    "rot_metrics": {
+      "max_rot_deg_min": 0.78
+    },
+    "safety_index_mean": 87.7
   }
 }

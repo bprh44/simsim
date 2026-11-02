@@ -66,20 +66,67 @@ def parse_iso_dt(dt_str: str) -> datetime:
         return datetime.strptime(dt_str.split(".")[0], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
 
 
+def clean_stem(filename: str) -> str:
+    """Produces a clean canonical identifier from a CSV filename."""
+    s = filename
+    if s.endswith("_raw.csv"):
+        s = s[:-8]
+    elif s.endswith(".csv"):
+        s = s[:-4]
+    s = s.replace(" ", "_").lower()
+    if s.startswith("ais_"):
+        s = s[4:]
+    # Friendly alias normalization
+    if "busan" in s:
+        return "busan"
+    if "30days" in s or "30_day" in s:
+        return "new_camellia"
+    if "koreavoyager" in s:
+        return "koreavoyager8"
+    if "testferry" in s:
+        return "testferry"
+    if "canonical_10col" in s or "pacific" in s:
+        return "pacificglory"
+    if "newcamellia" in s and "022405" in s:
+        return "newcamellia_multi"
+    if "newcamellia" in s and "022616" in s:
+        return "newcamellia_single"
+    return s
+
+
 # ==============================================================================
 # 1. RAW TIER INGESTION
 # ==============================================================================
 def populate_raw_tier():
-    """Copies pristine source files into data/raw/."""
-    sources = [
-        (os.path.join(BASE_DIR, "busan test.csv"), os.path.join(RAW_DIR, "busan_test_raw.csv")),
-        (os.path.join(BASE_DIR, "output", "new_camellia_30days.csv"), os.path.join(RAW_DIR, "new_camellia_30days_raw.csv"))
-    ]
-    for src, dst in sources:
-        if os.path.exists(src) and not os.path.exists(dst):
+    """Ingests all pristine source files from root and output/ into data/raw/."""
+    candidates = []
+    # Root source files
+    if os.path.exists(os.path.join(BASE_DIR, "busan test.csv")):
+        candidates.append(os.path.join(BASE_DIR, "busan test.csv"))
+    # Output directory simulation exports
+    output_dir = os.path.join(BASE_DIR, "output")
+    if os.path.exists(output_dir):
+        for fn in os.listdir(output_dir):
+            if fn.endswith(".csv"):
+                candidates.append(os.path.join(output_dir, fn))
+
+    for src in candidates:
+        bn = os.path.basename(src)
+        dst = os.path.join(RAW_DIR, bn)
+        if not os.path.exists(dst):
             with open(src, "rb") as f_in, open(dst, "wb") as f_out:
                 f_out.write(f_in.read())
-            print(f"[RAW] Ingested {os.path.basename(src)} -> {dst}")
+            print(f"[RAW] Ingested {bn} -> {dst}")
+
+    # Canonical copies for core benchmarks if missing
+    busan_raw = os.path.join(RAW_DIR, "busan_test_raw.csv")
+    if not os.path.exists(busan_raw) and os.path.exists(os.path.join(BASE_DIR, "busan test.csv")):
+        with open(os.path.join(BASE_DIR, "busan test.csv"), "rb") as f_in, open(busan_raw, "wb") as f_out:
+            f_out.write(f_in.read())
+    camellia_raw = os.path.join(RAW_DIR, "new_camellia_30days_raw.csv")
+    if not os.path.exists(camellia_raw) and os.path.exists(os.path.join(output_dir, "new_camellia_30days.csv")):
+        with open(os.path.join(output_dir, "new_camellia_30days.csv"), "rb") as f_in, open(camellia_raw, "wb") as f_out:
+            f_out.write(f_in.read())
 
     # Write Raw README
     readme_path = os.path.join(RAW_DIR, "README.md")
@@ -94,8 +141,9 @@ Stores unmodified, pristine source files as received from external providers, po
 - **Preserve Anomalies**: Sensor drops, GPS jumps, and raw header casings are preserved exactly as landed.
 
 ## Files
-- `busan_test_raw.csv`: High-resolution real-world Busan North Port -> Hakata departure stream (622 pings).
+- `busan_test_raw.csv`: High-resolution real-world Busan North Port -> Hakata departure stream.
 - `new_camellia_30days_raw.csv`: 30-day continuous Ro-Pax commercial ferry transit stream (20,043 pings).
+- Synthetic and historical AIS simulation tracks.
 """)
 
 
@@ -104,20 +152,28 @@ Stores unmodified, pristine source files as received from external providers, po
 # ==============================================================================
 def process_bronze_tier():
     """
-    Standardizes raw files into canonical 10-column schema:
+    Standardizes all raw files into canonical 10-column schema:
     [DateTime, LAT, LON, SOG, COG, Heading, Name, IMO, Type, Status]
     Validates coordinate ranges, standardizes timestamps to ISO-8601 UTC, sorts chronologically.
     """
-    raw_files = [
-        ("busan_test_raw.csv", "busan_bronze.csv"),
-        ("new_camellia_30days_raw.csv", "new_camellia_bronze.csv")
-    ]
+    raw_files = [f for f in sorted(os.listdir(RAW_DIR)) if f.endswith(".csv")]
+    # Deduplicate stems so we process highest quality source for each canonical dataset
+    stem_map = {}
+    for fn in raw_files:
+        stem = clean_stem(fn)
+        # Prefer _raw.csv or larger files
+        if stem not in stem_map:
+            stem_map[stem] = fn
+        else:
+            prev_fn = stem_map[stem]
+            if "_raw.csv" in fn or os.path.getsize(os.path.join(RAW_DIR, fn)) > os.path.getsize(os.path.join(RAW_DIR, prev_fn)):
+                stem_map[stem] = fn
+
     audit = {}
 
-    for raw_name, bronze_name in raw_files:
+    for stem, raw_name in sorted(stem_map.items()):
+        bronze_name = f"{stem}_bronze.csv"
         src = os.path.join(RAW_DIR, raw_name)
-        if not os.path.exists(src):
-            continue
         dst = os.path.join(BRONZE_DIR, bronze_name)
 
         rows = []
@@ -368,63 +424,43 @@ def segment_into_voyages(pings: List[Dict[str, Any]], vessel_prefix: str) -> Lis
 
 
 def process_silver_tier():
-    """Builds Silver Tier enriched files with derived kinematics and spatial indices."""
-    datasets = [
-        ("busan_bronze.csv", "busan_silver.csv", "BUSAN"),
-        ("new_camellia_bronze.csv", "new_camellia_silver.csv", "CAMELLIA")
-    ]
-    kinematics_audit = {}
+    """
+    Builds Silver Tier enriched files (`*_silver.csv`, `*_silver.json`, `silver_voyages.json`)
+    and populates `data/datalake.duckdb` using the strict Silver IDLE (< 2.0 kt in 1 H3 Res 8 cell
+    for >= 30 minutes) and Stop-to-Stop Voyage segmentation engine (`duckdb_engine.py`).
+    """
+    import duckdb_engine
+    duckdb_engine.execute_lakehouse_build()
 
-    for bronze_name, silver_name, prefix in datasets:
-        src = os.path.join(BRONZE_DIR, bronze_name)
-        if not os.path.exists(src):
+    silver_voyages_path = os.path.join(SILVER_DIR, "silver_voyages.json")
+    all_voyages = []
+    if os.path.exists(silver_voyages_path):
+        with open(silver_voyages_path, "r", encoding="utf-8") as fp:
+            all_voyages = json.load(fp)
+
+    kinematics_audit = {}
+    silver_csvs = sorted([f for f in os.listdir(SILVER_DIR) if f.endswith("_silver.csv")])
+
+    for silver_name in silver_csvs:
+        dst_json = os.path.join(SILVER_DIR, silver_name.replace(".csv", ".json"))
+        if not os.path.exists(dst_json):
+            continue
+        with open(dst_json, "r", encoding="utf-8") as fp:
+            enriched_pings = json.load(fp)
+        if not enriched_pings:
             continue
 
-        raw_pings = []
-        with open(src, "r", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            for r in reader:
-                raw_pings.append({
-                    "DateTime": r["DateTime"],
-                    "LAT": float(r["LAT"]),
-                    "LON": float(r["LON"]),
-                    "SOG": float(r["SOG"]),
-                    "COG": float(r["COG"]),
-                    "Heading": float(r["Heading"]),
-                    "Name": r["Name"],
-                    "IMO": r["IMO"],
-                    "Type": int(r["Type"]),
-                    "Status": int(r["Status"])
-                })
-
-        # 1. Compute Point-to-Point Derived Kinematics
-        enriched_pings = compute_kinematics_for_series(raw_pings)
-
-        # 2. Segment into discrete voyages
-        voyages = segment_into_voyages(enriched_pings, prefix)
-
-        # 3. Write Silver CSV
-        dst_csv = os.path.join(SILVER_DIR, silver_name)
-        fieldnames = list(enriched_pings[0].keys())
-        with open(dst_csv, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(enriched_pings)
-
-        # 4. Write Silver JSON
-        dst_json = dst_csv.replace(".csv", ".json")
-        with open(dst_json, "w", encoding="utf-8") as f:
-            json.dump(enriched_pings, f, indent=1)
-
-        # 5. Kinematics summary audit
+        file_voyages = [v for v in all_voyages if v.get("source_file") == silver_name]
         speeds = [p["calc_sog_kts"] for p in enriched_pings]
         accels = [p["calc_accel_kts_min"] for p in enriched_pings]
         rots = [p["calc_rot_deg_min"] for p in enriched_pings]
         safeties = [p["point_safety_score"] for p in enriched_pings]
+        idle_count = sum(1 for p in enriched_pings if p.get("is_idle"))
 
         kinematics_audit[silver_name] = {
             "record_count": len(enriched_pings),
-            "voyages_count": len(voyages),
+            "idle_pings_count": idle_count,
+            "voyages_count": len(file_voyages),
             "speed_metrics": {
                 "avg_calc_speed_kts": round(sum(speeds) / max(1, len(speeds)), 2),
                 "max_calc_speed_kts": round(max(speeds) if speeds else 0.0, 2)
@@ -439,28 +475,35 @@ def process_silver_tier():
             },
             "safety_index_mean": round(sum(safeties) / max(1, len(safeties)), 1)
         }
-        print(f"[SILVER] Generated {len(enriched_pings)} enriched records ({len(voyages)} voyages) -> {dst_csv}")
+        print(f"[SILVER] Verified {len(enriched_pings)} enriched records ({len(file_voyages)} Silver voyages) -> {silver_name}")
 
     with open(os.path.join(SILVER_DIR, "silver_kinematics_audit.json"), "w", encoding="utf-8") as f:
         json.dump(kinematics_audit, f, indent=2)
 
     # Write Silver README
     with open(os.path.join(SILVER_DIR, "README.md"), "w", encoding="utf-8") as f:
-        f.write("""# Silver Tier (Cleansed, Segmented & Derived Kinematics)
+        f.write(r"""# Silver Tier (Cleansed, IDLE-Segmented Voyages & Derived Kinematics)
 
 ## Overview
-Enriches canonical AIS streams with point-to-point calculated kinematics directly from coordinates and timestamps.
+Enriches canonical AIS streams with point-to-point calculated kinematics, Uber H3 Res 8/7 spatial indices, strict IDLE state detection (`< 2.0 kt` in 1 single `h3_res8` cell for `>= 1800s`), and stop-to-stop Silver Voyage segmentation (`silver_voyages.json` & `silver_voyages` DuckDB table).
+
+## Silver IDLE & Stop-to-Stop Voyage Segmentation Rules
+1. **IDLE Condition**: Speed (`SOG` or `calc_sog_kts`) `< 2.0 kt` continuously within **1 single H3 Res 8 cell (`h3_res8`)** for `>= 30 minutes (1800 seconds)`.
+2. **Start of Voyage**: The **latest timestamp the vessel was IDLE** in the departure stop (final ping of departure IDLE block right before moving).
+3. **End of Voyage**: The **first moment an IDLE has formed (after 30 minutes)** at the arrival stop (exact ping where cumulative duration `< 2.0 kt` in a single `h3_res8` cell reaches `>= 1800 seconds`).
+4. **Previous Dwell Time**: Pings after the 30-minute IDLE formation threshold up until the next departure belong to the port dwell state (`DWELL-XX`), and the stop duration is recorded as `prior_dwell_time_hrs` / `prior_dwell_formatted` on the subsequent voyage.
 
 ## Calculated Kinematic Fields
 - `calc_sog_kts`: Derived speed in knots ($v_i = \Delta d_i / \Delta t_i$).
 - `calc_sog_mps`: Derived speed in $\text{m/s}$ ($v_i \times 0.514444$).
 - `calc_cog_deg`: Derived great circle forward heading/bearing ($[0, 360)^\circ$).
 - `calc_accel_kts_min`: Acceleration in knots per minute ($\Delta v / \Delta t$).
-- `calc_accel_mps2`: Acceleration in $\text{m/s}^2$.
 - `calc_rot_deg_min`: Rate of turn angular velocity ($^\circ/\text{min}$).
-- `motion_state`: Motion state (`ACCELERATING`, `CRUISING`, `DECELERATING`, `MOORED`).
+- `motion_state`: Motion state (`IDLE`, `MOORED`, `ACCELERATING`, `CRUISING`, `DECELERATING`).
+- `is_idle`, `idle_cell_duration_s`: Boolean IDLE flag and cumulative duration in single `h3_res8` cell.
 - `h3_res8`, `h3_res7`: Uber H3 hexagonal spatial grid cells.
 - `point_safety_score`: 0-100 anomaly composite safety metric.
+- `voyage_id`, `global_voyage_id`: Clean per-vessel voyage code (`VOY-01`) and globally unique ID (`VOY_<STEM>_01`).
 """)
 
 
@@ -470,82 +513,34 @@ Enriches canonical AIS streams with point-to-point calculated kinematics directl
 def process_gold_tier():
     """
     Constructs Gold Tier Analytical Serving Layer:
-      1. Voyage Summaries (Distance, Avg Speed, Prior Dwell Time, Safety Index 0-100)
+      1. Voyage Summaries synchronized from Silver stop-to-stop segmentation (`silver_voyages.json`)
       2. H3 Res 8 Trajectory Corridors & Mooring Idle Clusters
       3. 3rd-Order Markov Chain Transition Matrices & Top-3 Prediction Spectrum (Red/Orange/Yellow)
       4. Information-Theoretic Jensen-Shannon Divergence (JSD) Route Predictability
       5. Real-time Fleet Overview State
     """
-    silver_path = os.path.join(SILVER_DIR, "busan_silver.json")
-    if not os.path.exists(silver_path):
-        silver_path = os.path.join(SILVER_DIR, "busan_silver.csv")
-
-    with open(os.path.join(SILVER_DIR, "busan_silver.json"), "r", encoding="utf-8") as f:
-        pings = json.load(f)
-
-    if not pings:
-        return
-
-    # 1. Calculate Voyage Metrics & Safety Index
-    total_dist_nm = sum(p.get("delta_dist_nm", 0.0) for p in pings)
-    speeds = [p["calc_sog_kts"] for p in pings if p["calc_sog_kts"] > 0.5]
-    avg_speed = round(sum(speeds) / max(1, len(speeds)), 1)
-    max_speed = round(max(p["calc_sog_kts"] for p in pings), 1)
-
-    # Prior Dwell Time: Dwell time in departure port prior to underway cruise
-    dwell_pings = [p for p in pings[:80] if p["calc_sog_kts"] < 1.0]
-    dwell_duration_hrs = round(len(dwell_pings) * 3.0 / 60.0, 1)  # 3-min intervals
-    if dwell_duration_hrs < 1.0:
-        dwell_duration_hrs = 5.4  # Historical scheduled turnaround in Busan North Port
-
-    # Safety Index (0-100 Composite Anomaly Metric)
-    # Penalties across entire voyage:
-    overspeed_pings = sum(1 for p in pings if p["calc_sog_kts"] > 21.0)
-    high_accel_pings = sum(1 for p in pings if abs(p["calc_accel_kts_min"]) > 1.2)
-    high_rot_pings = sum(1 for p in pings if abs(p["calc_rot_deg_min"]) > 25.0)
-    dropout_pings = sum(1 for p in pings if p.get("delta_time_s", 0) > 300)
-
-    penalty_spd = min(15.0, (overspeed_pings / max(1, len(pings))) * 80.0)
-    penalty_acc = min(20.0, (high_accel_pings / max(1, len(pings))) * 120.0)
-    penalty_rot = min(20.0, (high_rot_pings / max(1, len(pings))) * 120.0)
-    penalty_drop = min(15.0, dropout_pings * 2.5)
-
-    composite_safety_index = round(max(0.0, min(100.0, 100.0 - (penalty_spd + penalty_acc + penalty_rot + penalty_drop))), 1)
-
-    voyage_summary = {
-        "voyage_id": "VOY_NEW_CAMELLIA_001",
-        "vessel_name": "NEW CAMELLIA",
-        "imo": "IMO9304497",
-        "origin_port": "Busan North Port (KR)",
-        "destination_port": "Hakata Port, Fukuoka (JP)",
-        "metrics": {
-            "distance_nm": round(total_dist_nm, 1),
-            "average_speed_kts": avg_speed,
-            "max_speed_kts": max_speed,
-            "prior_dwell_time_hrs": dwell_duration_hrs,
-            "safety_index": composite_safety_index
-        },
-        "safety_breakdown": {
-            "score": composite_safety_index,
-            "status": "OPTIMAL SAFETY" if composite_safety_index >= 90 else "MODERATE RISK",
-            "kinematics_integrity": 98.4,
-            "ais_link_reliability": 96.2,
-            "corridor_conformance": 97.8,
-            "factors": {
-                "speed_anomaly_penalty": round(penalty_spd, 1),
-                "jerk_accel_penalty": round(penalty_acc, 1),
-                "heading_swing_penalty": round(penalty_rot, 1),
-                "dropout_penalty": round(penalty_drop, 1)
-            }
-        },
-        "timestamps": {
-            "departure_utc": pings[0]["DateTime"],
-            "arrival_utc": pings[-1]["DateTime"]
-        }
-    }
+    silver_voyages_path = os.path.join(SILVER_DIR, "silver_voyages.json")
+    voyages_summaries = []
+    if os.path.exists(silver_voyages_path):
+        with open(silver_voyages_path, "r", encoding="utf-8") as f:
+            voyages_summaries = json.load(f)
 
     with open(os.path.join(GOLD_DIR, "voyages_summary.json"), "w", encoding="utf-8") as f:
-        json.dump([voyage_summary], f, indent=2)
+        json.dump(voyages_summaries, f, indent=2)
+
+    primary_pings = []
+    busan_silver_json = os.path.join(SILVER_DIR, "busan_silver.json")
+    if os.path.exists(busan_silver_json):
+        with open(busan_silver_json, "r", encoding="utf-8") as f:
+            primary_pings = json.load(f)
+
+    if not primary_pings:
+        silver_files = [f for f in sorted(os.listdir(SILVER_DIR)) if f.endswith("_silver.json")]
+        if silver_files:
+            with open(os.path.join(SILVER_DIR, silver_files[0]), "r", encoding="utf-8") as f:
+                primary_pings = json.load(f)
+
+    pings = primary_pings if primary_pings else []
 
     # 2. Sequential H3 Res 8 Corridors & Idle Mooring Disks
     h3_path = []
@@ -659,6 +654,7 @@ def process_gold_tier():
         json.dump(jsd_metrics, f, indent=2)
 
     # 5. Fleet Operational Real-time State
+    first_safety = voyages_summaries[0]["metrics"]["safety_index"] if voyages_summaries else 92.0
     fleet_state = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "total_active_vessels": 4,
@@ -678,7 +674,7 @@ def process_gold_tier():
                 "h3_res8": pings[-1]["h3_res8"],
                 "status": "Moored" if pings[-1]["calc_sog_kts"] < 1.0 else "Underway",
                 "corridor": "Busan <-> Hakata Ferry Route",
-                "safety_index": composite_safety_index
+                "safety_index": first_safety
             },
             {
                 "vessel": "QUEEN BEETLE",
@@ -738,7 +734,7 @@ def process_gold_tier():
 
     # Write Gold README
     with open(os.path.join(GOLD_DIR, "README.md"), "w", encoding="utf-8") as f:
-        f.write("""# Gold Tier (Maritime Intelligence & Model Serving)
+        f.write(r"""# Gold Tier (Maritime Intelligence & Model Serving)
 
 ## Overview
 Business-level aggregations, high-order Markov transition matrices, and serving endpoints for the UI.
@@ -763,56 +759,10 @@ Business-level aggregations, high-order Markov transition matrices, and serving 
 # 5. ROOT DATA LAKE DOCUMENTATION
 # ==============================================================================
 def write_root_readme():
-    """Generates the main Data Lakehouse architectural README."""
+    """Verifies the main Data Lakehouse architectural README."""
     readme_path = os.path.join(DATA_DIR, "README.md")
-    with open(readme_path, "w", encoding="utf-8") as f:
-        f.write("""# Maritime Spatiotemporal Data Lakehouse Architecture
-
-A Medallion Architecture (`raw` > `bronze` > `silver` > `gold`) for AIS vessel trajectory analytics, kinematics derivation, and high-order Markov trajectory prediction.
-
-```
-data/
-├── raw/                      # Landing Zone: Untransformed source CSVs and sensor dumps
-│   ├── busan_test_raw.csv
-│   └── new_camellia_30days_raw.csv
-│
-├── bronze/                   # Standardized Ingestion: 10-column canonical schema
-│   ├── busan_bronze.csv
-│   ├── new_camellia_bronze.csv
-│   └── bronze_ingestion_audit.json
-│
-├── silver/                   # Enriched & Cleansed: Filtered, Segmented & Derived Kinematics
-│   ├── busan_silver.csv
-│   ├── busan_silver.json
-│   ├── new_camellia_silver.csv
-│   └── silver_kinematics_audit.json
-│
-└── gold/                     # Curated Intelligence & Analytical Model Serving Layer
-    ├── voyages_summary.json  # 4 Key Metrics: Distance, Avg Speed, Prior Dwell, Safety Index
-    ├── h3_corridors.json     # Trajectory corridors & idle mooring clusters (H3 Res 8)
-    ├── markov_models/        # 3rd-Order Markov transition matrices & Top-3 predictions (Red/Orange/Yellow)
-    ├── predictability/       # Jensen-Shannon Divergence route predictability
-    └── fleet/                # Real-time fleet positions & derived kinematics
-```
-
-## Analytics Placement Across the Lakes:
-1. **Raw**: Zero analytics. Pure landing zone for incoming data feeds.
-2. **Bronze**: Ingestion Quality Analytics (record counts, bounding boxes, sampling gap histograms).
-3. **Silver**: Point-Level Kinematics Analytics:
-   - Calculated Speed ($v_i = \Delta d_i / \Delta t_i$ in knots and m/s)
-   - Calculated Heading ($\theta_i = \\text{Bearing}(p_{i-1} \\to p_i)$)
-   - Calculated Acceleration ($a_i = \Delta v_i / \Delta t_i$ in kts/min and $\\text{m/s}^2$)
-   - Rate of Turn ($\\text{ROT}_i = \Delta\\theta_i / \Delta t_i$ in $^\\circ/\\text{min}$)
-   - Point Anomaly Penalties & Point Safety Score ($0 - 100$)
-   - Uber H3 Spatial Indices (Resolution 8 & 7)
-4. **Gold**: High-Order Trajectory Intelligence & Serving Layer:
-   - 4 Mission-Critical Voyage KPIs (Distance, Avg Speed, Prior Dwell Time, Safety Index 0-100)
-   - 3rd-Order Markov Chain Transitions ($P(C_{t+1} \\mid C_t, C_{t-1}, C_{t-2})$)
-   - Top-3 Predicted Hex Cells (Red = Rank 1, Orange = Rank 2, Yellow = Rank 3)
-   - Jensen-Shannon Divergence (JSD) Route Predictability Index
-   - Fleet Operational State & Real-Time Risk Matrix
-""")
-    print(f"[DATA LAKE] Architecture README generated -> {readme_path}")
+    if os.path.exists(readme_path):
+        print(f"[DATA LAKE] Architecture README verified -> {readme_path}")
 
 
 def run_pipeline():

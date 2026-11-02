@@ -670,10 +670,12 @@ async function executeSimulation() {
   }
 
   const btn = document.getElementById("btn-simulate");
+  if (!btn) return;
   btn.disabled = true;
   btn.innerHTML = `<span class="spinner"></span> Synthesizing AIS Telemetry...`;
 
-  const mmsiEl = document.getElementById("vessel-mmsi");
+  try {
+    const mmsiEl = document.getElementById("vessel-mmsi");
   const mmsi = mmsiEl ? (parseInt(mmsiEl.value) || 440123456) : 440123456;
   const imoEl = document.getElementById("vessel-imo");
   const imo = (imoEl ? imoEl.value.trim() : "") || "IMO9382104";
@@ -750,7 +752,6 @@ async function executeSimulation() {
     dropout_probability: allowDropouts ? 0.03 : 0.0
   };
 
-  try {
     let result = null;
 
     try {
@@ -781,10 +782,17 @@ async function executeSimulation() {
     renderSimulationResults(result);
 
   } catch (err) {
+    console.error("Simulation error:", err);
     alert("Simulation Error: " + err.message);
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = `<svg class="ui-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> <span id="btn-simulate-text">${numLegs > 1 ? `Generate ${numLegs}-Leg Scheduled Commute` : `Generate Synthetic AIS Telemetry`}</span>`;
+    const simBtn = document.getElementById("btn-simulate");
+    if (simBtn) {
+      simBtn.disabled = false;
+      simBtn.removeAttribute("disabled");
+      const numLegsEl = document.getElementById("num-legs");
+      const legsCount = numLegsEl ? (parseInt(numLegsEl.value) || 1) : 1;
+      simBtn.innerHTML = `<svg class="ui-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> <span id="btn-simulate-text">${legsCount > 1 ? `Generate ${legsCount}-Leg Scheduled Commute` : `Generate Synthetic AIS Telemetry`}</span>`;
+    }
   }
 }
 
@@ -866,17 +874,23 @@ function showResultModal(result) {
   sample.forEach(p => {
     const tr = document.createElement("tr");
     const dt = p.DateTime || p.BaseDateTime || "";
+    const sogVal = p.SOG != null ? parseFloat(p.SOG) : 0.0;
+    const cogVal = p.COG != null ? parseFloat(p.COG).toFixed(1) + '°' : '--';
+    const hdgVal = p.Heading != null ? parseFloat(p.Heading).toFixed(0) + '°' : '--';
+    const latVal = p.LAT != null ? parseFloat(p.LAT).toFixed(4) : '--';
+    const lonVal = p.LON != null ? parseFloat(p.LON).toFixed(4) : '--';
+
     tr.innerHTML = `
       <td>${dt.length > 19 ? dt.slice(0, 19).replace('T', ' ') : dt}</td>
-      <td>${p.LAT.toFixed(4)}</td>
-      <td>${p.LON.toFixed(4)}</td>
-      <td style="color: ${getSogColor(p.SOG)}; font-weight: bold;">${p.SOG.toFixed(1)}</td>
-      <td>${p.COG.toFixed(1)}°</td>
-      <td>${p.Heading.toFixed(0)}°</td>
-      <td><strong>${p.Name || p.VesselName}</strong></td>
-      <td><code>${p.IMO}</code></td>
-      <td>${p.Type || p.VesselType}</td>
-      <td>${p.Status === 5 ? '5 (Moored)' : p.Status}</td>
+      <td>${latVal}</td>
+      <td>${lonVal}</td>
+      <td style="color: ${getSogColor(sogVal)}; font-weight: bold;">${sogVal.toFixed(1)}</td>
+      <td>${cogVal}</td>
+      <td>${hdgVal}</td>
+      <td><strong>${p.Name || p.VesselName || 'UNKNOWN'}</strong></td>
+      <td><code>${p.IMO || '--'}</code></td>
+      <td>${p.Type || p.VesselType || '--'}</td>
+      <td>${p.Status === 5 ? '5 (Moored)' : (p.Status != null ? p.Status : 0)}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -885,7 +899,13 @@ function showResultModal(result) {
 }
 
 function closeResultModal() {
-  document.getElementById("results-modal").classList.remove("show");
+  const modal = document.getElementById("results-modal");
+  if (modal) modal.classList.remove("show");
+  const btn = document.getElementById("btn-simulate");
+  if (btn) {
+    btn.disabled = false;
+    btn.removeAttribute("disabled");
+  }
 }
 
 function initFormControls() {
