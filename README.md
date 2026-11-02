@@ -75,23 +75,38 @@ Open `http://127.0.0.1:8765/` in your browser.
 simsim/
 ├── .nojekyll                               # Disables Jekyll processing on GitHub Pages
 ├── index.html                              # Studio Cockpit (Draw & synthesize routes)
-├── viewer.html                             # Historical Replay & Playback Inspector
+├── viewer.html                             # Stitch v2 Voyage Telemetry Cockpit & Inspector
 ├── ports.html                              # Asian Ports & H3 Spatial Grid Explorer
-├── simulator_engine.py                     # Python trajectory generator (10-column schema)
-├── server.py                               # FastAPI web application server
+├── analytics.html                          # Redirects to spatA Analytics Workbench
+├── DATA_DICTIONARY.md                      # DuckDB Lakehouse schema & Medallion specifications
+├── duckdb_engine.py                        # Production-grade DuckDB columnar OLAP engine (100GB+ scale)
+├── lakehouse_pipeline.py                   # Automated Medallion ELT pipeline (Raw -> Bronze -> Silver -> Gold)
+├── simulator_engine.py                     # Trajectory synthesis engine (10-column canonical schema)
+├── server.py                               # FastAPI server with DuckDB REST API endpoints
+├── start_simulator.bat                     # Windows launch script (port 8765, Python 3.12 auto-detect)
+├── data/
+│   ├── datalake.duckdb                     # Persistent DuckDB database with compound & spatial indexes
+│   ├── raw/                                # Pristine landing zone for external AIS feeds
+│   ├── bronze/                             # Standardized 10-column canonical schema files
+│   ├── silver/                             # Segmented stop-to-stop voyages, kinematics, and H3 indices
+│   └── gold/                               # Voyage KPIs, 3rd-order Markov matrices, and predictability metrics
+├── spatA/                                  # AIS Spatiotemporal Analytics Workbench sub-project
+│   ├── index.html                          # spatA analytics workbench frontend
+│   └── server.py                           # spatA dedicated server
+├── scripts/                                # Utility, inspection, and analysis scripts
 ├── reference/
-│   └── wpi_nga_ports.csv                   # Authoritative NGA World Port Index
+│   ├── wpi_nga_ports.csv                   # Authoritative NGA World Port Index
+│   └── commercial_ferry_routes.json        # Curated East Asia commercial Ro-Pax ferry routes
 ├── static/
 │   ├── css/
-│   │   └── style.css                       # Modern maritime glassmorphic design system
+│   │   ├── style.css                       # Modern maritime glassmorphic design system
+│   │   └── shell.css                       # Solid sidebar & tactile micro-motion styling
 │   └── js/
 │       ├── map_config.js                   # Centralized CARTO API key & basemap configuration (SSOT)
+│       ├── app_shell.js                    # Cross-app sidebar and navigation shell
 │       ├── simulator.js                    # Studio UI & map interactions
 │       ├── simulator_engine_client.js      # Client-side trajectory engine (GitHub Pages)
-│       ├── viewer.js                       # Viewer playback, HUD, & CSV parser
-│       ├── corridors_data.js               # Preset maritime corridors
-│       ├── vessel_specs_data.js            # Historical vessel dimensional specs
-│       └── asia_ports.js                   # Asian ports dataset for H3 spatial grid
+│       └── ...                             # Spatial and corridor reference datasets
 └── specs/
     └── 001-simplified-telemetry-and-vessel-picker/
         ├── spec.md                         # Feature specification
