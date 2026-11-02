@@ -673,29 +673,50 @@ async function executeSimulation() {
   btn.disabled = true;
   btn.innerHTML = `<span class="spinner"></span> Synthesizing AIS Telemetry...`;
 
-  const mmsi = parseInt(document.getElementById("vessel-mmsi").value) || 440123456;
-  const imo = document.getElementById("vessel-imo").value.trim();
-  const vesselName = document.getElementById("vessel-name").value.trim() || "COMMUTER FERRY";
-  const callSign = document.getElementById("vessel-callsign").value.trim();
-  const vesselType = parseInt(document.getElementById("vessel-type-select").value) || 60;
-  const length = parseFloat(document.getElementById("vessel-length").value) || 140;
-  const width = parseFloat(document.getElementById("vessel-width").value) || 24;
-  const draft = parseFloat(document.getElementById("vessel-draft").value) || 6.5;
+  const mmsiEl = document.getElementById("vessel-mmsi");
+  const mmsi = mmsiEl ? (parseInt(mmsiEl.value) || 440123456) : 440123456;
+  const imoEl = document.getElementById("vessel-imo");
+  const imo = (imoEl ? imoEl.value.trim() : "") || "IMO9382104";
+  const nameEl = document.getElementById("vessel-name");
+  const vesselName = (nameEl ? nameEl.value.trim() : "") || "COMMUTER FERRY";
+  const callSignEl = document.getElementById("vessel-callsign");
+  const callSign = callSignEl ? callSignEl.value.trim() : "DSBF2";
+  const typeEl = document.getElementById("vessel-type-select");
+  const vesselType = typeEl ? (parseInt(typeEl.value) || 60) : 60;
+  const lenEl = document.getElementById("vessel-length");
+  const length = lenEl ? (parseFloat(lenEl.value) || 140) : 140;
+  const widthEl = document.getElementById("vessel-width");
+  const width = widthEl ? (parseFloat(widthEl.value) || 24) : 24;
+  const draftEl = document.getElementById("vessel-draft");
+  const draft = draftEl ? (parseFloat(draftEl.value) || 6.5) : 6.5;
 
-  const numLegs = parseInt(document.getElementById("num-legs").value) || 1;
-  const dwellHours = parseFloat(document.getElementById("port-dwell-hours").value) || 5.0;
-  const refTime = document.getElementById("ref-datetime").value;
-  const desiredSpeed = parseFloat(document.getElementById("desired-speed").value) || 18.0;
-  const allowOpenSea = document.getElementById("cb-open-seas").checked;
-  const allowDropouts = document.getElementById("cb-dropouts").checked;
+  const navStatusEl = document.getElementById("nav-status-select");
+  const navStatus = navStatusEl ? (parseInt(navStatusEl.value) || 0) : 0;
+
+  const numLegsEl = document.getElementById("num-legs");
+  const numLegs = numLegsEl ? (parseInt(numLegsEl.value) || 1) : 1;
+  const dwellEl = document.getElementById("port-dwell-hours");
+  const dwellHours = dwellEl ? (parseFloat(dwellEl.value) || 5.0) : 5.0;
+  const refTimeEl = document.getElementById("ref-datetime");
+  const refTime = refTimeEl ? refTimeEl.value : null;
+  const speedEl = document.getElementById("desired-speed");
+  const desiredSpeed = speedEl ? (parseFloat(speedEl.value) || 18.0) : 18.0;
+  const allowOpenSeaEl = document.getElementById("cb-open-seas");
+  const allowOpenSea = allowOpenSeaEl ? allowOpenSeaEl.checked : true;
+  const allowDropoutsEl = document.getElementById("cb-dropouts");
+  const allowDropouts = allowDropoutsEl ? allowDropoutsEl.checked : true;
 
   // Anomaly config
   let anomalyConfig = null;
-  const enableAnomaly = document.getElementById("cb-enable-anomaly").checked;
+  const cbAnomEl = document.getElementById("cb-enable-anomaly");
+  const enableAnomaly = cbAnomEl ? cbAnomEl.checked : false;
   if (enableAnomaly) {
-    const targetLeg = parseInt(document.getElementById("anomaly-target-leg").value) || 1;
-    const anomType = document.getElementById("anomaly-type-select").value;
-    const paramVal = parseFloat(document.getElementById("anomaly-param-value").value) || 3.0;
+    const targetLegEl = document.getElementById("anomaly-target-leg");
+    const targetLeg = targetLegEl ? (parseInt(targetLegEl.value) || 1) : 1;
+    const anomTypeEl = document.getElementById("anomaly-type-select");
+    const anomType = anomTypeEl ? anomTypeEl.value : "delay";
+    const paramValEl = document.getElementById("anomaly-param-value");
+    const paramVal = paramValEl ? (parseFloat(paramValEl.value) || 3.0) : 3.0;
 
     anomalyConfig = {
       enabled: true,
@@ -948,9 +969,12 @@ function initFormControls() {
   });
 
   // Preset Selector
-  document.getElementById("preset-select").addEventListener("change", (e) => {
-    if (e.target.value) loadCorridor(e.target.value);
-  });
+  const presetSelectEl = document.getElementById("preset-select");
+  if (presetSelectEl) {
+    presetSelectEl.addEventListener("change", (e) => {
+      if (e.target.value) loadCorridor(e.target.value);
+    });
+  }
 
   // Reverse route button
   const btnReverse = document.getElementById("btn-reverse-route");

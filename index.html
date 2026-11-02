@@ -45,6 +45,103 @@
       height: 100% !important;
       background: #070a12 !important;
     }
+
+    /* Force Solid Dark Tactical Form Inputs (Overrides Tailwind Forms White Background) */
+    input[type="text"],
+    input[type="number"],
+    input[type="datetime-local"],
+    input[type="date"],
+    input[type="time"],
+    input[type="search"],
+    input[type="email"],
+    input[type="password"],
+    input:not([type]),
+    select,
+    textarea,
+    .input-field {
+      background-color: #0d1527 !important;
+      color: #f0f6fc !important;
+      border: 1px solid rgba(72, 110, 165, 0.35) !important;
+      border-radius: 6px !important;
+      padding: 7px 10px !important;
+      font-size: 12px !important;
+      outline: none !important;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease !important;
+    }
+
+    .input-field.mono,
+    input.mono {
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 11px !important;
+      letter-spacing: -0.2px !important;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="datetime-local"]:focus,
+    input[type="date"]:focus,
+    input[type="time"]:focus,
+    input[type="search"]:focus,
+    input:not([type]):focus,
+    select:focus,
+    textarea:focus,
+    .input-field:focus {
+      background-color: #111c33 !important;
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+      color: #ffffff !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #64748b !important;
+    }
+
+    select option {
+      background-color: #090e1a !important;
+      color: #f0f6fc !important;
+      padding: 6px 10px !important;
+    }
+
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.85) hue-rotate(180deg) brightness(1.2) !important;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px !important;
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-radius: 3px !important;
+      border: none !important;
+      outline: none !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+      border: 2px solid #090B10;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      background: #7dd3fc;
+    }
   </style>
 </head>
 <body class="bg-[#090B10] text-[#E2E8F0] antialiased select-none font-sans min-h-screen">
@@ -208,8 +305,33 @@
     <!-- Left Configuration Sidebar -->
     <aside class="sidebar" id="sidebar">
 
-      <!-- Corridor Details & Reverse Action -->
+      <!-- Corridor Preset & Details -->
       <section class="panel-section" style="padding-bottom: 12px;">
+        <!-- Commute Corridor Preset Selector -->
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="preset-select" style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: #38bdf8;">Standard Commute Corridor:</span>
+            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#1164AF]/20 text-[#38bdf8] font-bold border border-[#1164AF]/30">VERIFIED</span>
+          </label>
+          <select id="preset-select" class="input-field">
+            <option value="busan_fukuoka" selected>Busan &lt;-&gt; Fukuoka (Hakata) [Camellia / Beetle]</option>
+            <option value="busan_shimonoseki">Busan &lt;-&gt; Shimonoseki [Pukwan / Kanpu]</option>
+            <option value="busan_osaka">Busan &lt;-&gt; Osaka [PanStar Dream / Seto Sea]</option>
+            <option value="busan_tsushima">Busan &lt;-&gt; Tsushima (Hitakatsu) [High-Speed 1h 15m]</option>
+            <option value="incheon_weihai">Incheon &lt;-&gt; Weihai (Shandong) [Weidong Ferry]</option>
+            <option value="incheon_qingdao">Incheon &lt;-&gt; Qingdao [Jiaozhou Bay Fairway]</option>
+            <option value="incheon_dalian">Incheon &lt;-&gt; Dalian [Dain Ferry]</option>
+            <option value="busan_shanghai">Busan &lt;-&gt; Shanghai (Waigaoqiao / Yangshan)</option>
+            <option value="shanghai_osaka">Shanghai &lt;-&gt; Osaka / Kobe [Xin Jian Zhen]</option>
+            <option value="busan_jeju">Busan &lt;-&gt; Jeju Island [South Sea Flagship]</option>
+            <option value="mokpo_jeju">Mokpo &lt;-&gt; Jeju Island [Queen Mary 2]</option>
+            <option value="shinmoji_izumiotsu">Shinmoji (Kitakyushu) &lt;-&gt; Izumiotsu (Osaka) [Hankyu Ferry]</option>
+            <option value="maizuru_otaru">Maizuru (Kyoto) &lt;-&gt; Otaru (Hokkaido) [Shin Nihonkai]</option>
+            <option value="oarai_tomakomai">Oarai (Tokyo) &lt;-&gt; Tomakomai (Hokkaido) [MOL Sunflower]</option>
+            <option value="kagoshima_naha">Kagoshima &lt;-&gt; Naha (Okinawa) [Marix / A-Line]</option>
+          </select>
+        </div>
+
         <div class="corridor-info-banner">
           <div class="corridor-info-title">
             <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M12 10V4"/></svg>
@@ -512,7 +634,6 @@
         <button type="button" class="layer-btn" data-layer="voyager" onclick="setBasemap('voyager')">Voyager</button>
       </div>
     </main>
-
   </div>
 
   <!-- Results Modal Drawer -->
@@ -597,6 +718,8 @@
   <script src="static/js/simulator_engine_client.js"></script>
   <!-- Main Simulator Script -->
   <script src="static/js/simulator.js"></script>
+  <!-- Universal Palantir App Shell -->
+  <script src="static/js/app_shell.js"></script>
 
   <!-- Sidebar Collapse Toggle Listener -->
   <script>
@@ -615,7 +738,3 @@
   </script>
 </body>
 </html>
-    </main>
-  </div>
-
-  

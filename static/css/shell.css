@@ -254,3 +254,102 @@
   background: rgba(56, 189, 248, 0.2) !important;
   color: #38bdf8 !important;
 }
+
+/* --------------------------------------------------------------------------
+   Tactical Dark Form Inputs (Overrides Tailwind Forms White Background)
+   -------------------------------------------------------------------------- */
+input[type="text"],
+input[type="number"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="time"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+input:not([type]),
+select,
+textarea,
+.input-field {
+  background-color: #0d1527 !important;
+  color: #f0f6fc !important;
+  border: 1px solid rgba(72, 110, 165, 0.35) !important;
+  border-radius: 6px !important;
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  outline: none !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease !important;
+}
+
+.input-field.mono,
+input.mono {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 11px !important;
+  letter-spacing: -0.2px !important;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="search"]:focus,
+input:not([type]):focus,
+select:focus,
+textarea:focus,
+.input-field:focus {
+  background-color: #111c33 !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+  color: #ffffff !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748b !important;
+}
+
+select option {
+  background-color: #090e1a !important;
+  color: #f0f6fc !important;
+  padding: 6px 10px !important;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.85) hue-rotate(180deg) brightness(1.2) !important;
+  cursor: pointer;
+  opacity: 0.8;
+}
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 3px !important;
+  border: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #38bdf8;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+  border: 2px solid #090B10;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #7dd3fc;
+}

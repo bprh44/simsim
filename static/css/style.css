@@ -375,21 +375,23 @@ body {
 
 .input-field {
   width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 7px 10px;
+  background-color: #0d1527 !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 6px !important;
+  padding: 7px 10px !important;
   font-family: var(--font-sans);
   font-size: 13px;
-  color: var(--text-main);
+  color: #f0f6fc !important;
   outline: none;
   transition: all 0.2s var(--spring-snappy);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
 }
 
 .input-field:focus {
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  background-color: #111c33 !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25), inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+  color: #ffffff !important;
 }
 
 .input-field.mono {
