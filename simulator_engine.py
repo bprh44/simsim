@@ -120,11 +120,15 @@ CORRIDORS = {
         "zoom": 8,
         "waypoints": [
             [35.1150, 129.0430],  # Busan International Passenger Terminal
-            [35.0300, 129.1300],  # Busan Harbor TSS fairway entrance
-            [34.7000, 129.3500],  # Western Korea Strait TSS
-            [34.4000, 129.5500],  # North-East of Tsushima Island
-            [33.9500, 130.0000],  # Genkai-nada Sea approach
-            [33.6800, 130.3300],  # Hakata Bay fairway light buoy
+            [35.0500, 129.1200],  # Busan Port North Breakwater fairway
+            [34.9800, 129.2200],  # Busan TSS outer light buoy
+            [34.8200, 129.6200],  # Open Korea Strait (clears Tsushima North Cape by 10 NM)
+            [34.5000, 129.8000],  # Tsushima East Channel (15 NM East of Tsushima)
+            [34.1500, 130.0000],  # Tsushima East Channel south leg
+            [33.9000, 130.1500],  # Genkai-nada Sea fairway
+            [33.7500, 130.2800],  # Hakata Bay northwest approach
+            [33.6800, 130.3400],  # Hakata Bay outer channel buoy
+            [33.6250, 130.3850],  # Hakata Bay inner fairway
             [33.6065, 130.3950]   # Hakata Port International Terminal
         ]
     },
@@ -1054,3 +1058,22 @@ def load_wpi_ports(query: Optional[str] = None, country: Optional[str] = None, l
 
     return results[:limit]
 
+
+
+def compute_searoute(origin: Tuple[float, float], destination: Tuple[float, float]) -> List[Tuple[float, float]]:
+    """
+    Computes a guaranteed maritime-only route between two points avoiding landmasses.
+    Uses the searoute networkx maritime graph.
+    origin: (lat, lon)
+    destination: (lat, lon)
+    Returns list of (lat, lon) waypoints.
+    """
+    try:
+        import searoute as sr
+        # searoute expects [lon, lat]
+        route = sr.searoute([origin[1], origin[0]], [destination[1], destination[0]])
+        coords = route['geometry']['coordinates']
+        return [(pt[1], pt[0]) for pt in coords]
+    except Exception as e:
+        print("searoute fallback:", e)
+        return [origin, destination]

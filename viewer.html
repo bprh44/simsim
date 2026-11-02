@@ -216,6 +216,95 @@
     .h3-active-cell {
       animation: h3PulseRing 1.8s infinite ease-in-out;
     }
+
+    /* Tactical HUD Corner Bracket Badge (Matching reference image) */
+    .h3-tactical-bracket {
+      position: relative;
+      background: rgba(9, 11, 16, 0.65);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 4px;
+      padding: 3px 10px;
+      color: #38bdf8;
+      letter-spacing: 1.5px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 10px rgba(56, 189, 248, 0.15);
+    }
+    .h3-tactical-bracket::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -2px; width: 6px; height: 6px;
+      border-top: 2px solid #38bdf8;
+      border-left: 2px solid #38bdf8;
+    }
+    .h3-tactical-bracket::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; right: -2px; width: 6px; height: 6px;
+      border-bottom: 2px solid #38bdf8;
+      border-right: 2px solid #38bdf8;
+    }
+
+    /* H3 Prediction Labels (Percentage Pills) */
+    .h3-pred-label-container {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      pointer-events: none !important;
+    }
+    .h3-pred-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      user-select: none;
+      transform: translate(-50%, -50%);
+    }
+    .h3-pred-pill.primary {
+      font-size: 14px;
+      color: #fef08a;
+      text-shadow: 0 0 10px rgba(245, 158, 11, 1), 0 1px 3px rgba(0,0,0,0.95);
+    }
+    .h3-pred-pill.secondary {
+      font-size: 12px;
+      color: #fcd34d;
+      text-shadow: 0 0 8px rgba(245, 158, 11, 0.8), 0 1px 3px rgba(0,0,0,0.95);
+    }
+    .h3-pred-pill.tertiary {
+      font-size: 11px;
+      color: #fde68a;
+      opacity: 0.9;
+      text-shadow: 0 0 6px rgba(245, 158, 11, 0.6), 0 1px 3px rgba(0,0,0,0.95);
+    }
+
+    /* Glowing Primary Predicted Cell */
+    @keyframes h3PulseGold {
+      0%, 100% {
+        fill-opacity: 0.42;
+        stroke: #fbbf24;
+        stroke-width: 2.5px;
+        filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.65));
+      }
+      50% {
+        fill-opacity: 0.60;
+        stroke: #fef08a;
+        stroke-width: 3.5px;
+        filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.95));
+      }
+    }
+    .h3-predicted-hex-primary {
+      animation: h3PulseGold 2.2s infinite ease-in-out;
+    }
+
+    /* AIS Ping Dots on Trajectory */
+    .ais-ping-dot {
+      transition: all 0.15s ease-in-out;
+      cursor: pointer;
+    }
+    .ais-ping-dot:hover {
+      filter: drop-shadow(0 0 8px #f59e0b);
+    }
+
   </style>
 </head>
 <body class="bg-[#090B10] text-[#E2E8F0] antialiased select-none font-sans min-h-screen">
@@ -632,6 +721,15 @@
                 </div>
               </div>
 
+              
+              <!-- Tactical HUD Corner Bracket Badge (Matching User Reference Image) -->
+              <div class="absolute top-14 left-3 z-20 pointer-events-none select-none">
+                <div class="h3-tactical-bracket font-mono text-[11px] font-bold tracking-wider text-[#38bdf8] flex items-center gap-1.5 shadow-lg">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#38bdf8] animate-pulse"></span>
+                  <span>RES 8</span>
+                </div>
+              </div>
+
               <!-- Map Top Bar Right: Tactical Layer & Display Controls -->
               <div class="absolute top-3 right-3 z-20 flex items-center gap-2 bg-[#090B10]/90 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-white/10 text-xs font-mono shadow-xl">
                 <label class="flex items-center gap-1 cursor-pointer text-slate-300 hover:text-white" title="Toggle Traversed H3 Res 8 Hexagons">
@@ -654,6 +752,13 @@
                   <span class="text-[11px]"># Labels</span>
                 </label>
                 <div class="h-3 w-px bg-white/20"></div>
+                
+                <div class="h-3 w-px bg-white/20"></div>
+                <label class="flex items-center gap-1 cursor-pointer text-amber-300 hover:text-white" title="Toggle 3 Predicted Next Cells Overlay (Reference Design)">
+                  <input type="checkbox" id="toggle-predictions" checked class="rounded bg-slate-800 text-amber-400 focus:ring-0 w-3 h-3" />
+                  <span class="text-[11px] text-amber-400 font-semibold">Predicted Cone</span>
+                </label>
+
                 <button type="button" id="btn-map-recenter" class="px-2 py-0.5 rounded bg-white/[0.05] hover:bg-white/10 text-slate-300 hover:text-white text-[11px] transition flex items-center gap-1" title="Fit map view to H3 path">
                   <span class="material-symbols-outlined text-[13px]">fit_screen</span> Fit
                 </button>
@@ -674,6 +779,12 @@
                   <span class="w-3 h-3 rounded-sm border border-emerald-400/80 bg-emerald-500/20 border-dashed"></span>
                   <span class="text-slate-300">Arrival Mooring (≥30m Dwell)</span>
                 </div>
+                
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm border border-amber-400 bg-amber-500/40"></span>
+                  <span class="text-amber-400 font-semibold">Predicted Cells (80%, 50%, 30%)</span>
+                </div>
+
                 <div class="flex items-center gap-2">
                   <span class="w-3 h-3 rounded-sm border-2 border-white bg-[#00f0ff] animate-pulse"></span>
                   <span class="text-white font-bold">Active Vessel Cell</span>
@@ -1000,6 +1111,9 @@
     let h3IdleClustersLayerGroup = null;
     let h3LabelsLayerGroup = null;
     let h3ActiveCellLayerGroup = null;
+    let h3PredictionLayerGroup = null;
+    let pingDotsLayerGroup = null;
+    let pingMarkers = [];
     let h3VoyageBounds = null;
     let h3PolyMap = new Map();
 
@@ -1626,6 +1740,8 @@
       h3IdleClustersLayerGroup = L.layerGroup().addTo(map);
       h3LabelsLayerGroup = L.layerGroup(); // off by default
       h3ActiveCellLayerGroup = L.layerGroup().addTo(map);
+      h3PredictionLayerGroup = L.layerGroup().addTo(map);
+      pingDotsLayerGroup = L.layerGroup().addTo(map);
 
       // Layer Toggles
       const toggleHex = document.getElementById('toggle-h3-hex-layer');
@@ -1659,6 +1775,19 @@
         toggleLabels.addEventListener('change', (e) => {
           if (e.target.checked) map.addLayer(h3LabelsLayerGroup);
           else map.removeLayer(h3LabelsLayerGroup);
+        });
+      }
+
+      
+      const togglePred = document.getElementById('toggle-predictions');
+      if (togglePred) {
+        togglePred.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            map.addLayer(h3PredictionLayerGroup);
+            updatePlaybackPrediction();
+          } else {
+            map.removeLayer(h3PredictionLayerGroup);
+          }
         });
       }
 
@@ -1740,6 +1869,343 @@
       updateTelemetryPlaybackFrame(0);
     }
 
+
+    /* --------------------------------------------------------------------------
+       H3 RES 8 PREDICTED CELLS OVERLAY (REFERENCE DESIGN SPEC)
+       -------------------------------------------------------------------------- */
+    function calculateBearing(lat1, lon1, lat2, lon2) {
+      const toRad = Math.PI / 180;
+      const toDeg = 180 / Math.PI;
+      const phi1 = lat1 * toRad;
+      const phi2 = lat2 * toRad;
+      const deltaLambda = (lon2 - lon1) * toRad;
+
+      const y = Math.sin(deltaLambda) * Math.cos(phi2);
+      const x = Math.cos(phi1) * Math.sin(phi2) -
+                Math.sin(phi1) * Math.cos(phi2) * Math.cos(deltaLambda);
+      let brng = Math.atan2(y, x) * toDeg;
+      return (brng + 360) % 360;
+    }
+
+    function getAngleDiff(a, b) {
+      let diff = Math.abs(a - b) % 360;
+      return diff > 180 ? 360 - diff : diff;
+    }
+
+    function getPlannedNextH3Cell(pingIdx) {
+      if (!currentPings || pingIdx >= currentPings.length) return null;
+      const curCell = currentPings[pingIdx].h3Cell || (typeof h3 !== 'undefined' ? h3.latLngToCell(currentPings[pingIdx].LAT, currentPings[pingIdx].LON, 8) : null);
+      for (let i = pingIdx + 1; i < currentPings.length; i++) {
+        const nextCell = currentPings[i].h3Cell || (typeof h3 !== 'undefined' ? h3.latLngToCell(currentPings[i].LAT, currentPings[i].LON, 8) : null);
+        if (nextCell && nextCell !== curCell) {
+          return nextCell;
+        }
+      }
+      return null;
+    }
+
+    function updatePlaybackPrediction() {
+      const togglePred = document.getElementById('toggle-predictions');
+      if (togglePred && !togglePred.checked) {
+        if (h3PredictionLayerGroup) h3PredictionLayerGroup.clearLayers();
+        return;
+      }
+      if (!currentPings || playIndex >= currentPings.length) return;
+      const p = currentPings[playIndex];
+      const plannedNext = getPlannedNextH3Cell(playIndex);
+      renderPredictedH3Cells(p.LAT, p.LON, p.COG || p.Heading || 0, plannedNext, playIndex);
+    }
+
+    function renderPredictedH3Cells(lat, lon, cog, plannedNextCell, pingIdx) {
+      if (!h3PredictionLayerGroup) return;
+      const togglePred = document.getElementById('toggle-predictions');
+      if (togglePred && !togglePred.checked) {
+        h3PredictionLayerGroup.clearLayers();
+        return;
+      }
+      if (typeof h3 === 'undefined' || !h3.latLngToCell || !h3.cellToBoundary || !h3.gridDisk) return;
+
+      h3PredictionLayerGroup.clearLayers();
+
+      const currentCell = h3.latLngToCell(lat, lon, 8);
+      const center0 = h3.cellToLatLng(currentCell);
+
+      let effectiveCourse = cog;
+      if ((!effectiveCourse || effectiveCourse === 0) && plannedNextCell) {
+        const plannedCenter = h3.cellToLatLng(plannedNextCell);
+        effectiveCourse = calculateBearing(center0[0], center0[1], plannedCenter[0], plannedCenter[1]);
+      }
+
+      // 1-Ring Neighbors around current cell
+      const disk1 = h3.gridDisk(currentCell, 1).filter(c => c !== currentCell);
+      if (!disk1 || disk1.length === 0) return;
+
+      const neighbors = disk1.map(cell => {
+        const center = h3.cellToLatLng(cell);
+        const bearing = calculateBearing(center0[0], center0[1], center[0], center[1]);
+        const diff = getAngleDiff(effectiveCourse, bearing);
+        return {
+          cell,
+          lat: center[0],
+          lon: center[1],
+          bearing,
+          diff,
+          boundary: h3.cellToBoundary(cell)
+        };
+      });
+
+      neighbors.sort((a, b) => a.diff - b.diff);
+
+      // Determine primary candidate
+      let primary = neighbors[0];
+      if (plannedNextCell) {
+        const planned = neighbors.find(n => n.cell === plannedNextCell);
+        if (planned) primary = planned;
+      }
+
+      const remaining = neighbors.filter(n => n.cell !== primary.cell);
+      const second = remaining[0];
+      const third = remaining[1];
+
+      // Forward cone branches from primary candidate (matching reference image)
+      const primaryCenter = [primary.lat, primary.lon];
+      const primaryDisk = h3.gridDisk(primary.cell, 1).filter(c => c !== primary.cell && c !== currentCell && !disk1.includes(c));
+
+      const fwdFromPrimary = primaryDisk.map(cell => {
+        const center = h3.cellToLatLng(cell);
+        const bearing = calculateBearing(primaryCenter[0], primaryCenter[1], center[0], center[1]);
+        const diff = getAngleDiff(effectiveCourse, bearing);
+        return {
+          cell,
+          lat: center[0],
+          lon: center[1],
+          bearing,
+          diff,
+          boundary: h3.cellToBoundary(cell)
+        };
+      }).sort((a, b) => a.diff - b.diff);
+
+      // 1. Draw Primary Candidate Hex (80%)
+      const primaryPoly = L.polygon(primary.boundary, {
+        color: '#fbbf24',
+        weight: 2.5,
+        fillColor: '#f59e0b',
+        fillOpacity: 0.42,
+        className: 'h3-predicted-hex-primary'
+      }).bindTooltip(`
+        <div class="font-mono text-xs">
+          <div class="text-amber-300 font-bold text-[11px] flex items-center justify-between gap-3">
+            <span>PRIMARY PREDICTED CELL (80%)</span>
+            <span class="text-white text-[9px] px-1 py-0.5 rounded bg-amber-500/30">Tier 1</span>
+          </div>
+          <div class="text-white font-mono text-[10px] mt-1">${primary.cell}</div>
+          <div class="grid grid-cols-2 gap-x-2 text-[10px] text-slate-300 mt-1 border-t border-white/10 pt-1">
+            <div>Bearing: <strong class="text-amber-400">${primary.bearing.toFixed(1)}°</strong></div>
+            <div>Deviation: <strong class="text-white">${primary.diff.toFixed(1)}°</strong></div>
+          </div>
+        </div>
+      `, { className: 'tactical-tooltip', sticky: true });
+      h3PredictionLayerGroup.addLayer(primaryPoly);
+
+      // Ray from vessel to primary
+      const rayPrimary = L.polyline([[lat, lon], [primary.lat, primary.lon]], {
+        color: '#fbbf24',
+        weight: 2.2,
+        dashArray: '4, 4',
+        opacity: 0.95
+      });
+      h3PredictionLayerGroup.addLayer(rayPrimary);
+
+      // Primary Label 80%
+      const primaryLabel = L.marker([primary.lat, primary.lon], {
+        icon: L.divIcon({
+          className: 'h3-pred-label-container',
+          html: `<div class="h3-pred-pill primary">80%</div>`,
+          iconSize: [40, 20],
+          iconAnchor: [20, 10]
+        })
+      });
+      h3PredictionLayerGroup.addLayer(primaryLabel);
+
+      // 2. Forward Branches matching Reference Screenshot
+      if (fwdFromPrimary.length > 0) {
+        const branch1 = fwdFromPrimary[0]; // 50%
+        const poly1 = L.polygon(branch1.boundary, {
+          color: '#f59e0b',
+          weight: 1.5,
+          fillColor: '#d97706',
+          fillOpacity: 0.22,
+          dashArray: '3, 4'
+        }).bindTooltip(`Predicted Branch (50%) • ${branch1.cell}`, { className: 'tactical-tooltip' });
+        h3PredictionLayerGroup.addLayer(poly1);
+
+        const ray1 = L.polyline([[primary.lat, primary.lon], [branch1.lat, branch1.lon]], {
+          color: '#f59e0b',
+          weight: 1.5,
+          dashArray: '3, 4',
+          opacity: 0.85
+        });
+        h3PredictionLayerGroup.addLayer(ray1);
+
+        const label1 = L.marker([branch1.lat, branch1.lon], {
+          icon: L.divIcon({
+            className: 'h3-pred-label-container',
+            html: `<div class="h3-pred-pill secondary">50%</div>`,
+            iconSize: [36, 18],
+            iconAnchor: [18, 9]
+          })
+        });
+        h3PredictionLayerGroup.addLayer(label1);
+
+        // Sub-branch: 15% from branch1
+        const b1Disk = h3.gridDisk(branch1.cell, 1).filter(c => c !== branch1.cell && c !== primary.cell && !fwdFromPrimary.map(x=>x.cell).includes(c));
+        const b1Fwd = b1Disk.map(cell => {
+          const center = h3.cellToLatLng(cell);
+          const diff = getAngleDiff(effectiveCourse, calculateBearing(branch1.lat, branch1.lon, center[0], center[1]));
+          return { cell, lat: center[0], lon: center[1], diff, boundary: h3.cellToBoundary(cell) };
+        }).sort((a,b)=>a.diff - b.diff);
+
+        if (b1Fwd.length > 0) {
+          const sub1 = b1Fwd[0];
+          const polySub1 = L.polygon(sub1.boundary, {
+            color: '#d97706',
+            weight: 1.2,
+            fillColor: '#b45309',
+            fillOpacity: 0.16,
+            dashArray: '2, 3'
+          }).bindTooltip(`Predicted Forward Branch (15%) • ${sub1.cell}`, { className: 'tactical-tooltip' });
+          h3PredictionLayerGroup.addLayer(polySub1);
+
+          const raySub1 = L.polyline([[branch1.lat, branch1.lon], [sub1.lat, sub1.lon]], {
+            color: '#f59e0b',
+            weight: 1.2,
+            dashArray: '2, 3',
+            opacity: 0.75
+          });
+          h3PredictionLayerGroup.addLayer(raySub1);
+
+          const labelSub1 = L.marker([sub1.lat, sub1.lon], {
+            icon: L.divIcon({
+              className: 'h3-pred-label-container',
+              html: `<div class="h3-pred-pill tertiary">15%</div>`,
+              iconSize: [32, 16],
+              iconAnchor: [16, 8]
+            })
+          });
+          h3PredictionLayerGroup.addLayer(labelSub1);
+        }
+      }
+
+      if (fwdFromPrimary.length > 1) {
+        const branch2 = fwdFromPrimary[1]; // 30%
+        const poly2 = L.polygon(branch2.boundary, {
+          color: '#f59e0b',
+          weight: 1.5,
+          fillColor: '#d97706',
+          fillOpacity: 0.20,
+          dashArray: '3, 4'
+        }).bindTooltip(`Predicted Branch (30%) • ${branch2.cell}`, { className: 'tactical-tooltip' });
+        h3PredictionLayerGroup.addLayer(poly2);
+
+        const ray2 = L.polyline([[primary.lat, primary.lon], [branch2.lat, branch2.lon]], {
+          color: '#f59e0b',
+          weight: 1.5,
+          dashArray: '3, 4',
+          opacity: 0.85
+        });
+        h3PredictionLayerGroup.addLayer(ray2);
+
+        const label2 = L.marker([branch2.lat, branch2.lon], {
+          icon: L.divIcon({
+            className: 'h3-pred-label-container',
+            html: `<div class="h3-pred-pill secondary">30%</div>`,
+            iconSize: [36, 18],
+            iconAnchor: [18, 9]
+          })
+        });
+        h3PredictionLayerGroup.addLayer(label2);
+      }
+
+      if (fwdFromPrimary.length > 2) {
+        const branch3 = fwdFromPrimary[2]; // 25%
+        const poly3 = L.polygon(branch3.boundary, {
+          color: '#f59e0b',
+          weight: 1.5,
+          fillColor: '#d97706',
+          fillOpacity: 0.18,
+          dashArray: '3, 4'
+        }).bindTooltip(`Predicted Branch (25%) • ${branch3.cell}`, { className: 'tactical-tooltip' });
+        h3PredictionLayerGroup.addLayer(poly3);
+
+        const ray3 = L.polyline([[primary.lat, primary.lon], [branch3.lat, branch3.lon]], {
+          color: '#f59e0b',
+          weight: 1.5,
+          dashArray: '3, 4',
+          opacity: 0.85
+        });
+        h3PredictionLayerGroup.addLayer(ray3);
+
+        const label3 = L.marker([branch3.lat, branch3.lon], {
+          icon: L.divIcon({
+            className: 'h3-pred-label-container',
+            html: `<div class="h3-pred-pill tertiary">25%</div>`,
+            iconSize: [34, 16],
+            iconAnchor: [17, 8]
+          })
+        });
+        h3PredictionLayerGroup.addLayer(label3);
+
+        // Sub-branch: 10% from branch3
+        const b3Disk = h3.gridDisk(branch3.cell, 1).filter(c => c !== branch3.cell && c !== primary.cell && !fwdFromPrimary.map(x=>x.cell).includes(c));
+        const b3Fwd = b3Disk.map(cell => {
+          const center = h3.cellToLatLng(cell);
+          const diff = getAngleDiff(effectiveCourse, calculateBearing(branch3.lat, branch3.lon, center[0], center[1]));
+          return { cell, lat: center[0], lon: center[1], diff, boundary: h3.cellToBoundary(cell) };
+        }).sort((a,b)=>a.diff - b.diff);
+
+        if (b3Fwd.length > 0) {
+          const sub3 = b3Fwd[0];
+          const polySub3 = L.polygon(sub3.boundary, {
+            color: '#d97706',
+            weight: 1.2,
+            fillColor: '#b45309',
+            fillOpacity: 0.15,
+            dashArray: '2, 3'
+          }).bindTooltip(`Predicted Forward Branch (10%) • ${sub3.cell}`, { className: 'tactical-tooltip' });
+          h3PredictionLayerGroup.addLayer(polySub3);
+
+          const raySub3 = L.polyline([[branch3.lat, branch3.lon], [sub3.lat, sub3.lon]], {
+            color: '#f59e0b',
+            weight: 1.2,
+            dashArray: '2, 3',
+            opacity: 0.70
+          });
+          h3PredictionLayerGroup.addLayer(raySub3);
+
+          const labelSub3 = L.marker([sub3.lat, sub3.lon], {
+            icon: L.divIcon({
+              className: 'h3-pred-label-container',
+              html: `<div class="h3-pred-pill tertiary">10%</div>`,
+              iconSize: [30, 16],
+              iconAnchor: [15, 8]
+            })
+          });
+          h3PredictionLayerGroup.addLayer(labelSub3);
+        }
+      }
+
+      // Lateral Deflection Ray to Secondary Neighbor
+      if (second) {
+        const raySec = L.polyline([[lat, lon], [second.lat, second.lon]], {
+          color: '#d97706',
+          weight: 1.2,
+          dashArray: '2, 3',
+          opacity: 0.50
+        });
+        h3PredictionLayerGroup.addLayer(raySec);
+      }
+    }
+
     function renderTrajectoryOnMap(pings, voyageData) {
       if (!map) initMap();
 
@@ -1748,10 +2214,14 @@
       if (vesselMarker) map.removeLayer(vesselMarker);
       waypointMarkers.forEach(m => map.removeLayer(m));
       waypointMarkers = [];
+      pingMarkers.forEach(m => map.removeLayer(m));
+      pingMarkers = [];
       h3HexLayerGroup.clearLayers();
       h3IdleClustersLayerGroup.clearLayers();
       h3LabelsLayerGroup.clearLayers();
       h3ActiveCellLayerGroup.clearLayers();
+      if (h3PredictionLayerGroup) h3PredictionLayerGroup.clearLayers();
+      if (pingDotsLayerGroup) pingDotsLayerGroup.clearLayers();
       h3PolyMap.clear();
 
       const latlngs = pings.map(p => [p.LAT, p.LON]);
@@ -1917,6 +2387,55 @@
       }).bindTooltip(`Arrival: ${escapeHtml(currentVoyage ? currentVoyage.destination : 'Destination')}`, { className: 'tactical-tooltip' }).addTo(map);
 
       waypointMarkers.push(startMarker, endMarker);
+      // 4b. Interactive AIS Ping Dots on Trajectory (Hover for 3 Predicted Cells)
+      pings.forEach((p, idx) => {
+        const pingDot = L.circleMarker([p.LAT, p.LON], {
+          radius: 3,
+          color: '#38bdf8',
+          weight: 1,
+          fillColor: '#090B10',
+          fillOpacity: 0.9,
+          className: 'ais-ping-dot'
+        });
+
+        pingDot.on('mouseover', () => {
+          pingDot.setStyle({ radius: 6, color: '#f59e0b', fillColor: '#f59e0b', weight: 2.5 });
+          const plannedNext = getPlannedNextH3Cell(idx);
+          renderPredictedH3Cells(p.LAT, p.LON, p.COG || p.Heading || 0, plannedNext, idx);
+        });
+
+        pingDot.on('mouseout', () => {
+          pingDot.setStyle({ radius: 3, color: '#38bdf8', fillColor: '#090B10', weight: 1 });
+          updatePlaybackPrediction();
+        });
+
+        pingDot.on('click', () => {
+          seekToFrame(idx);
+        });
+
+        const timeDisplay = p.DateTime ? p.DateTime.replace('T', ' ').replace('Z', ' UTC') : '--';
+        pingDot.bindTooltip(`
+          <div class="font-mono text-xs">
+            <div class="text-[#38bdf8] font-bold text-[11px]">Ping #${idx + 1} / ${pings.length}</div>
+            <div class="text-slate-300 text-[10px]">${p.LAT.toFixed(4)}°N, ${p.LON.toFixed(4)}°E</div>
+            <div class="text-slate-400 text-[10px]">${timeDisplay}</div>
+            <div class="mt-1 pt-1 border-t border-white/10 flex justify-between gap-2 text-[10px]">
+              <span>SOG: <strong class="text-white">${p.SOG.toFixed(1)} kts</strong></span>
+              <span>COG: <strong class="text-white">${p.COG.toFixed(0)}°</strong></span>
+            </div>
+            <div class="text-amber-400 text-[9px] mt-0.5 font-bold">✦ Hovered: Showing Predicted Cells</div>
+          </div>
+        `, {
+          className: 'tactical-tooltip',
+          sticky: true,
+          direction: 'top',
+          offset: [0, -6]
+        });
+
+        pingMarkers.push(pingDot);
+        if (pingDotsLayerGroup) pingDotsLayerGroup.addLayer(pingDot);
+      });
+
 
       // 5. Oriented Vessel Marker
       const vesselIcon = L.divIcon({
@@ -1950,6 +2469,7 @@
       const speeds = pings.map(p => p.SOG).filter(s => !isNaN(s));
       const avgSpeed = (speeds.reduce((a, b) => a + b, 0) / speeds.length).toFixed(1);
       document.getElementById('stat-avg-speed').textContent = `${avgSpeed} kts`;
+      updatePlaybackPrediction();
     }
 
     function renderTelemetryTable(pings) {
@@ -1972,6 +2492,19 @@
         `;
         tr.addEventListener('click', () => {
           seekToFrame(i);
+        });
+        tr.addEventListener('mouseenter', () => {
+          const plannedNext = getPlannedNextH3Cell(i);
+          renderPredictedH3Cells(p.LAT, p.LON, p.COG || p.Heading || 0, plannedNext, i);
+          if (pingMarkers[i]) {
+            pingMarkers[i].setStyle({ radius: 6, color: '#f59e0b', fillColor: '#f59e0b', weight: 2.5 });
+          }
+        });
+        tr.addEventListener('mouseleave', () => {
+          if (pingMarkers[i]) {
+            pingMarkers[i].setStyle({ radius: 3, color: '#38bdf8', fillColor: '#090B10', weight: 1 });
+          }
+          updatePlaybackPrediction();
         });
         tbody.appendChild(tr);
       }
@@ -2049,6 +2582,9 @@
       if (activeRow) {
         activeRow.classList.add('bg-white/[0.08]');
       }
+
+      // Update Predicted Cells Overlay ahead of Vessel
+      updatePlaybackPrediction();
     }
 
     function playLoop() {
@@ -2201,40 +2737,67 @@
       const sample = [];
       let curTime = new Date('2026-10-26T12:00:00Z').getTime();
 
-      // Voyage 1: Busan -> Fukuoka
-      for (let i = 0; i <= 60; i++) {
-        const r = i / 60;
-        const lat = 35.1028 + (33.6064 - 35.1028) * r;
-        const lon = 129.0403 + (130.4181 - 129.0403) * r;
-        sample.push({
-          DateTime: new Date(curTime).toISOString(),
-          LAT: lat, LON: lon, SOG: 21.4, COG: 135.0, Heading: 135.0,
-          Name: 'NEW CAMELLIA', IMO: 'IMO 9304497', Type: 60, Status: 0
-        });
-        curTime += 5 * 60 * 1000;
+      const safeWps = [
+        [35.115, 129.043],
+        [35.05, 129.12],
+        [34.98, 129.22],
+        [34.82, 129.62],
+        [34.50, 129.80],
+        [34.15, 130.00],
+        [33.90, 130.15],
+        [33.75, 130.28],
+        [33.68, 130.34],
+        [33.625, 130.385],
+        [33.6065, 130.395]
+      ];
+
+      // Voyage 1: Busan -> Fukuoka (Safe Nautical Fairway)
+      for (let seg = 0; seg < safeWps.length - 1; seg++) {
+        const p1 = safeWps[seg];
+        const p2 = safeWps[seg + 1];
+        const segSteps = 6;
+        for (let s = (seg === 0 ? 0 : 1); s <= segSteps; s++) {
+          const t = s / segSteps;
+          const lat = p1[0] + (p2[0] - p1[0]) * t;
+          const lon = p1[1] + (p2[1] - p1[1]) * t;
+          const cog = calculateBearing(p1[0], p1[1], p2[0], p2[1]);
+          sample.push({
+            DateTime: new Date(curTime).toISOString(),
+            LAT: lat, LON: lon, SOG: 19.5, COG: cog, Heading: cog,
+            Name: 'NEW CAMELLIA', IMO: 'IMO 9304497', Type: 60, Status: 0
+          });
+          curTime += 5 * 60 * 1000;
+        }
       }
 
-      // Idle at Fukuoka for 45 minutes (>= 30 mins)
+      // Idle at Hakata Port for 45 minutes (>= 30 mins)
       for (let j = 0; j < 10; j++) {
         sample.push({
           DateTime: new Date(curTime).toISOString(),
-          LAT: 33.6064, LON: 130.4181, SOG: 0.1, COG: 0.0, Heading: 140.0,
+          LAT: 33.6065, LON: 130.3950, SOG: 0.1, COG: 0.0, Heading: 140.0,
           Name: 'NEW CAMELLIA', IMO: 'IMO 9304497', Type: 60, Status: 5
         });
         curTime += 5 * 60 * 1000;
       }
 
-      // Voyage 2: Fukuoka -> Busan
-      for (let i = 0; i <= 60; i++) {
-        const r = i / 60;
-        const lat = 33.6064 + (35.1028 - 33.6064) * r;
-        const lon = 130.4181 + (129.0403 - 130.4181) * r;
-        sample.push({
-          DateTime: new Date(curTime).toISOString(),
-          LAT: lat, LON: lon, SOG: 20.8, COG: 315.0, Heading: 315.0,
-          Name: 'NEW CAMELLIA', IMO: 'IMO 9304497', Type: 60, Status: 0
-        });
-        curTime += 5 * 60 * 1000;
+      // Voyage 2: Fukuoka -> Busan (Safe Nautical Fairway Return)
+      const returnWps = [...safeWps].reverse();
+      for (let seg = 0; seg < returnWps.length - 1; seg++) {
+        const p1 = returnWps[seg];
+        const p2 = returnWps[seg + 1];
+        const segSteps = 6;
+        for (let s = (seg === 0 ? 0 : 1); s <= segSteps; s++) {
+          const t = s / segSteps;
+          const lat = p1[0] + (p2[0] - p1[0]) * t;
+          const lon = p1[1] + (p2[1] - p1[1]) * t;
+          const cog = calculateBearing(p1[0], p1[1], p2[0], p2[1]);
+          sample.push({
+            DateTime: new Date(curTime).toISOString(),
+            LAT: lat, LON: lon, SOG: 19.5, COG: cog, Heading: cog,
+            Name: 'NEW CAMELLIA', IMO: 'IMO 9304497', Type: 60, Status: 0
+          });
+          curTime += 5 * 60 * 1000;
+        }
       }
 
       rawLoadedPings = sample;

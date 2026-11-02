@@ -22,3 +22,4 @@ backup/
 Thumbs.db
 *.log
 spatA/preview.mp4
+!output/new_camellia_30days.csv
