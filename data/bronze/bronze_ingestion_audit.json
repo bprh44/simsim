@@ -1,0 +1,26 @@
+{
+  "busan_bronze.csv": {
+    "record_count": 746,
+    "start_time": "2026-10-26T16:52:18Z",
+    "end_time": "2026-10-27T05:39:39Z",
+    "bbox": {
+      "min_lat": 34.7,
+      "max_lat": 35.115009,
+      "min_lon": 129.042943,
+      "max_lon": 129.374459
+    },
+    "canonical_schema": "10-Column IMO A.1106(29) Compliant"
+  },
+  "new_camellia_bronze.csv": {
+    "record_count": 20043,
+    "start_time": "2026-09-28T12:00:00Z",
+    "end_time": "2026-10-21T16:52:36Z",
+    "bbox": {
+      "min_lat": 33.60639,
+      "max_lat": 35.115111,
+      "min_lon": 129.042894,
+      "max_lon": 130.395112
+    },
+    "canonical_schema": "10-Column IMO A.1106(29) Compliant"
+  }
+}

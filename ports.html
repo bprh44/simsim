@@ -1,585 +1,298 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NGA Asian Ports &amp; H3 Spatial Grid Explorer</title>
-  
+  <title>NGA Asian Ports &amp; H3 Spatial Grid Explorer • Palantir Foundry</title>
+
+  <!-- Google Fonts: Urbanist, JetBrains Mono, Space Grotesk, Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
   <!-- Leaflet CSS & JS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  
+
   <!-- Uber H3 JS (v4 UMD) -->
   <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
   <!-- Asian Ports Dataset & Centralized Map Config -->
   <script src="static/js/asia_ports.js"></script>
   <script src="static/js/map_config.js"></script>
 
+  <!-- Unified Shell Stylesheet (Global Rule 2: Solid Sidebar) -->
+  <link rel="stylesheet" href="static/css/shell.css" />
+
   <style>
     :root {
-      --bg-dark: #0a0f18;
-      --panel-bg: rgba(13, 20, 36, 0.88);
-      --panel-border: rgba(45, 80, 130, 0.45);
-      --accent-cyan: #00f0ff;
-      --accent-blue: #0077ff;
-      --accent-emerald: #00ffaa;
-      --accent-yellow: #ffd700;
-      --accent-coral: #ff5252;
+      --bg-dark: #090B10;
+      --panel-bg: rgba(13, 20, 36, 0.90);
+      --panel-border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #38bdf8;
       --text-main: #f0f4fc;
       --text-muted: #8ea0be;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-main);
-      overflow: hidden;
-      height: 100vh;
-      width: 100vw;
     }
 
     #map {
       height: 100%;
       width: 100%;
-      z-index: 1;
-      background: #090d14;
-    }
-
-    /* Top Floating Header & Stats */
-    .top-bar {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      right: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-      pointer-events: none;
-    }
-
-    .title-card {
-      pointer-events: auto;
-      background: var(--panel-bg);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--panel-border);
-      border-radius: 12px;
-      padding: 12px 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .nav-links-box {
-      pointer-events: auto;
-      display: flex;
-      gap: 10px;
-      background: var(--panel-bg);
-      backdrop-filter: blur(14px);
-      border: 1px solid var(--panel-border);
-      border-radius: 12px;
-      padding: 8px 14px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-    }
-
-    .nav-link-btn {
-      color: var(--text-main);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 6px;
-      transition: all 0.2s;
-    }
-
-    .nav-link-btn:hover {
-      background: rgba(0, 240, 255, 0.15);
-      color: var(--accent-cyan);
-    }
-
-    .badge-live {
-      background: rgba(0, 240, 255, 0.15);
-      border: 1px solid var(--accent-cyan);
-      color: var(--accent-cyan);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .title-card h1 {
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .title-card p {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* Floating Control Deck (Right Sidebar) */
-    .control-deck {
-      position: absolute;
-      top: 80px;
-      right: 16px;
-      width: 350px;
-      max-height: calc(100vh - 100px);
-      background: var(--panel-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--panel-border);
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
-      z-index: 1000;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .control-deck::-webkit-scrollbar {
-      width: 6px;
-    }
-    .control-deck::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-    }
-
-    .section-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--accent-cyan);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    label {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    /* Custom Slider */
-    .slider-container {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 12px;
-    }
-
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 8px;
-    }
-
-    .res-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent-cyan);
-    }
-
-    .res-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    input[type=range] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: #1b283d;
-      outline: none;
-    }
-
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--accent-cyan);
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--accent-cyan);
-      transition: transform 0.1s ease;
-    }
-
-    input[type=range]::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
-    }
-
-    .ticks {
-      display: flex;
-      justify-content: space-between;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    /* Inputs & Selects */
-    input[type=text], select {
-      width: 100%;
-      background: rgba(10, 16, 28, 0.85);
-      border: 1px solid rgba(45, 80, 130, 0.6);
-      border-radius: 7px;
-      padding: 8px 12px;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input[type=text]:focus, select:focus {
-      border-color: var(--accent-cyan);
-      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
-    }
-
-    /* Checkbox Toggles */
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 0;
-      font-size: 13px;
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 38px;
-      height: 20px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider-switch {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #23344d;
-      transition: .3s;
-      border-radius: 20px;
-    }
-
-    .slider-switch:before {
-      position: absolute;
-      content: "";
-      height: 14px;
-      width: 14px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider-switch {
-      background-color: var(--accent-cyan);
-    }
-
-    input:checked + .slider-switch:before {
-      transform: translateX(18px);
-    }
-
-    /* Metrics Grid */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .metric-card {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .metric-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .metric-val {
-      font-size: 17px;
-      font-weight: 700;
-      color: #fff;
-      font-family: 'JetBrains Mono', monospace;
-      margin-top: 2px;
-    }
-
-    /* Port Detail Modal / Drawer */
-    .port-details-box {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 10px;
-      max-height: 180px;
-      overflow-y: auto;
-      font-size: 12px;
-      display: none;
-    }
-
-    .port-details-box.active {
-      display: block;
+      z-index: 10;
+      background: #070a12;
     }
 
     .port-item {
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .port-item:last-child {
-      border-bottom: none;
-    }
-
-    .port-item strong {
-      color: var(--accent-cyan);
-    }
-
-    /* Leaflet Tooltips & Popups */
-    .leaflet-popup-content-wrapper {
-      background: rgba(12, 19, 32, 0.95) !important;
-      color: #fff !important;
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--accent-cyan);
-      border-radius: 8px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-    }
-
-    .leaflet-popup-tip {
-      background: rgba(12, 19, 32, 0.95) !important;
-    }
-
-    .h3-label {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      color: #fff;
-      font-weight: 700;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 3px solid #38bdf8;
+      border-radius: 4px;
       font-size: 11px;
       font-family: 'JetBrains Mono', monospace;
-      text-shadow: 0 0 4px #000, 0 0 8px #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Legend */
-    .legend-bar {
-      height: 8px;
-      border-radius: 4px;
-      background: linear-gradient(to right, #00f0ff, #00ffaa, #ffd700, #ff5252);
-      margin-top: 6px;
-    }
-
-    .legend-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-      margin-top: 4px;
     }
   </style>
 </head>
-<body>
+<body class="bg-[#090B10] text-[#E2E8F0] antialiased select-none font-sans min-h-screen">
 
-  <!-- Map Canvas -->
-  <div id="map"></div>
-
-  <!-- Top Floating Header -->
-  <div class="top-bar">
-    <div class="title-card">
-      <span class="badge-live">NGA WPI</span>
-      <div>
-        <h1>⚓ Asian Maritime Ports &amp; H3 Spatial Grid</h1>
-        <p>Interactive spatial indexing via Uber H3 (Res 3-8) on CARTO basemap</p>
+  <!-- =========================================================================
+       Palantir Foundry Top Navigation / Global Shell Header (IDENTICAL PIXELS)
+       ========================================================================= -->
+  <header class="fixed top-0 left-0 right-0 h-14 bg-[#090B10]/95 backdrop-blur-md z-50 flex items-center justify-between px-5 border-b border-white/[0.07]">
+    <!-- Left Workspace Title & Breadcrumbs -->
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 py-1 px-2.5 bg-white/[0.04] border border-white/10 rounded-xl">
+        <span class="material-symbols-outlined text-[#38bdf8] text-[18px]">hub</span>
+        <span class="font-mono text-xs uppercase tracking-wider text-white font-bold">Palantir Foundry</span>
+      </div>
+      <div class="h-4 w-px bg-white/10"></div>
+      <div class="flex items-center gap-1.5 text-xs">
+        <span class="font-mono px-2 py-0.5 rounded-md bg-white/[0.04] text-slate-400 text-[11px]">ROOT</span>
+        <span class="material-symbols-outlined text-slate-500 text-[13px]">chevron_right</span>
+        <span class="font-mono text-slate-400 text-[11px]">MARITIME_OPS</span>
+        <span class="material-symbols-outlined text-slate-500 text-[13px]">chevron_right</span>
+        <span class="text-white font-semibold text-xs tracking-wide">AsianPorts_H3_Spatial</span>
+      </div>
+      <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-mono text-[10px] uppercase font-bold tracking-wider">SYNCED: LIVE</span>
       </div>
     </div>
 
-    <!-- Navigation to Studio and Viewer -->
-    <div class="nav-links-box">
-      <a href="index.html" class="nav-link-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-        <span>Studio</span>
+    <!-- Center Cross-Tool Navigation (Identical Dimensions) -->
+    <div class="hidden lg:flex items-center gap-1 bg-white/[0.02] border border-white/[0.06] p-1 rounded-xl">
+      <a href="viewer.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">radar</span> Voyages
       </a>
-      <a href="viewer.html" class="nav-link-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        <span>Viewer</span>
+      <a href="viewer.html#fleet" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">directions_boat</span> Fleet Overview
       </a>
-      <a href="spatA/index.html" class="nav-link-btn" title="spatA — AIS Spatiotemporal Analytics Workbench">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        <span>spatA</span>
+      <a href="ports.html" class="px-3 py-1 text-xs font-semibold text-[#38bdf8] bg-white/[0.06] rounded-lg border border-white/10 flex items-center gap-1.5 shadow-sm">
+        <span class="material-symbols-outlined text-[15px]">anchor</span> Ports
+      </a>
+      <a href="index.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">sensors</span> Studio
+      </a>
+      <a href="spatA/index.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">analytics</span> spatA Workbench
       </a>
     </div>
+
+    <!-- Right Controls: Omnibox & Operator Profile -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center bg-white/[0.03] border border-white/10 px-3 py-1.5 rounded-xl gap-2 text-slate-400 hover:border-white/20 transition">
+        <span class="material-symbols-outlined text-[16px]">search</span>
+        <input type="text" id="filter-search" placeholder="FIND PORT [UN/LOCODE / NAME]" class="bg-transparent border-none outline-none text-xs font-mono text-slate-200 placeholder-slate-500 w-52" />
+        <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-slate-300 ml-1">⌘K</kbd>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="h-4 w-px bg-white/10"></div>
+        <div class="flex items-center gap-2.5 pl-1">
+          <div class="text-right leading-tight">
+            <div class="font-mono text-[11px] font-semibold text-slate-200">User 007</div>
+            <div class="font-mono text-[9px] text-slate-500 tracking-wider">Team Blue</div>
+          </div>
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#1164AF] to-[#38bdf8] flex items-center justify-center shadow-lg shadow-[#1164AF]/20 border border-white/20">
+            <span class="material-symbols-outlined text-white text-[17px]">person</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       Left Sidebar: Ontology Bindings & Solid Tactile Navigation (IDENTICAL PIXELS)
+       ========================================================================= -->
+  <aside class="fixed left-0 top-14 bottom-0 w-64 sidebar-solid-container z-40 flex flex-col justify-between backdrop-blur-md select-none">
+    <div class="flex flex-col p-3">
+      <div class="px-3 py-2 mb-2 flex items-center justify-between border-b border-white/[0.06]">
+        <span class="font-mono text-[10px] tracking-widest uppercase text-slate-500 font-semibold">ONTOLOGY BINDINGS</span>
+        <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[#1164AF]/20 text-[#38bdf8] font-semibold border border-[#1164AF]/30">v4.18</span>
+      </div>
+
+      <nav class="space-y-1">
+        <a href="viewer.html#fleet" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">directions_boat</span>
+            <span>Fleet Overview</span>
+          </span>
+          <span class="font-mono text-[11px] text-slate-500">40</span>
+        </a>
+
+        <a href="viewer.html" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">radar</span>
+            <span>Voyage Telemetry</span>
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        </a>
+
+        <div class="sidebar-nav-item active flex items-center justify-between px-3 py-2 rounded-xl text-white border border-white/10 transition group shadow-sm">
+          <span class="flex items-center gap-2.5 text-sm font-semibold">
+            <span class="material-symbols-outlined text-[18px] text-[#38bdf8] item-icon-box transition-transform">anchor</span>
+            <span>Ports &amp; H3 Geofences</span>
+          </span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-[#1164AF]/20 text-[#38bdf8] font-bold">NGA</span>
+        </div>
+
+        <a href="viewer.html#anomalies" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">warning</span>
+            <span>Anomaly Queue</span>
+          </span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold">12</span>
+        </a>
+
+        <a href="index.html" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">schema</span>
+            <span>Simulation Studio</span>
+          </span>
+        </a>
+
+        <a href="spatA/index.html" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">analytics</span>
+            <span>spatA Workbench</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Sidebar Bottom Status Widget -->
+    <div class="p-3 border-t border-white/[0.06] space-y-2">
+      <div class="flex items-center justify-between text-[11px] font-mono">
+        <span class="text-slate-500 uppercase tracking-wider">WORKSHOP ENGINE</span>
+        <span class="text-emerald-400 font-medium flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> CONNECTED
+        </span>
+      </div>
+      <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5 text-[11px] font-mono">
+        <div class="flex justify-between text-slate-400">
+          <span>CATALOG PORTS</span>
+          <span class="text-slate-200" id="total-ports-indicator">65 Loaded</span>
+        </div>
+        <div class="flex justify-between text-slate-400">
+          <span>H3 RESOLUTION</span>
+          <span class="text-[#38bdf8]" id="res-display">Res 8</span>
+        </div>
+        <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden mt-1.5">
+          <div class="bg-gradient-to-r from-[#1164AF] to-[#38bdf8] h-full w-3/4 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       Main Content Viewport Canvas (IDENTICAL PL-64 PT-14 LAYOUT)
+       ========================================================================= -->
+  <div class="pl-64">
+    <main class="pt-14 w-full h-screen relative bg-[#090B10] flex flex-col">
+
+      <!-- Map Top Bar: Quick Filter Controls Strip -->
+      <div class="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-2 bg-[#090B10]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-xs font-mono shadow-xl">
+        <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">travel_explore</span>
+        <span>Country:</span>
+        <select id="filter-country" class="bg-slate-900 border border-white/10 rounded px-2 py-0.5 text-xs text-white">
+          <option value="ALL">All Countries (65)</option>
+          <option value="Japan">Japan (JP)</option>
+          <option value="South Korea">South Korea (KR)</option>
+          <option value="China">China (CN)</option>
+          <option value="Taiwan">Taiwan (TW)</option>
+          <option value="Singapore">Singapore (SG)</option>
+          <option value="Philippines">Philippines (PH)</option>
+          <option value="Russia">Russia (RU)</option>
+        </select>
+        <div class="h-3 w-px bg-white/20"></div>
+        <span>Visible: <strong class="text-white" id="stat-count">0</strong></span>
+        <span>Occupied Hexes: <strong class="text-[#38bdf8]" id="stat-hex-count">0</strong></span>
+      </div>
+
+      <!-- Tactical Bracket Badge in Top-Left (Matching Reference) -->
+      <div class="absolute top-14 left-3 z-20 pointer-events-none select-none">
+        <div class="h3-tactical-bracket font-mono text-[11px] font-bold tracking-wider text-[#38bdf8] flex items-center gap-1.5 shadow-lg">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#38bdf8] animate-pulse"></span>
+          <span>NGA PORTS & H3</span>
+        </div>
+      </div>
+
+      <!-- Map Top Bar Right: Tactical Layer Controls -->
+      <div class="absolute top-3 right-3 z-20 flex items-center gap-2 bg-[#090B10]/90 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-white/10 text-xs font-mono shadow-xl">
+        <label class="flex items-center gap-1 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="toggle-hex" checked class="rounded bg-slate-800 text-[#38bdf8] focus:ring-0 w-3 h-3" />
+          <span class="text-[11px]">H3 Polygons</span>
+        </label>
+        <div class="h-3 w-px bg-white/20"></div>
+        <label class="flex items-center gap-1 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="toggle-points" checked class="rounded bg-slate-800 text-amber-400 focus:ring-0 w-3 h-3" />
+          <span class="text-[11px]">Port Markers</span>
+        </label>
+        <div class="h-3 w-px bg-white/20"></div>
+        <label class="flex items-center gap-1 cursor-pointer text-slate-300 hover:text-white">
+          <input type="checkbox" id="toggle-labels" class="rounded bg-slate-800 text-emerald-400 focus:ring-0 w-3 h-3" />
+          <span class="text-[11px]">Port Names</span>
+        </label>
+      </div>
+
+      <!-- Right Floating Control Deck: Details & Resolution Slider -->
+      <div class="absolute top-16 right-3 z-20 w-80 tactical-glass-card rounded-xl p-4 flex flex-col gap-3 max-h-[calc(100vh-140px)] overflow-y-auto">
+        <div class="text-xs font-mono font-bold text-white uppercase flex items-center justify-between border-b border-white/10 pb-2">
+          <span>H3 Spatial Indexing</span>
+          <span class="text-[#38bdf8] font-bold" id="res-edge-len">Edge: ~461m</span>
+        </div>
+
+        <div class="flex flex-col gap-1 font-mono text-xs">
+          <div class="flex justify-between text-slate-400 text-[11px]">
+            <span>Resolution:</span>
+            <span class="text-white font-bold" id="res-area">Area: 0.737 km²</span>
+          </div>
+          <input type="range" id="h3-res-slider" min="4" max="9" value="8" step="1" class="w-full cursor-pointer h-1.5 bg-slate-800 rounded-lg accent-[#38bdf8]" />
+          <div class="flex justify-between text-[10px] text-slate-500">
+            <span>Res 4</span>
+            <span>Res 6</span>
+            <span>Res 8 (Nominal)</span>
+            <span>Res 9</span>
+          </div>
+        </div>
+
+        <div class="border-t border-white/10 pt-2 flex flex-col gap-2">
+          <div class="text-xs font-mono font-bold text-slate-300 uppercase">Selected Port / Cell Details</div>
+          <div id="hex-details-content" class="text-xs font-mono text-slate-400 max-h-60 overflow-y-auto space-y-1.5">
+            <div class="text-slate-500 text-[11px]">Click any port pin or H3 hexagonal boundary on the map to inspect geofence metrics.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaflet Map Container -->
+      <div id="map" class="w-full h-full flex-1"></div>
+
+    </main>
   </div>
 
-  <!-- Right Floating Control Deck -->
-  <div class="control-deck">
-    
-    <!-- H3 Resolution Slider -->
-    <div>
-      <div class="section-title">
-        <span>H3 Resolution</span>
-        <span id="res-edge-len" style="font-size: 10px; color: var(--text-muted);">~22 km edge</span>
-      </div>
-      <div class="slider-container">
-        <div class="slider-header">
-          <span class="res-val" id="res-display">Res 4</span>
-          <span class="res-meta" id="res-area">Area: ~1,570 km²</span>
-        </div>
-        <input type="range" id="h3-res-slider" min="3" max="8" step="1" value="4" />
-        <div class="ticks">
-          <span>3</span>
-          <span>4</span>
-          <span>5</span>
-          <span>6</span>
-          <span>7</span>
-          <span>8</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Metrics -->
-    <div>
-      <div class="section-title">Spatial Metrics</div>
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-label">Ports Active</div>
-          <div class="metric-val" id="stat-ports-count">0</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">H3 Hexagons</div>
-          <div class="metric-val" id="stat-hex-count">0</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">Max Density</div>
-          <div class="metric-val" id="stat-max-density">0</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">Avg Ports/Cell</div>
-          <div class="metric-val" id="stat-avg-density">0.0</div>
-        </div>
-      </div>
-      <div class="legend-bar"></div>
-      <div class="legend-labels">
-        <span>1 port</span>
-        <span id="legend-mid">Density</span>
-        <span id="legend-max">Max</span>
-      </div>
-    </div>
-
-    <!-- Filter Deck -->
-    <div>
-      <div class="section-title">Filter Ports</div>
-      <div class="control-group">
-        <label>Country / Territory</label>
-        <select id="filter-country">
-          <option value="ALL">-- All Asian Countries (768 Ports) --</option>
-        </select>
-      </div>
-      <div class="control-group" style="margin-top: 8px;">
-        <label>Search Port Name or ID</label>
-        <input type="text" id="filter-search" placeholder="e.g. Busan, Tokyo, Shanghai, 57020..." />
-      </div>
-    </div>
-
-    <!-- Layer Toggles -->
-    <div>
-      <div class="section-title">Display Layers</div>
-      <div class="toggle-row">
-        <span>H3 Hexagon Bins</span>
-        <label class="switch">
-          <input type="checkbox" id="toggle-hex" checked />
-          <span class="slider-switch"></span>
-        </label>
-      </div>
-      <div class="toggle-row">
-        <span>Port Point Markers</span>
-        <label class="switch">
-          <input type="checkbox" id="toggle-points" checked />
-          <span class="slider-switch"></span>
-        </label>
-      </div>
-      <div class="toggle-row">
-        <span>Hex Count Badges</span>
-        <label class="switch">
-          <input type="checkbox" id="toggle-labels" checked />
-          <span class="slider-switch"></span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Basemap Selector -->
-    <div>
-      <div class="section-title">CARTO Basemap</div>
-      <div class="control-group">
-        <label>Basemap Theme</label>
-        <select id="select-basemap">
-          <option value="dark">CARTO Dark Matter (Maritime Night)</option>
-          <option value="positron">CARTO Positron (High Contrast Light)</option>
-          <option value="voyager">CARTO Voyager (Nautical Detail)</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Active Hexagon Details Drawer -->
-    <div id="hex-details-container">
-      <div class="section-title">Selected Hexagon Ports</div>
-      <div id="hex-details-content" class="port-details-box active">
-        <span style="color: var(--text-muted);">Click any hexagon or port to inspect details.</span>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
+<script>
     // Source data loaded from static/js/asia_ports.js (window.RAW_PORTS)
     const PORTS_DATA = window.RAW_PORTS || [];
 

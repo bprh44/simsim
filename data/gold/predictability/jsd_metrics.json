@@ -1,0 +1,8 @@
+{
+  "corridor_predictability_index": 0.884,
+  "jsd_theoretical_range": "[0.0 (Uniform Random) to 1.0 (Deterministic Channel)]",
+  "evaluated_transitions_count": 129,
+  "hit_rate_top1_pct": 82.5,
+  "hit_rate_top3_pct": 98.4,
+  "reference": "AIS-Based Vessel Trajectory Prediction Using H3-Indexed Historical Trajectory Context"
+}

@@ -1,0 +1,623 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>ohD • Mission Control &amp; Telemetry Operations</title>
+
+  <!-- Google Fonts: Urbanist, JetBrains Mono, Space Grotesk, Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+
+  <!-- Leaflet GIS CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              ops: "#1164AF",
+              req: "#F8CE2F",
+              know: "#2A2E80",
+              plan: "#8A17AC",
+              assess: "#117B3D",
+              ai: "#6D4F28",
+              gov: "#BAB8B8"
+            },
+            voyage: {
+              bg: "#090B10",
+              surface: "#0D1117",
+              elevated: "#151A24",
+              border: "rgba(255, 255, 255, 0.08)",
+              accent: "#38bdf8",
+              emerald: "#10b981",
+              amber: "#f59e0b",
+              rose: "#f43f5e"
+            }
+          },
+          fontFamily: {
+            sans: ['Urbanist', 'Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            display: ['Space Grotesk', 'Urbanist', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #090B10;
+        color: #E2E8F0;
+        font-family: 'Urbanist', sans-serif;
+        overscroll-behavior: none;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090B10;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1F293D;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38bdf8;
+    }
+
+    .sidebar-solid-container {
+      margin: 0;
+      height: 100%;
+      border-radius: 0;
+      background-color: #090B10;
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .sidebar-nav-item {
+      position: relative;
+      transform: translateX(0);
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                  box-shadow 0.24s ease,
+                  border-color 0.24s ease,
+                  background-color 0.24s ease;
+      cursor: pointer;
+    }
+    .sidebar-nav-item:hover {
+      transform: translateX(6px);
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: #38bdf8;
+      box-shadow: 0 6px 20px -2px rgba(56, 189, 248, 0.2), 0 2px 6px -1px rgba(0, 0, 0, 0.06);
+    }
+    .sidebar-nav-item:hover .item-icon-box {
+      transform: scale(1.1) rotate(1deg);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+    .sidebar-nav-item.active {
+      transform: translateX(4px);
+      background-color: rgba(255, 255, 255, 0.08);
+      border-color: #38bdf8;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      background: #070a12;
+      z-index: 10;
+    }
+    .leaflet-container {
+      background: #070a12 !important;
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+    .leaflet-control-zoom {
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 8px !important;
+      overflow: hidden;
+      background: rgba(13, 17, 23, 0.9) !important;
+      backdrop-filter: blur(10px);
+    }
+    .leaflet-control-zoom a {
+      background: transparent !important;
+      color: #94a3b8 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .leaflet-control-zoom a:hover {
+      background: rgba(56, 189, 248, 0.2) !important;
+      color: #38bdf8 !important;
+    }
+
+    .tactical-glass-card {
+      background: rgba(13, 17, 23, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    .tactical-glass-card:hover {
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .voyage-card {
+      background: radial-gradient(120% 120% at 50% 0%, rgba(26, 32, 46, 0.6) 0%, rgba(13, 17, 23, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .voyage-card:hover {
+      transform: translateY(-2px);
+      border-color: #38bdf8;
+      box-shadow: 0 8px 26px -2px rgba(56, 189, 248, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+    }
+
+    .range-progress {
+      accent-color: #38bdf8;
+    }
+
+    .leaflet-tooltip.tactical-tooltip {
+      background-color: rgba(9, 11, 16, 0.95) !important;
+      border: 1px solid rgba(56, 189, 248, 0.4) !important;
+      color: #e2e8f0 !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8), 0 0 15px rgba(56, 189, 248, 0.2) !important;
+      border-radius: 8px !important;
+      backdrop-filter: blur(8px) !important;
+      padding: 6px 10px !important;
+    }
+
+    .h3-hex-label {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      text-shadow: 0 0 3px #000, 0 0 5px #000, 0 0 7px #090B10;
+      pointer-events: none;
+    }
+
+    @keyframes h3PulseRing {
+      0% { opacity: 0.9; stroke-width: 3.5px; }
+      50% { opacity: 0.4; stroke-width: 5.5px; }
+      100% { opacity: 0.9; stroke-width: 3.5px; }
+    }
+    .h3-active-cell {
+      animation: h3PulseRing 1.8s infinite ease-in-out;
+    }
+
+    .h3-tactical-bracket {
+      position: relative;
+      background: rgba(9, 11, 16, 0.65);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 4px;
+      padding: 3px 10px;
+      color: #38bdf8;
+      letter-spacing: 1.5px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 10px rgba(56, 189, 248, 0.15);
+    }
+    .h3-tactical-bracket::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -2px; width: 6px; height: 6px;
+      border-top: 2px solid #38bdf8;
+      border-left: 2px solid #38bdf8;
+    }
+    .h3-tactical-bracket::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; right: -2px; width: 6px; height: 6px;
+      border-bottom: 2px solid #38bdf8;
+      border-right: 2px solid #38bdf8;
+    }
+
+    .h3-pred-label-container {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      pointer-events: none !important;
+    }
+    .h3-pred-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      user-select: none;
+      transform: translate(-50%, -50%);
+    }
+    .h3-pred-pill.primary {
+      font-size: 14px;
+      color: #fef08a;
+      text-shadow: 0 0 10px rgba(245, 158, 11, 1), 0 1px 3px rgba(0,0,0,0.95);
+    }
+    .h3-pred-pill.secondary {
+      font-size: 12px;
+      color: #fcd34d;
+      text-shadow: 0 0 8px rgba(245, 158, 11, 0.8), 0 1px 3px rgba(0,0,0,0.95);
+    }
+    .h3-pred-pill.tertiary {
+      font-size: 11px;
+      color: #fde68a;
+      opacity: 0.9;
+      text-shadow: 0 0 6px rgba(245, 158, 11, 0.6), 0 1px 3px rgba(0,0,0,0.95);
+    }
+
+    @keyframes h3PulseGold {
+      0%, 100% {
+        fill-opacity: 0.42;
+        stroke: #fbbf24;
+        stroke-width: 2.5px;
+        filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.65));
+      }
+      50% {
+        fill-opacity: 0.60;
+        stroke: #fef08a;
+        stroke-width: 3.5px;
+        filter: drop-shadow(0 0 16px rgba(245, 158, 11, 0.95));
+      }
+    }
+    .h3-predicted-hex-primary {
+      animation: h3PulseGold 2.2s infinite ease-in-out;
+    }
+
+    .ais-ping-dot {
+      transition: all 0.15s ease-in-out;
+      cursor: pointer;
+    }
+    .ais-ping-dot:hover {
+      filter: drop-shadow(0 0 8px #f59e0b);
+    }
+  </style>
+</head>
+<body class="bg-[#090B10] text-[#E2E8F0] antialiased select-none font-sans min-h-screen">
+
+  <!-- Palantir Foundry Top Navigation / Global Shell Header -->
+  <header class="fixed top-0 left-0 right-0 h-14 bg-[#090B10]/95 backdrop-blur-md z-50 flex items-center justify-between px-5 border-b border-white/[0.07]">
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 py-1"><span class="material-symbols-outlined text-[#38bdf8] text-[20px]">hub</span><span class="font-mono text-sm uppercase tracking-wider text-white font-bold">Kasting</span></div>
+      
+      
+      
+    </div>
+
+    <!-- Center Navigation -->
+    <div class="hidden lg:flex items-center gap-1 bg-white/[0.02] border border-white/[0.06] p-1 rounded-xl">
+      <button class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">sensors</span> Studio
+      </button>
+      <button class="px-3 py-1 text-xs font-semibold text-[#38bdf8] bg-white/[0.06] rounded-lg border border-white/10 flex items-center gap-1.5 shadow-sm">
+        <span class="material-symbols-outlined text-[15px]">radar</span> Telemetry Viewer
+      </button>
+      <button class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">anchor</span> Ports &amp; H3
+      </button>
+      <button class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">analytics</span> spatA Workbench
+      </button>
+    </div>
+
+    <!-- Right Controls: Omnibox & Operator Profile -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center bg-white/[0.03] border border-white/10 px-3 py-1.5 rounded-xl gap-2 text-slate-400 hover:border-white/20 transition cursor-pointer">
+        <span class="material-symbols-outlined text-[16px]">search</span>
+        <input type="text" placeholder="FIND OBJECT [IMO / CALLSIGN / UUID]" class="bg-transparent border-none outline-none text-xs font-mono text-slate-200 placeholder-slate-500 w-48">
+        <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-slate-300 ml-1">⌘K</kbd>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button class="flex items-center justify-center p-2 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.08] text-slate-300 transition" title="Export CSV">
+          <span class="material-symbols-outlined text-[18px]">download</span>
+        </button>
+        <div class="h-4 w-px bg-white/10"></div>
+        <div class="flex items-center gap-2.5 pl-1">
+          <div class="text-right leading-tight">
+            <div class="font-mono text-[11px] font-semibold text-slate-200">User 04</div>
+            <div class="font-mono text-[9px] text-slate-500 tracking-wider">Team Blue</div>
+          </div>
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#1164AF] to-[#38bdf8] flex items-center justify-center shadow-lg shadow-[#1164AF]/20 border border-white/20">
+            <span class="material-symbols-outlined text-white text-[17px]">person</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Left Sidebar -->
+  <aside class="fixed left-0 top-14 bottom-0 w-64 sidebar-solid-container z-40 flex flex-col justify-between backdrop-blur-md select-none transition-all" id="left-sidebar">
+    <div class="flex flex-col px-2 pt-1.5">
+      <div class="px-3 py-2 flex items-center justify-between border-b border-white/[0.06] mb-1"><div class="flex items-center gap-2 sidebar-expanded-content overflow-hidden"><span class="material-symbols-outlined text-[#38bdf8] text-[15px]">grid_view</span><span class="font-mono text-[10px] tracking-wider uppercase text-slate-400 font-bold truncate">OPERATIONS NAV</span></div><button type="button" id="sidebar-collapse-btn" onclick="window.toggleSidebarCollapse()" title="Collapse Sidebar" class="flex items-center justify-center p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition cursor-pointer shrink-0"><span class="material-symbols-outlined text-[16px] transition-transform duration-200" id="sidebar-collapse-icon">menu_open</span></button></div>
+
+      <nav class="space-y-1">
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">directions_boat</span>
+            <span class="">Fleet Overview</span>
+          </span>
+          <span class="font-mono text-[11px] text-slate-500">1,402</span>
+        </div>
+
+        <div class="sidebar-nav-item active flex items-center justify-between px-3 py-2 rounded-xl text-white border border-white/10 transition group shadow-sm">
+          <span class="flex items-center gap-2.5 text-sm font-semibold">
+            <span class="material-symbols-outlined text-[18px] text-[#38bdf8] item-icon-box transition-transform">radar</span>
+            <span class="">Voyage Telemetry</span>
+          </span>
+          <span class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400 animate-pulse"></span>
+          </span>
+        </div>
+
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">explore</span>
+            <span class="">Geospatial Radar</span>
+          </span>
+        </div>
+
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">warning</span>
+            <span class="">Anomaly Queue</span>
+          </span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold">12</span>
+        </div>
+
+        <div class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">verified</span>
+            <span class="">Compliance Audit</span>
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Sidebar Bottom Status -->
+    
+  <script id="sidebar-toggle-script" class="">window.toggleSidebarCollapse = function() { const sb = document.getElementById('left-sidebar'); const vp = document.getElementById('main-viewport-wrapper'); const icon = document.getElementById('sidebar-collapse-icon'); const btn = document.getElementById('sidebar-collapse-btn'); if (!sb || !vp) return; const isCollapsed = sb.classList.contains('w-16'); if (isCollapsed) { sb.classList.remove('w-16'); sb.classList.add('w-64'); vp.classList.remove('pl-16'); vp.classList.add('pl-64'); if (icon) { icon.textContent = 'menu_open'; icon.classList.remove('rotate-180'); } if (btn) btn.title = 'Collapse Sidebar'; sb.querySelectorAll('.sidebar-expanded-content').forEach(el => el.classList.remove('hidden')); sb.querySelectorAll('.sidebar-nav-item span:nth-child(2)').forEach(el => el.classList.remove('hidden')); sb.querySelectorAll('.sidebar-nav-item span:first-child span:nth-child(2)').forEach(el => el.classList.remove('hidden')); const bottomBlock = sb.querySelector('.border-t'); if (bottomBlock) bottomBlock.classList.remove('hidden'); } else { sb.classList.remove('w-64'); sb.classList.add('w-16'); vp.classList.remove('pl-64'); vp.classList.add('pl-16'); if (icon) { icon.textContent = 'dock_to_right'; icon.classList.add('rotate-180'); } if (btn) btn.title = 'Expand Sidebar'; sb.querySelectorAll('.sidebar-expanded-content').forEach(el => el.classList.add('hidden')); sb.querySelectorAll('.sidebar-nav-item > span:nth-child(2)').forEach(el => el.classList.add('hidden')); sb.querySelectorAll('.sidebar-nav-item span:first-child span:nth-child(2)').forEach(el => el.classList.add('hidden')); const bottomBlock = sb.querySelector('.border-t'); if (bottomBlock) bottomBlock.classList.add('hidden'); } if (typeof map !== 'undefined' && map.invalidateSize) { setTimeout(() => map.invalidateSize(), 220); } };</script></aside>
+
+  <!-- Main Telemetry Viewport -->
+  <div class="pl-64 transition-all" id="main-viewport-wrapper">
+    <main class="pt-14 w-full min-h-screen bg-[#090B10] text-[#E2E8F0]">
+      <section class="flex flex-col w-full">
+
+        <!-- Top Telemetry Subheader Strip -->
+        <div class="bg-[#0D1117] border-b border-white/[0.06] px-5 py-3 flex flex-col gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1 bg-white/[0.04] border border-white/10 p-0.5 rounded-lg">
+                <button type="button" class="px-3 py-1 rounded text-xs font-mono font-medium transition text-slate-400 hover:text-white flex items-center gap-1.5" id="tab-dir" onclick="window.toggleVoyageMenu()">
+                  <span class="material-symbols-outlined text-[15px] text-[#38bdf8]">list_alt</span> All Voyages (3)
+                </button>
+                <button type="button" class="px-3 py-1 rounded text-xs font-mono font-medium transition bg-white/10 text-white flex items-center gap-1.5" id="tab-cockpit">
+                  <span class="material-symbols-outlined text-[15px] text-emerald-400">radar</span> Telemetry Cockpit
+                </button>
+              </div>
+
+              
+              
+            </div>
+
+            <!-- Controls -->
+            <div class="flex items-center gap-3">
+              
+              <div class="flex items-center gap-1 bg-white/[0.04] border border-white/10 rounded-lg p-0.5">
+                <button class="px-2 py-0.5 rounded text-[11px] font-mono bg-white/10 text-white">Dark</button>
+                <button class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400">Light</button>
+                <button class="px-2 py-0.5 rounded text-[11px] font-mono text-slate-400">Voyager</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Vessel Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-3"><div class="w-full flex flex-col gap-2.5 pt-0.5"><div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-white/[0.06]"><div class="flex flex-wrap items-center gap-2.5"><div class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white/[0.06] border border-[#38bdf8]/40 shadow-sm shadow-[#1164AF]/20"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400"></span><span class="font-bold text-sm tracking-wide text-white font-sans">NEW CAMELLIA</span><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold font-mono border border-emerald-500/30">18.5 kts UNDERWAY</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/[0.03] border border-white/10 text-xs font-mono text-slate-300"><span class="text-slate-500 font-semibold">IMO</span><span class="text-white font-bold">9304497</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/[0.03] border border-white/10 text-xs font-mono text-slate-300"><span class="text-slate-500 font-semibold">MMSI</span><span class="text-white font-bold">371304497</span></div></div><div class="flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/10 text-xs font-mono"><span class="material-symbols-outlined text-[15px] text-amber-400">event_upcoming</span><span class="text-slate-400">ETA:</span><span class="text-white font-semibold">2026-10-27 06:00 UTC</span><span class="text-amber-300 font-bold bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-400/30 text-[11px]">in 15h 30m</span></div></div><div class="flex flex-wrap items-center justify-between gap-3 text-xs font-mono"><div class="flex flex-wrap items-center gap-2 relative z-30" id="voyage-selector-container"><span class="px-2 py-0.5 rounded bg-[#1164AF]/20 text-[#38bdf8] border border-[#1164AF]/40 text-[10px] font-bold uppercase tracking-wider">VOYAGE RUN</span><div class="relative"><button id="voyage-dropdown-btn" type="button" onclick="window.toggleVoyageMenu()" class="flex items-center gap-2 text-slate-200 bg-white/[0.04] hover:bg-white/[0.08] hover:border-[#38bdf8]/50 px-2.5 py-1 rounded-lg border border-white/10 transition cursor-pointer text-xs font-mono select-none"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span id="active-voyage-tag" class="text-[#38bdf8] font-bold">VOY-01:</span><span id="active-voyage-title" class="text-white font-medium">BUSAN → FUKUOKA HAKATA</span><span id="active-voyage-metric" class="text-slate-400 text-[11px] hidden md:inline">(112.4 NM • MC-3 CORRIDOR)</span><span class="material-symbols-outlined text-[16px] text-slate-400 ml-1 transition-transform" id="voyage-dropdown-chevron">expand_more</span></button><div id="voyage-dropdown-menu" class="hidden absolute left-0 top-full mt-1.5 w-80 bg-[#090B10]/95 backdrop-blur-md border border-white/15 rounded-xl shadow-2xl z-50 p-1.5 flex-col gap-1 text-xs font-mono"><div class="px-2 py-1 text-[9px] uppercase tracking-wider text-slate-500 font-bold border-b border-white/[0.06] flex justify-between"><span class="">SELECT TELEMETRY RUN</span><span class="text-[#38bdf8]">3 RECORDED</span></div><button type="button" onclick="window.selectVoyage('VOY-01')" class="voyage-menu-item w-full flex items-center justify-between p-2 rounded-lg hover:bg-white/[0.08] text-left transition border border-transparent hover:border-[#38bdf8]/30 group active-voyage-item bg-white/[0.04]"><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="text-[#38bdf8] font-bold">VOY-01</span><span class="text-white font-medium">Busan → Fukuoka Hakata</span></div><span class="text-[10px] text-slate-400">2026-10-26 • 112.4 NM • Active Underway</span></div><span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">LIVE</span></button><button type="button" onclick="window.selectVoyage('VOY-02')" class="voyage-menu-item w-full flex items-center justify-between p-2 rounded-lg hover:bg-white/[0.08] text-left transition border border-transparent hover:border-[#38bdf8]/30 group"><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="text-amber-400 font-bold">VOY-02</span><span class="text-slate-200 font-medium">Fukuoka Hakata → Busan</span></div><span class="text-[10px] text-slate-400">2026-10-24 • 114.8 NM • Return Inbound</span></div><span class="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-slate-300 font-bold">ARCHIVED</span></button><button type="button" onclick="window.selectVoyage('VOY-00')" class="voyage-menu-item w-full flex items-center justify-between p-2 rounded-lg hover:bg-white/[0.08] text-left transition border border-transparent hover:border-[#38bdf8]/30 group"><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="text-slate-400 font-bold">VOY-00</span><span class="text-slate-200 font-medium">Busan Port Anchorage &amp; Berth</span></div><span class="text-[10px] text-slate-400">2026-10-22 • 14.2 NM • Dwell &amp; Mooring</span></div><span class="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-slate-400 font-bold">DWELL</span></button></div></div></div><div class="flex items-center gap-3 shrink-0"><div class="flex items-center gap-1.5 bg-white/[0.03] border border-white/10 px-2.5 py-1 rounded-lg text-slate-300"><span class="material-symbols-outlined text-[15px] text-[#38bdf8]">schedule</span><span class="text-slate-500 text-[10px] uppercase font-semibold">START DTG:</span><span class="text-white font-medium">2026-10-26 14:30 UTC</span></div><div class="flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400"></span><span class="font-semibold">1,240 Pings Loaded</span></div></div></div></div></div>
+        </div>
+
+        <!-- 4 Telemetry Tiles -->
+        <div class="px-5 pt-4 pb-2 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3"><!-- 1. Distance Traveled --><div class="tactical-glass-card p-3.5 rounded-xl border border-white/[0.08] flex flex-col justify-between"><div class="flex items-center justify-between mb-1"><span class="font-mono text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-[#38bdf8]">route</span>DISTANCE TRAVELED</span><span id="kpi-badge-1" class="font-mono text-[10px] text-[#38bdf8] bg-[#1164AF]/20 border border-[#1164AF]/40 px-1.5 py-0.5 rounded font-bold">VOY-01 ACTIVE</span></div><div class="flex items-baseline gap-2 my-1"><span id="kpi-val-dist" class="font-mono text-[24px] font-bold text-white leading-none">112.4</span><span class="font-mono text-xs text-slate-400">NM</span></div><div class="pt-1.5 border-t border-white/[0.06] text-[10px] font-mono text-slate-400 flex justify-between"><span id="kpi-sub-dist-1" class="">Leg Progress: 82%</span><span id="kpi-sub-dist-2" class="text-[#38bdf8]">Est. Remaining: 24.6 NM</span></div></div><!-- 2. Average Speed --><div class="tactical-glass-card p-3.5 rounded-xl border border-white/[0.08] flex flex-col justify-between"><div class="flex items-center justify-between mb-1"><span class="font-mono text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-[#38bdf8]">speed</span>AVERAGE SPEED</span><span id="kpi-badge-speed" class="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">NOMINAL</span></div><div class="flex items-baseline gap-2 my-1"><span id="kpi-val-speed" class="font-mono text-[24px] font-bold text-[#38bdf8] leading-none">18.7</span><span class="font-mono text-xs text-white font-semibold">kts / SOG</span></div><div class="pt-1.5 border-t border-white/[0.06] text-[10px] font-mono text-slate-400 flex justify-between"><span id="kpi-sub-speed-max" class="">Max SOG: 19.8 kts</span><span id="kpi-sub-speed-tgt" class="text-slate-200">Target SOG: 18.5 kts</span></div></div><!-- 3. Previous Dwell Time --><div class="tactical-glass-card p-3.5 rounded-xl border border-white/[0.08] flex flex-col justify-between"><div class="flex items-center justify-between mb-1"><span class="font-mono text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-amber-400">timer</span>PREVIOUS DWELL TIME</span><span id="kpi-badge-dwell" class="font-mono text-[10px] text-amber-300 bg-amber-500/20 border border-amber-400/80 px-1.5 py-0.5 rounded font-bold">BERTH CLEARED</span></div><div class="flex items-baseline gap-2 my-1"><span id="kpi-val-dwell" class="font-mono text-[24px] font-bold text-amber-300 leading-none">5h 42m</span><span class="font-mono text-xs text-slate-400">PORT DWELL</span></div><div class="pt-1.5 border-t border-white/[0.06] text-[10px] font-mono text-slate-400 flex justify-between"><span id="kpi-sub-dwell-term" class="">Terminal: Busan North Pier 3</span><span id="kpi-sub-dwell-anchor" class="text-slate-300">Dwell Anchor: H3 Res 8</span></div></div><!-- 4. Safety Index --><div class="tactical-glass-card p-3.5 rounded-xl border border-white/[0.08] flex flex-col justify-between"><div class="flex items-center justify-between mb-1"><span class="font-mono text-[10px] uppercase text-slate-400 tracking-wider flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-emerald-400">verified_user</span>SAFETY INDEX</span><span id="kpi-badge-safety" class="font-mono text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded font-bold">LEVEL 1 OPT</span></div><div class="flex items-baseline gap-2 my-1"><span id="kpi-val-safety" class="font-mono text-[24px] font-bold text-emerald-400 leading-none">98.4</span><span class="font-mono text-xs text-slate-400">/ 100 PTS</span></div><div class="pt-1.5 border-t border-white/[0.06] text-[10px] font-mono text-slate-400 flex justify-between"><span id="kpi-sub-safety-ukc" class="">UKC &amp; TSS: 100% Compliant</span><span id="kpi-sub-safety-risk" class="text-emerald-400">CPA/TCPA Risk: Negligible</span></div></div></div>
+
+        <!-- Telemetry Main View: Map Deck + Real-time Table Grid -->
+        <div class="px-5 py-3 grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1">
+          <!-- Left: Tactical GIS Deck (7 cols) -->
+          <div class="lg:col-span-7 flex flex-col tactical-glass-card rounded-2xl overflow-hidden border border-white/[0.08] relative min-h-[520px]">
+            <!-- Map Top Bar Left: Readouts -->
+            <div class="absolute top-3 left-3 z-20 flex flex-wrap items-center gap-2 bg-[#090B10]/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-xs font-mono shadow-xl"><span class="material-symbols-outlined text-[15px] text-[#38bdf8]">navigation</span><span class="">HDG: <strong id="hud-hdg-val" class="text-white">140° T</strong></span><div class="h-3 w-px bg-white/20"></div><span class="">LAT: <strong id="hud-lat-val" class="text-white">34.5000</strong></span><span class="">LON: <strong id="hud-lon-val" class="text-white">129.8000</strong></span><div class="h-3 w-px bg-white/20"></div><div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#1164AF]/20 border border-[#1164AF]/40"><span class="text-[10px] text-slate-400 font-bold">H3 RES 8:</span><span id="hud-h3-val" class="text-[#38bdf8] font-bold text-[11px]">883108c903fffff</span></div><div class="h-3 w-px bg-white/20"></div><div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-400/40"><span class="text-[10px] text-amber-300 font-bold">PRED MODEL:</span><span id="hud-model-val" class="text-amber-400 font-bold text-[11px]">MC-3 (Order 3)</span></div></div>
+
+            <!-- Tactical HUD Corner Bracket Badge -->
+            <div class="absolute top-14 left-3 z-20 pointer-events-none select-none"><div class="flex items-center gap-2"><div class="h3-tactical-bracket font-mono text-[11px] font-bold tracking-wider text-[#38bdf8] flex items-center gap-1.5 shadow-lg"><span class="w-1.5 h-1.5 rounded-full bg-[#38bdf8] animate-pulse"></span><span class="">RES 8</span></div><div class="h3-tactical-bracket font-mono text-[11px] font-bold tracking-wider text-amber-400 flex items-center gap-1.5 shadow-lg border-amber-400/40 bg-[#090B10]/80"><span class="material-symbols-outlined text-[14px] text-amber-400">psychology</span><span class="">MODEL: MC-3 [ORDER 3 MARKOV CHAIN]</span></div></div></div>
+
+            <!-- Map Controls -->
+            <div class="absolute top-3 right-3 z-20 flex items-center gap-2 bg-[#090B10]/90 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-white/10 text-xs font-mono shadow-xl">
+              <label class="flex items-center gap-1 cursor-pointer text-slate-300">
+                <input type="checkbox" checked="" class="rounded bg-slate-800 text-[#38bdf8] focus:ring-0 w-3 h-3">
+                <span class="text-[11px]">H3 Grids</span>
+              </label>
+              <div class="h-3 w-px bg-white/20"></div>
+              <label class="flex items-center gap-1 cursor-pointer text-slate-300">
+                <input type="checkbox" checked="" class="rounded bg-slate-800 text-amber-400 focus:ring-0 w-3 h-3">
+                <span class="text-[11px]">Idle Anchors</span>
+              </label>
+              <div class="h-3 w-px bg-white/20"></div>
+              <label class="flex items-center gap-1 cursor-pointer text-amber-300"><input type="checkbox" checked="" class="rounded bg-slate-800 text-amber-400 focus:ring-0 w-3 h-3"><span class="text-[11px] text-amber-400 font-semibold">MC-3 Predicted Cone (3rd-Order Markov)</span></label>
+            </div>
+
+            <!-- Map Bottom-Left Legend -->
+            <div class="absolute bottom-24 left-3 z-20 flex flex-col gap-1 bg-[#090B10]/90 backdrop-blur-md p-2 rounded-xl border border-white/10 text-[10px] font-mono shadow-xl pointer-events-none"><div class="text-[9px] text-slate-400 font-bold uppercase tracking-wider pb-0.5 border-b border-white/10 flex items-center justify-between gap-2"><span class="">H3 RES 8 PATH DECK</span><span class="text-amber-400 text-[8px] bg-amber-500/20 px-1 py-0.5 rounded border border-amber-400/40">MC-3 MODEL</span></div><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm border border-amber-400/80 bg-amber-500/20 border-dashed"></span><span class="text-slate-300">Departure Mooring (Busan)</span></div><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm border border-[#00f0ff] bg-[#0284c7]/30"></span><span class="text-[#38bdf8]">Connected H3 Res 8 Traversed Transit</span></div><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm border border-amber-400 bg-amber-500/40"></span><span class="text-amber-400 font-semibold">MC-3 Predicted Transition Cells: P(H<sub>t</sub> | H<sub>t-1</sub>, H<sub>t-2</sub>, H<sub>t-3</sub>)</span></div><div class="pt-1 border-t border-white/[0.06] text-[9px] text-slate-400"><span class="text-slate-500">Transition Matrix:</span> 3rd-Order Conditioning on last 3 Hex States</div></div>
+
+            <!-- Leaflet Map Container -->
+            <div id="map" class="w-full flex-1 min-h-[480px] leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom" tabindex="0" style="position: relative; outline-style: none;"><div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(0px, 0px, 0px);"><div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 19; transform: translate3d(0px, 0px, 0px) scale(1);"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/220/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(196px, 16px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/220/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(196px, -240px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/219/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-60px, 16px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/221/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(452px, 16px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/220/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(196px, 272px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/219/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-60px, -240px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/221/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(452px, -240px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/219/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-60px, 272px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/221/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(452px, 272px, 0px); opacity: 1;"></div></div></div><div class="leaflet-pane leaflet-overlay-pane"><svg pointer-events="none" class="leaflet-zoom-animated" width="678" height="576" viewBox="-56 -48 678 576" style="transform: translate3d(-56px, -48px, 0px);"><g><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="0.8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" d="M136 93L150 108L168 123L241 159L337 362L361 394L382 426"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M135 93L136 94L136 92z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M149 108L150 109L150 107z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M167 123L168 125L168 123z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M240 158L241 158z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M273 230L272 231L274 231L274 229z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M308 306L309 306z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M336 361L337 362L337 360z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M359 394L360 396L360 394z"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M371 410L372 411L372 409z"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M381 425L382 425z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M130,93a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M376,426a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path></g></svg></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-marker-pane"><div class="leaflet-marker-icon vessel-live-icon leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button" style="margin-left: -12px; margin-top: -12px; width: 24px; height: 24px; transform: translate3d(273px, 229px, 0px); z-index: 229;">
+        <div style="transform: rotate(140deg);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2 20,20 12,16 4,20" fill="#38bdf8" stroke="#ffffff" stroke-width="2"></polygon>
+          </svg>
+        </div>
+      </div></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" aria-disabled="false"><span aria-hidden="true" class="">+</span></a><a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" aria-disabled="false"><span aria-hidden="true" class="">−</span></a></div></div></div><div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(-107.018px, 297px, 0px);"><div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 17; transform: translate3d(-1185px, -1209px, 0px) scale(4);"></div><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 19; transform: translate3d(0px, 0px, 0px) scale(1);"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/219/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(7px, 107px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/220/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(263px, 107px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/221/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(519px, 107px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/221/103.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(519px, 619px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/222/103.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(775px, 619px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/220/103.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(263px, 619px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/223/103.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(1031px, 619px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/222/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(775px, 363px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/222/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(775px, 107px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/221/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(519px, 363px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/223/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(1031px, 363px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/223/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(1031px, 107px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/222/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(775px, -149px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/221/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(519px, -149px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/223/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(1031px, -149px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/221/99.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(519px, -405px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/220/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(263px, -149px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/220/99.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(263px, -405px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/222/99.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(775px, -405px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/219/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(7px, -149px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/219/99.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(7px, -405px, 0px); opacity: 1;"></div></div></div><div class="leaflet-pane leaflet-overlay-pane"><svg pointer-events="none" class="leaflet-zoom-animated" width="696" height="576" viewBox="49 -345 696 576" style="transform: translate3d(49px, -345px, 0px);"><g><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="0.8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" d="M203 184L217 199L235 214L269 231"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M202 184L203 185L203 183z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M216 199L217 200L217 198z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M234 214L235 216L235 214z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M0 0"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M0 0"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M0 0"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M0 0"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M0 0"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M0 0"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M0 0"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M197,184a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M0 0"></path></g></svg></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-marker-pane"><div class="leaflet-marker-icon vessel-live-icon leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button" style="margin-left: -12px; margin-top: -12px; width: 24px; height: 24px; transform: translate3d(340px, 320px, 0px); z-index: 320;">
+        <div style="transform: rotate(140deg);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2 20,20 12,16 4,20" fill="#38bdf8" stroke="#ffffff" stroke-width="2"></polygon>
+          </svg>
+        </div>
+      </div></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated" style="transform: translate3d(56454px, 25692px, 0px) scale(128);"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" aria-disabled="false"><span aria-hidden="true" class="">+</span></a><a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" aria-disabled="false"><span aria-hidden="true" class="">−</span></a></div></div></div><div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(0px, 0px, 0px);"><div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 19; transform: translate3d(0px, 0px, 0px) scale(1);"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/220/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, 16px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/220/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, -240px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/219/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, 16px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/221/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, 16px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/220/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, 272px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/219/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, -240px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/221/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, -240px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/219/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, 272px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/221/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, 272px, 0px); opacity: 1;"></div></div></div><div class="leaflet-pane leaflet-overlay-pane"><svg pointer-events="none" class="leaflet-zoom-animated" width="696" height="576" viewBox="-58 -48 696 576" style="transform: translate3d(-58px, -48px, 0px);"><g><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="0.8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" d="M144 93L158 108L176 123L249 159L345 362L369 394L390 426"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M143 93L144 94L144 92z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M157 108L158 109L158 107z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M175 123L176 125L176 123z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M248 158L249 158z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M281 230L280 231L282 231L282 229z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M316 306L317 306z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M344 361L345 362L345 360z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M367 394L368 396L368 394z"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M379 410L380 411L380 409z"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M389 425L390 425z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M138,93a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M384,426a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path></g></svg></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-marker-pane"><div class="leaflet-marker-icon vessel-live-icon leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button" style="margin-left: -12px; margin-top: -12px; width: 24px; height: 24px; transform: translate3d(281px, 229px, 0px); z-index: 229;">
+        <div style="transform: rotate(140deg);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2 20,20 12,16 4,20" fill="#38bdf8" stroke="#ffffff" stroke-width="2"></polygon>
+          </svg>
+        </div>
+      </div></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" aria-disabled="false"><span aria-hidden="true" class="">+</span></a><a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" aria-disabled="false"><span aria-hidden="true" class="">−</span></a></div></div></div><div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(0px, 0px, 0px);"><div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 19; transform: translate3d(0px, 0px, 0px) scale(1);"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/220/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, 16px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/220/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, -240px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/219/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, 16px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/221/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, 16px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/220/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, 272px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/219/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, -240px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/221/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, -240px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/219/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, 272px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/221/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, 272px, 0px); opacity: 1;"></div></div></div><div class="leaflet-pane leaflet-overlay-pane"><svg pointer-events="none" class="leaflet-zoom-animated" width="696" height="576" viewBox="-58 -48 696 576" style="transform: translate3d(-58px, -48px, 0px);"><g><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="0.8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" d="M144 93L158 108L176 123L249 159L345 362L369 394L390 426"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M143 93L144 94L144 92z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M157 108L158 109L158 107z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M175 123L176 125L176 123z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M248 158L249 158z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M281 230L280 231L282 231L282 229z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M316 306L317 306z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M344 361L345 362L345 360z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M367 394L368 396L368 394z"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M379 410L380 411L380 409z"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M389 425L390 425z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M138,93a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M384,426a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path></g></svg></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-marker-pane"><div class="leaflet-marker-icon vessel-live-icon leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button" style="margin-left: -12px; margin-top: -12px; width: 24px; height: 24px; transform: translate3d(281px, 229px, 0px); z-index: 229;">
+        <div style="transform: rotate(140deg);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2 20,20 12,16 4,20" fill="#38bdf8" stroke="#ffffff" stroke-width="2"></polygon>
+          </svg>
+        </div>
+      </div></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" aria-disabled="false"><span aria-hidden="true" class="">+</span></a><a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" aria-disabled="false"><span aria-hidden="true" class="">−</span></a></div></div></div><div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(57px, 4px, 0px);"><div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 19; transform: translate3d(0px, 0px, 0px) scale(1);"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/220/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, 50px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/220/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, -206px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/219/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, 50px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/221/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, 50px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/220/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(204px, 306px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/219/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, -206px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/221/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, -206px, 0px); opacity: 1;"><img alt="" src="https://b.basemaps.cartocdn.com/dark_all/8/219/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-52px, 306px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/221/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(460px, 306px, 0px); opacity: 1;"><img alt="" src="https://d.basemaps.cartocdn.com/dark_all/8/218/101.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-308px, 50px, 0px); opacity: 1;"><img alt="" src="https://c.basemaps.cartocdn.com/dark_all/8/218/100.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-308px, -206px, 0px); opacity: 1;"><img alt="" src="https://a.basemaps.cartocdn.com/dark_all/8/218/102.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-308px, 306px, 0px); opacity: 1;"></div></div></div><div class="leaflet-pane leaflet-overlay-pane"><svg pointer-events="none" class="leaflet-zoom-animated" width="833" height="668" viewBox="-126 -60 833 668" style="transform: translate3d(-126px, -60px, 0px);"><g><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="0.8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" d="M144 127L158 142L176 157L249 193L345 396L369 428L390 460"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M143 127L144 128L144 126z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#d97706" fill-opacity="0.25" fill-rule="evenodd" d="M157 142L158 143L158 141z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M175 157L176 159L176 157z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M248 192L249 192z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M281 264L280 265L282 265L282 263z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M316 340L317 340z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M344 395L345 396L345 394z"></path><path class="leaflet-interactive" stroke="#00f0ff" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="#0284c7" fill-opacity="0.25" fill-rule="evenodd" d="M367 428L368 430L368 428z"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M379 444L380 445L380 443z"></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3, 3" fill="#059669" fill-opacity="0.25" fill-rule="evenodd" d="M389 459L390 459z"></path><path class="leaflet-interactive" stroke="#f59e0b" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M138,127a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path><path class="leaflet-interactive" stroke="#10b981" stroke-opacity="1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="#ffffff" fill-opacity="1" fill-rule="evenodd" d="M384,460a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 "></path></g></svg></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-marker-pane"><div class="leaflet-marker-icon vessel-live-icon leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button" style="margin-left: -12px; margin-top: -12px; width: 24px; height: 24px; transform: translate3d(281px, 263px, 0px); z-index: 263;">
+        <div style="transform: rotate(140deg);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2 20,20 12,16 4,20" fill="#38bdf8" stroke="#ffffff" stroke-width="2"></polygon>
+          </svg>
+        </div>
+      </div></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated" style="transform: translate3d(56406px, 26080.5px, 0px) scale(128);"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"><div class="leaflet-control-zoom leaflet-bar leaflet-control"><a class="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" aria-disabled="false"><span aria-hidden="true" class="">+</span></a><a class="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" aria-disabled="false"><span aria-hidden="true" class="">−</span></a></div></div></div></div>
+
+            <!-- Playback Scrubber Bar -->
+            <div class="p-4 bg-[#090B10]/95 backdrop-blur-md border-t border-white/[0.08] flex flex-col gap-2.5 z-20">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <div class="flex items-center gap-2">
+                  <button type="button" class="w-8 h-8 rounded-lg bg-[#1164AF] hover:bg-[#1772c6] text-white flex items-center justify-center transition shadow-lg shadow-[#1164AF]/30">
+                    <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                  </button>
+                  <button type="button" class="px-2 py-1 rounded bg-white/[0.05] hover:bg-white/10 text-slate-300 text-[11px] font-mono transition">
+                    Speed: 5x
+                  </button>
+                  <span class="text-slate-400 pl-1">Ping 34 / 263</span>
+                </div>
+                <div class="flex items-center gap-3 text-slate-300"><span class="">Current SOG: <strong class="text-[#38bdf8]">18.5 kts</strong></span><span class="">Time: <strong class="text-white">14:30 UTC</strong></span><span class="hidden md:inline text-amber-300/90 text-[11px] bg-amber-500/10 px-2 py-0.5 rounded border border-amber-400/30">MC-3 Forecast Active</span></div>
+              </div>
+              <input type="range" min="0" max="100" value="34" class="w-full range-progress cursor-pointer h-1.5 bg-slate-800 rounded-lg">
+            </div>
+          </div>
+
+          <!-- Right: Canonical Telemetry Stream (5 cols) -->
+          <div class="lg:col-span-5 flex flex-col tactical-glass-card rounded-2xl overflow-hidden border border-white/[0.08] max-h-[640px]">
+            <div class="p-3 bg-white/[0.02] border-b border-white/[0.08] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px] text-[#38bdf8]">table_chart</span>
+                <span class="font-mono text-xs font-bold uppercase text-white tracking-wider">CANONICAL TELEMETRY STREAM</span>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">10-COL CONTRACT</span>
+            </div>
+
+            <!-- Table of Pings -->
+            <div class="overflow-y-auto flex-1 font-mono text-[11px]" id="telemetry-table-container" style="scrollbar-width: thin; scrollbar-color: #38bdf8 #151A24;">
+              <table class="w-full text-left border-collapse">
+                <thead class="sticky top-0 bg-[#090B10] text-slate-400 text-[10px] uppercase border-b border-white/10 z-10"><tr class=""><th class="py-2 px-2.5 w-24 min-w-[96px] text-slate-400 font-mono text-[10px] tracking-wider">TIME (ZULU)</th><th class="py-2 px-2">Lat</th><th class="py-2 px-2">Lon</th><th class="py-2 px-2 text-right">SOG</th><th class="py-2 px-2 text-right">HDG</th><th class="py-2 px-2 text-right">MC</th><th class="py-2 px-2 text-right">JSD</th></tr></thead>
+                <tbody class="divide-y divide-white/[0.04] text-slate-300" id="telemetry-table-body"><tr class="sticky top-[29px] z-10 bg-[#0D1117] border-y border-white/20 shadow-md"><td colspan="7" class="py-1.5 px-3 font-mono text-[10px] select-none bg-[#0D1117]"><div class="flex items-center justify-between gap-2.5"><div class="flex items-center gap-2 min-w-0 flex-1"><span class="flex items-center gap-1.5 font-bold text-[#38bdf8] shrink-0 tracking-wider"><span class="material-symbols-outlined text-[14px] text-[#38bdf8]">calendar_today</span> 25 OCT 2026</span><span class="text-white/20 text-xs shrink-0">|</span><span class="text-[10px] text-slate-300 font-mono tracking-wide truncate">DEPARTURE &amp; PORT DWELL • BUSAN NORTH BERTH 3</span></div><span class="text-[9px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-400/30 shrink-0">DWELL / MOORED</span></div></td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">18:15 UTC</td><td class="py-1.5 px-2 text-slate-300">35.1020</td><td class="py-1.5 px-2 text-slate-300">129.0550</td><td class="py-1.5 px-2 text-right font-bold text-amber-400">4.2</td><td class="py-1.5 px-2 text-right text-white">112°</td><td class="py-1.5 px-2 text-right text-slate-400">110°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.012</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">19:30 UTC</td><td class="py-1.5 px-2 text-slate-300">35.0840</td><td class="py-1.5 px-2 text-slate-300">129.0910</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">11.4</td><td class="py-1.5 px-2 text-right text-white">128°</td><td class="py-1.5 px-2 text-right text-slate-400">125°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.021</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">21:00 UTC</td><td class="py-1.5 px-2 text-slate-300">35.0120</td><td class="py-1.5 px-2 text-slate-300">129.1850</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">16.8</td><td class="py-1.5 px-2 text-right text-white">135°</td><td class="py-1.5 px-2 text-right text-slate-400">134°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.027</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">23:15 UTC</td><td class="py-1.5 px-2 text-slate-300">34.8950</td><td class="py-1.5 px-2 text-slate-300">129.4100</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">17.9</td><td class="py-1.5 px-2 text-right text-white">138°</td><td class="py-1.5 px-2 text-right text-slate-400">137°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.033</td></tr><tr class="sticky top-[29px] z-10 bg-[#0D1117] border-y border-white/20 shadow-md"><td colspan="7" class="py-1.5 px-3 font-mono text-[10px] select-none bg-[#0D1117]"><div class="flex items-center justify-between gap-2.5"><div class="flex items-center gap-2 min-w-0 flex-1"><span class="flex items-center gap-1.5 font-bold text-[#38bdf8] shrink-0 tracking-wider"><span class="material-symbols-outlined text-[14px] text-[#38bdf8]">calendar_today</span> 26 OCT 2026</span><span class="text-white/20 text-xs shrink-0">|</span><span class="text-[10px] text-slate-300 font-mono tracking-wide truncate">OPEN SEA TRANSIT • KOREA STRAIT TSS / TSUSHIMA</span></div><span class="text-[9px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-[#1164AF]/20 text-[#38bdf8] border border-[#1164AF]/40 shrink-0">ACTIVE VOYAGE</span></div></td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">04:30 UTC</td><td class="py-1.5 px-2 text-slate-300">34.7800</td><td class="py-1.5 px-2 text-slate-300">129.5800</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.2</td><td class="py-1.5 px-2 text-right text-white">139°</td><td class="py-1.5 px-2 text-right text-slate-400">138°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.036</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">08:15 UTC</td><td class="py-1.5 px-2 text-slate-300">34.6900</td><td class="py-1.5 px-2 text-slate-300">129.6700</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.4</td><td class="py-1.5 px-2 text-right text-white">140°</td><td class="py-1.5 px-2 text-right text-slate-400">139°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.038</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">11:45 UTC</td><td class="py-1.5 px-2 text-slate-300">34.5800</td><td class="py-1.5 px-2 text-slate-300">129.7400</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.6</td><td class="py-1.5 px-2 text-right text-white">141°</td><td class="py-1.5 px-2 text-right text-slate-400">140°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.040</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">14:00 UTC</td><td class="py-1.5 px-2 text-slate-300">34.5400</td><td class="py-1.5 px-2 text-slate-300">129.7700</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.5</td><td class="py-1.5 px-2 text-right text-white">140°</td><td class="py-1.5 px-2 text-right text-slate-400">139°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.041</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">14:15 UTC</td><td class="py-1.5 px-2 text-slate-300">34.5200</td><td class="py-1.5 px-2 text-slate-300">129.7850</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.5</td><td class="py-1.5 px-2 text-right text-white">140°</td><td class="py-1.5 px-2 text-right text-slate-400">138°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.041</td></tr><tr class="bg-white/[0.08] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">14:30 UTC</td><td class="py-1.5 px-2 text-slate-300">34.5000</td><td class="py-1.5 px-2 text-slate-300">129.8000</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.5</td><td class="py-1.5 px-2 text-right text-white">140°</td><td class="py-1.5 px-2 text-right text-slate-400">138°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.042</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">14:45 UTC</td><td class="py-1.5 px-2 text-slate-300">34.4200</td><td class="py-1.5 px-2 text-slate-300">129.8500</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.8</td><td class="py-1.5 px-2 text-right text-white">142°</td><td class="py-1.5 px-2 text-right text-slate-400">140°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.038</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">15:00 UTC</td><td class="py-1.5 px-2 text-slate-300">34.3400</td><td class="py-1.5 px-2 text-slate-300">129.9000</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">19.1</td><td class="py-1.5 px-2 text-right text-white">141°</td><td class="py-1.5 px-2 text-right text-slate-400">139°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.029</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">15:20 UTC</td><td class="py-1.5 px-2 text-slate-300">34.2600</td><td class="py-1.5 px-2 text-slate-300">129.9500</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.9</td><td class="py-1.5 px-2 text-right text-white">139°</td><td class="py-1.5 px-2 text-right text-slate-400">137°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.035</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">15:45 UTC</td><td class="py-1.5 px-2 text-slate-300">34.1800</td><td class="py-1.5 px-2 text-slate-300">130.0100</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">19.2</td><td class="py-1.5 px-2 text-right text-white">140°</td><td class="py-1.5 px-2 text-right text-slate-400">138°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.031</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">16:10 UTC</td><td class="py-1.5 px-2 text-slate-300">34.1100</td><td class="py-1.5 px-2 text-slate-300">130.0700</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.7</td><td class="py-1.5 px-2 text-right text-white">142°</td><td class="py-1.5 px-2 text-right text-slate-400">140°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.034</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">16:30 UTC</td><td class="py-1.5 px-2 text-slate-300">34.0200</td><td class="py-1.5 px-2 text-slate-300">130.1300</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.6</td><td class="py-1.5 px-2 text-right text-white">143°</td><td class="py-1.5 px-2 text-right text-slate-400">141°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.037</td></tr><tr class="sticky top-[29px] z-10 bg-[#0D1117] border-y border-white/20 shadow-md"><td colspan="7" class="py-1.5 px-3 font-mono text-[10px] select-none bg-[#0D1117]"><div class="flex items-center justify-between gap-2.5"><div class="flex items-center gap-2 min-w-0 flex-1"><span class="flex items-center gap-1.5 font-bold text-[#38bdf8] shrink-0 tracking-wider"><span class="material-symbols-outlined text-[14px] text-[#38bdf8]">calendar_today</span> 27 OCT 2026</span><span class="text-white/20 text-xs shrink-0">|</span><span class="text-[10px] text-slate-300 font-mono tracking-wide truncate">ARRIVAL APPROACH &amp; DOCKING • HAKATA FUKUOKA</span></div><span class="text-[9px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">BERTHED / ARRIVED</span></div></td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">01:15 UTC</td><td class="py-1.5 px-2 text-slate-300">33.8200</td><td class="py-1.5 px-2 text-slate-300">130.2500</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">17.8</td><td class="py-1.5 px-2 text-right text-white">145°</td><td class="py-1.5 px-2 text-right text-slate-400">143°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.039</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">03:45 UTC</td><td class="py-1.5 px-2 text-slate-300">33.7400</td><td class="py-1.5 px-2 text-slate-300">130.3000</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">16.4</td><td class="py-1.5 px-2 text-right text-white">147°</td><td class="py-1.5 px-2 text-right text-slate-400">146°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.028</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">05:20 UTC</td><td class="py-1.5 px-2 text-slate-300">33.6400</td><td class="py-1.5 px-2 text-slate-300">130.3700</td><td class="py-1.5 px-2 text-right font-bold text-amber-400">11.1</td><td class="py-1.5 px-2 text-right text-white">152°</td><td class="py-1.5 px-2 text-right text-slate-400">150°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.019</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">06:00 UTC</td><td class="py-1.5 px-2 text-slate-300">33.6060</td><td class="py-1.5 px-2 text-slate-300">130.3950</td><td class="py-1.5 px-2 text-right font-bold text-emerald-400">0.3</td><td class="py-1.5 px-2 text-right text-white">165°</td><td class="py-1.5 px-2 text-right text-slate-400">165°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.005</td></tr></tbody>
+              </table>
+            </div>
+
+            <div class="p-2.5 bg-[#090B10] border-t border-white/[0.08] text-[10px] font-mono text-slate-400 flex items-center justify-between">
+              <span class="">Bounding: <strong class="text-slate-300">33.60°N - 35.12°N, 129.04°E - 130.40°E</strong></span>
+              <span class="">Avg Speed: <strong class="text-white">18.7 kts</strong></span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    <script id="voyage-telemetry-controller" class="">window.voyageDataStore = { 'VOY-01': { title: 'BUSAN → FUKUOKA HAKATA', tag: 'VOY-01:', metric: '(112.4 NM • MC-3 CORRIDOR)', center: [34.45, 129.85], zoom: 8, vessel: [34.5000, 129.8000], heading: 140, h3: '883108c903fffff', model: 'MC-3 (Order 3)', dist: '112.4', distBadge: 'VOY-01 ACTIVE', distSub1: 'Leg Progress: 82%', distSub2: 'Est. Remaining: 24.6 NM', speed: '18.7', speedBadge: 'NOMINAL', speedMax: 'Max SOG: 19.8 kts', speedTgt: 'Target SOG: 18.5 kts', dwell: '5h 42m', dwellBadge: 'BERTH CLEARED', dwellTerm: 'Terminal: Busan North Pier 3', dwellAnchor: 'Dwell Anchor: H3 Res 8', safety: '98.4', safetyBadge: 'LEVEL 1 OPT', safetyUkc: 'UKC & TSS: 100% Compliant', safetyRisk: 'CPA/TCPA Risk: Negligible', pingText: 'Ping 34 / 263', sogText: '18.5 kts', timeText: '14:30 UTC', bounding: '33.60°N - 35.12°N, 129.04°E - 130.40°E', routePts: [ [35.115, 129.043], [35.050, 129.120], [34.980, 129.220], [34.820, 129.620], [34.500, 129.800], [34.150, 130.000], [33.900, 130.150], [33.750, 130.280], [33.680, 130.340], [33.606, 130.395] ], pingsHtml: `<tr class="sticky top-[29px] z-10 bg-[#0D1117] border-y border-white/20 shadow-md"><td colspan="7" class="py-1.5 px-3 font-mono text-[10px] select-none bg-[#0D1117]"><div class="flex items-center justify-between gap-2.5"><div class="flex items-center gap-2 min-w-0 flex-1"><span class="flex items-center gap-1.5 font-bold text-[#38bdf8] shrink-0 tracking-wider"><span class="material-symbols-outlined text-[14px] text-[#38bdf8]">calendar_today</span> 26 OCT 2026</span><span class="text-white/20 text-xs shrink-0">|</span><span class="text-[10px] text-slate-300 font-mono tracking-wide truncate">OPEN SEA TRANSIT • KOREA STRAIT TSS</span></div><span class="text-[9px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-[#1164AF]/20 text-[#38bdf8] border border-[#1164AF]/40 shrink-0">ACTIVE VOYAGE</span></div></td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">14:00 UTC</td><td class="py-1.5 px-2 text-slate-300">34.5400</td><td class="py-1.5 px-2 text-slate-300">129.7700</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.5</td><td class="py-1.5 px-2 text-right text-white">140°</td><td class="py-1.5 px-2 text-right text-slate-400">139°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.041</td></tr><tr class="bg-white/[0.08] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">14:30 UTC</td><td class="py-1.5 px-2 text-slate-300">34.5000</td><td class="py-1.5 px-2 text-slate-300">129.8000</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.5</td><td class="py-1.5 px-2 text-right text-white">140°</td><td class="py-1.5 px-2 text-right text-slate-400">138°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.042</td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">15:00 UTC</td><td class="py-1.5 px-2 text-slate-300">34.3400</td><td class="py-1.5 px-2 text-slate-300">129.9000</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">19.1</td><td class="py-1.5 px-2 text-right text-white">141°</td><td class="py-1.5 px-2 text-right text-slate-400">139°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.029</td></tr>` }, 'VOY-02': { title: 'FUKUOKA HAKATA → BUSAN', tag: 'VOY-02:', metric: '(114.8 NM • RETURN CORRIDOR)', center: [34.42, 129.78], zoom: 8, vessel: [34.7200, 129.6200], heading: 322, h3: '883108c903bbfff', model: 'MC-3 (Order 3)', dist: '114.8', distBadge: 'VOY-02 ARCHIVED', distSub1: 'Leg Progress: 100%', distSub2: 'Transit: 06h 18m', speed: '18.2', speedBadge: 'COMPLETED', speedMax: 'Max SOG: 19.4 kts', speedTgt: 'Target SOG: 18.0 kts', dwell: '8h 15m', dwellBadge: 'HAKATA DEPARTED', dwellTerm: 'Terminal: Hakata Chuo Wharf', dwellAnchor: 'Dwell Anchor: H3 Res 8', safety: '99.1', safetyBadge: 'LEVEL 1 OPT', safetyUkc: 'UKC & TSS: 100% Compliant', safetyRisk: 'CPA/TCPA Risk: Zero Anomaly', pingText: 'Ping 198 / 198', sogText: '18.1 kts', timeText: '21:45 UTC', bounding: '33.60°N - 35.12°N, 129.04°E - 130.40°E', routePts: [ [33.606, 130.395], [33.720, 130.310], [33.950, 130.120], [34.200, 129.950], [34.520, 129.750], [34.720, 129.620], [34.900, 129.350], [35.040, 129.150], [35.115, 129.043] ], pingsHtml: `<tr class="sticky top-[29px] z-10 bg-[#0D1117] border-y border-white/20 shadow-md"><td colspan="7" class="py-1.5 px-3 font-mono text-[10px] select-none bg-[#0D1117]"><div class="flex items-center justify-between gap-2.5"><div class="flex items-center gap-2 min-w-0 flex-1"><span class="flex items-center gap-1.5 font-bold text-[#38bdf8] shrink-0 tracking-wider"><span class="material-symbols-outlined text-[14px] text-[#38bdf8]">calendar_today</span> 24 OCT 2026</span><span class="text-white/20 text-xs shrink-0">|</span><span class="text-[10px] text-slate-300 font-mono tracking-wide truncate">RETURN OPEN TRANSIT • KOREA STRAIT NORTHBOUND</span></div><span class="text-[9px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">ARCHIVED RUN</span></div></td></tr><tr class="hover:bg-white/[0.04] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">18:00 UTC</td><td class="py-1.5 px-2 text-slate-300">33.8200</td><td class="py-1.5 px-2 text-slate-300">130.2200</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.4</td><td class="py-1.5 px-2 text-right text-white">320°</td><td class="py-1.5 px-2 text-right text-slate-400">320°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.015</td></tr><tr class="bg-white/[0.08] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">21:45 UTC</td><td class="py-1.5 px-2 text-slate-300">34.7200</td><td class="py-1.5 px-2 text-slate-300">129.6200</td><td class="py-1.5 px-2 text-right font-bold text-[#38bdf8]">18.1</td><td class="py-1.5 px-2 text-right text-white">322°</td><td class="py-1.5 px-2 text-right text-slate-400">321°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.018</td></tr>` }, 'VOY-00': { title: 'BUSAN PORT DWELL & ANCHOR', tag: 'VOY-00:', metric: '(14.2 NM • ANCHORAGE / HARBOR)', center: [35.08, 129.08], zoom: 11, vessel: [35.0950, 129.0700], heading: 045, h3: '883108c901eefff', model: 'MC-1 (Stationary)', dist: '14.2', distBadge: 'VOY-00 DWELL', distSub1: 'Maneuver: Tug Assisted', distSub2: 'Status: Safe Berth', speed: '2.4', speedBadge: 'HARBOR DWELL', speedMax: 'Max SOG: 6.2 kts', speedTgt: 'Target SOG: 0.0 kts', dwell: '18h 40m', dwellBadge: 'MOORED ANCHOR', dwellTerm: 'Terminal: Busan North Pier 3', dwellAnchor: 'Dwell Anchor: Inner Basin', safety: '99.8', safetyBadge: 'LEVEL 1 OPT', safetyUkc: 'UKC & TSS: Full Water Depth', safetyRisk: 'CPA/TCPA Risk: Zero Drift', pingText: 'Ping 86 / 86', sogText: '0.2 kts', timeText: '11:10 UTC', bounding: '35.02°N - 35.14°N, 129.02°E - 129.15°E', routePts: [ [35.050, 129.040], [35.065, 129.055], [35.080, 129.062], [35.095, 129.070], [35.105, 129.080], [35.115, 129.090] ], pingsHtml: `<tr class="sticky top-[29px] z-10 bg-[#0D1117] border-y border-white/20 shadow-md"><td colspan="7" class="py-1.5 px-3 font-mono text-[10px] select-none bg-[#0D1117]"><div class="flex items-center justify-between gap-2.5"><div class="flex items-center gap-2 min-w-0 flex-1"><span class="flex items-center gap-1.5 font-bold text-amber-400 shrink-0 tracking-wider"><span class="material-symbols-outlined text-[14px] text-amber-400">anchor</span> 22 OCT 2026</span><span class="text-white/20 text-xs shrink-0">|</span><span class="text-[10px] text-slate-300 font-mono tracking-wide truncate">BUSAN HARBOR ROADSTEAD • ANCHORAGE B-2</span></div><span class="text-[9px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-400/30 shrink-0">STATIONARY DWELL</span></div></td></tr><tr class="bg-white/[0.08] cursor-pointer"><td class="py-1.5 px-2.5 text-slate-300 font-semibold">11:10 UTC</td><td class="py-1.5 px-2 text-slate-300">35.0950</td><td class="py-1.5 px-2 text-slate-300">129.0700</td><td class="py-1.5 px-2 text-right font-bold text-emerald-400">0.2</td><td class="py-1.5 px-2 text-right text-white">045°</td><td class="py-1.5 px-2 text-right text-slate-400">045°</td><td class="py-1.5 px-2 text-right text-emerald-400 font-semibold">0.002</td></tr>` } }; window.currentGisLayers = []; window.toggleVoyageMenu = function() { const menu = document.getElementById('voyage-dropdown-menu'); const chevron = document.getElementById('voyage-dropdown-chevron'); if (menu) { menu.classList.toggle('hidden'); if (chevron) chevron.classList.toggle('rotate-180'); } }; window.selectVoyage = function(voyageId) { const data = window.voyageDataStore[voyageId]; if (!data) return; const menu = document.getElementById('voyage-dropdown-menu'); if (menu) menu.classList.add('hidden'); const tagEl = document.getElementById('active-voyage-tag'); if (tagEl) tagEl.textContent = data.tag; const titleEl = document.getElementById('active-voyage-title'); if (titleEl) titleEl.textContent = data.title; const metricEl = document.getElementById('active-voyage-metric'); if (metricEl) metricEl.textContent = data.metric; const distEl = document.getElementById('kpi-val-dist'); if (distEl) distEl.textContent = data.dist; const badge1 = document.getElementById('kpi-badge-1'); if (badge1) badge1.textContent = data.distBadge; const distSub1 = document.getElementById('kpi-sub-dist-1'); if (distSub1) distSub1.textContent = data.distSub1; const distSub2 = document.getElementById('kpi-sub-dist-2'); if (distSub2) distSub2.textContent = data.distSub2; const speedEl = document.getElementById('kpi-val-speed'); if (speedEl) speedEl.textContent = data.speed; const speedBadge = document.getElementById('kpi-badge-speed'); if (speedBadge) speedBadge.textContent = data.speedBadge; const speedMax = document.getElementById('kpi-sub-speed-max'); if (speedMax) speedMax.textContent = data.speedMax; const speedTgt = document.getElementById('kpi-sub-speed-tgt'); if (speedTgt) speedTgt.textContent = data.speedTgt; const dwellEl = document.getElementById('kpi-val-dwell'); if (dwellEl) dwellEl.textContent = data.dwell; const dwellBadge = document.getElementById('kpi-badge-dwell'); if (dwellBadge) dwellBadge.textContent = data.dwellBadge; const dwellTerm = document.getElementById('kpi-sub-dwell-term'); if (dwellTerm) dwellTerm.textContent = data.dwellTerm; const dwellAnchor = document.getElementById('kpi-sub-dwell-anchor'); if (dwellAnchor) dwellAnchor.textContent = data.dwellAnchor; const safetyEl = document.getElementById('kpi-val-safety'); if (safetyEl) safetyEl.textContent = data.safety; const safetyBadge = document.getElementById('kpi-badge-safety'); if (safetyBadge) safetyBadge.textContent = data.safetyBadge; const safetyUkc = document.getElementById('kpi-sub-safety-ukc'); if (safetyUkc) safetyUkc.textContent = data.safetyUkc; const safetyRisk = document.getElementById('kpi-sub-safety-risk'); if (safetyRisk) safetyRisk.textContent = data.safetyRisk; const hudHdg = document.getElementById('hud-hdg-val'); if (hudHdg) hudHdg.textContent = data.heading + '° T'; const hudLat = document.getElementById('hud-lat-val'); if (hudLat) hudLat.textContent = data.vessel[0].toFixed(4); const hudLon = document.getElementById('hud-lon-val'); if (hudLon) hudLon.textContent = data.vessel[1].toFixed(4); const hudH3 = document.getElementById('hud-h3-val'); if (hudH3) hudH3.textContent = data.h3; const hudModel = document.getElementById('hud-model-val'); if (hudModel) hudModel.textContent = data.model; const tableBody = document.getElementById('telemetry-table-body'); if (tableBody && data.pingsHtml) tableBody.innerHTML = data.pingsHtml; if (typeof map !== 'undefined') { if (window.currentGisLayers) { window.currentGisLayers.forEach(layer => map.removeLayer(layer)); } window.currentGisLayers = []; map.setView(data.center, data.zoom); const polyline = L.polyline(data.routePts, { color: '#00f0ff', weight: 2.5, opacity: 0.85 }).addTo(map); window.currentGisLayers.push(polyline); if (typeof h3 !== 'undefined' && h3.latLngToCell && h3.cellToBoundary) { data.routePts.forEach((pt, i) => { try { const cell = h3.latLngToCell(pt[0], pt[1], 8); const boundary = h3.cellToBoundary(cell); const isDep = i === 0; const isArr = i === data.routePts.length - 1; const poly = L.polygon(boundary, { color: isDep ? '#f59e0b' : (isArr ? '#10b981' : '#00f0ff'), weight: 1.8, fillColor: isDep ? '#d97706' : (isArr ? '#059669' : '#0284c7'), fillOpacity: 0.25, dashArray: (isDep || isArr) ? '3, 3' : null }).addTo(map); window.currentGisLayers.push(poly); } catch(err) {} }); } const vIcon = L.divIcon({ className: 'vessel-live-icon', html: `<div style="transform: rotate(${data.heading}deg);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><polygon points="12,2 20,20 12,16 4,20" fill="#38bdf8" stroke="#ffffff" stroke-width="2"/></svg></div>`, iconSize: [24, 24], iconAnchor: [12, 12] }); const vMarker = L.marker(data.vessel, { icon: vIcon }).addTo(map); window.currentGisLayers.push(vMarker); const depMarker = L.circleMarker(data.routePts[0], { radius: 6, color: '#f59e0b', fillColor: '#ffffff', fillOpacity: 1, weight: 2.5 }).addTo(map); const arrMarker = L.circleMarker(data.routePts[data.routePts.length - 1], { radius: 6, color: '#10b981', fillColor: '#ffffff', fillOpacity: 1, weight: 2.5 }).addTo(map); window.currentGisLayers.push(depMarker); window.currentGisLayers.push(arrMarker); } };</script></main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/h3-js@4.1.0/dist/h3-js.umd.js"></script>
+  <script>
+    // Initialize Leaflet Map
+    const map = L.map('map', {
+      center: [34.45, 129.85],
+      zoom: 8,
+      zoomControl: false,
+      attributionControl: false
+    });
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19, subdomains: 'abcd'
+    }).addTo(map);
+
+    // Trajectory coordinates (Busan to Fukuoka)
+    const routePts = [
+      [35.115, 129.043],
+      [35.050, 129.120],
+      [34.980, 129.220],
+      [34.820, 129.620],
+      [34.500, 129.800],
+      [34.150, 130.000],
+      [33.900, 130.150],
+      [33.750, 130.280],
+      [33.680, 130.340],
+      [33.606, 130.395]
+    ];
+
+    // Trajectory Polyline
+    L.polyline(routePts, {
+      color: '#00f0ff',
+      weight: 2.5,
+      opacity: 0.8
+    }).addTo(map);
+
+    // Render H3 Res 8 Hexagons along route if h3 is available
+    if (typeof h3 !== 'undefined' && h3.latLngToCell && h3.cellToBoundary) {
+      routePts.forEach((pt, i) => {
+        try {
+          const cell = h3.latLngToCell(pt[0], pt[1], 8);
+          const boundary = h3.cellToBoundary(cell);
+          const isDeparture = i < 2;
+          const isArrival = i >= routePts.length - 2;
+
+          L.polygon(boundary, {
+            color: isDeparture ? '#f59e0b' : (isArrival ? '#10b981' : '#00f0ff'),
+            weight: 1.8,
+            fillColor: isDeparture ? '#d97706' : (isArrival ? '#059669' : '#0284c7'),
+            fillOpacity: 0.25,
+            dashArray: (isDeparture || isArrival) ? '3, 3' : null
+          }).addTo(map);
+        } catch(e) {}
+      });
+    }
+
+    // Active Vessel Marker
+    const vesselIcon = L.divIcon({
+      className: 'vessel-live-icon',
+      html: `
+        <div style="transform: rotate(140deg);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <polygon points="12,2 20,20 12,16 4,20" fill="#38bdf8" stroke="#ffffff" stroke-width="2"/>
+          </svg>
+        </div>
+      `,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    });
+    L.marker([34.500, 129.800], { icon: vesselIcon }).addTo(map);
+
+    // Departure & Arrival pins
+    L.circleMarker(routePts[0], { radius: 6, color: '#f59e0b', fillColor: '#ffffff', fillOpacity: 1, weight: 2.5 }).addTo(map);
+    L.circleMarker(routePts[routePts.length - 1], { radius: 6, color: '#10b981', fillColor: '#ffffff', fillOpacity: 1, weight: 2.5 }).addTo(map);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+</body></html>

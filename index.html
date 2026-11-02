@@ -1,99 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AIS Synthetic Route Simulator & Telemetry Cockpit</title>
+  <title>AIS Synthetic Route Simulator & Studio • Palantir Foundry</title>
   <meta name="description" content="Generate high-fidelity Class A synthetic AIS tracks and kinematics along custom or preset maritime paths." />
 
-  <!-- Google Fonts: Inter & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Urbanist, JetBrains Mono, Space Grotesk, Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
   <!-- Leaflet GIS Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
-  <!-- Custom Maritime Design System -->
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Custom Maritime Design System & Shell (Rule 2: Solid Sidebar) -->
   <link rel="stylesheet" href="static/css/style.css" />
+  <link rel="stylesheet" href="static/css/shell.css" />
+
+  <style>
+    /* Ensure simulator container respects fixed shell */
+    .app-container {
+      display: flex;
+      width: 100%;
+      height: calc(100vh - 56px);
+      position: relative;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 380px !important;
+      min-width: 380px !important;
+      height: 100% !important;
+      background: #0D1117 !important;
+      border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+      overflow-y: auto !important;
+      z-index: 20 !important;
+    }
+    #map {
+      flex: 1 !important;
+      height: 100% !important;
+      background: #070a12 !important;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-[#090B10] text-[#E2E8F0] antialiased select-none font-sans min-h-screen">
 
-  <!-- Top Global Header -->
-  <header class="top-header">
-    <div class="brand-section">
-      <span class="brand-badge">
-        <svg class="ui-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M12 10V4"/><path d="M8 8h8"/></svg>
-        AIS SIM
-      </span>
-      <div>
-        <h1 class="brand-title">
-          ohD • Synthetic Telemetry Studio
-          <span class="live-beacon">ECDIS Ready</span>
-        </h1>
+  <!-- =========================================================================
+       Palantir Foundry Top Navigation / Global Shell Header (IDENTICAL PIXELS)
+       ========================================================================= -->
+  <header class="fixed top-0 left-0 right-0 h-14 bg-[#090B10]/95 backdrop-blur-md z-50 flex items-center justify-between px-5 border-b border-white/[0.07]">
+    <!-- Left Workspace Title & Breadcrumbs -->
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 py-1 px-2.5 bg-white/[0.04] border border-white/10 rounded-xl">
+        <span class="material-symbols-outlined text-[#38bdf8] text-[18px]">hub</span>
+        <span class="font-mono text-xs uppercase tracking-wider text-white font-bold">Palantir Foundry</span>
+      </div>
+      <div class="h-4 w-px bg-white/10"></div>
+      <div class="flex items-center gap-1.5 text-xs">
+        <span class="font-mono px-2 py-0.5 rounded-md bg-white/[0.04] text-slate-400 text-[11px]">ROOT</span>
+        <span class="material-symbols-outlined text-slate-500 text-[13px]">chevron_right</span>
+        <span class="font-mono text-slate-400 text-[11px]">MARITIME_OPS</span>
+        <span class="material-symbols-outlined text-slate-500 text-[13px]">chevron_right</span>
+        <span class="text-white font-semibold text-xs tracking-wide">SimulationStudio_v2</span>
+      </div>
+      <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-mono text-[10px] uppercase font-bold tracking-wider">SYNCED: LIVE</span>
       </div>
     </div>
 
-    <!-- Quick Preset Route Selector (DirectFerries Verified) -->
-    <div class="header-center">
-      <div class="preset-selector">
-        <label for="preset-select">
-          <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Corridor:
-        </label>
-        <select id="preset-select">
-          <optgroup label="South Korea <-> Japan (DirectFerries)">
-            <option value="busan_fukuoka" selected>Busan <-> Fukuoka (Hakata) [Camellia / Beetle]</option>
-            <option value="busan_shimonoseki">Busan <-> Shimonoseki [Pukwan / Kanpu]</option>
-            <option value="busan_osaka">Busan <-> Osaka [PanStar Dream / Seto Sea]</option>
-            <option value="busan_tsushima">Busan <-> Tsushima (Hitakatsu) [High-Speed 1h 15m]</option>
-          </optgroup>
-          <optgroup label="South Korea <-> China (Yellow Sea)">
-            <option value="incheon_weihai">Incheon <-> Weihai (Shandong) [Weidong Ferry]</option>
-            <option value="incheon_qingdao">Incheon <-> Qingdao [Jiaozhou Bay Fairway]</option>
-            <option value="incheon_dalian">Incheon <-> Dalian [Dain Ferry]</option>
-            <option value="busan_shanghai">Busan <-> Shanghai (Waigaoqiao / Yangshan)</option>
-          </optgroup>
-          <optgroup label="China <-> Japan">
-            <option value="shanghai_osaka">Shanghai <-> Osaka / Kobe [Xin Jian Zhen]</option>
-          </optgroup>
-          <optgroup label="South Korea Domestic">
-            <option value="busan_jeju">Busan <-> Jeju Island [South Sea Flagship]</option>
-            <option value="mokpo_jeju">Mokpo <-> Jeju Island [Queen Mary 2]</option>
-          </optgroup>
-          <optgroup label="Japan Domestic Trunk Lines (DirectFerries)">
-            <option value="shinmoji_izumiotsu">Shinmoji (Kitakyushu) <-> Izumiotsu (Osaka) [Hankyu Ferry]</option>
-            <option value="maizuru_otaru">Maizuru (Kyoto) <-> Otaru (Hokkaido) [Shin Nihonkai]</option>
-            <option value="oarai_tomakomai">Oarai (Tokyo) <-> Tomakomai (Hokkaido) [MOL Sunflower]</option>
-            <option value="kagoshima_naha">Kagoshima <-> Naha (Okinawa) [Marix / A-Line]</option>
-          </optgroup>
-        </select>
-      </div>
+    <!-- Center Cross-Tool Navigation (Identical Dimensions) -->
+    <div class="hidden lg:flex items-center gap-1 bg-white/[0.02] border border-white/[0.06] p-1 rounded-xl">
+      <a href="viewer.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">radar</span> Voyages
+      </a>
+      <a href="viewer.html#fleet" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">directions_boat</span> Fleet Overview
+      </a>
+      <a href="ports.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">anchor</span> Ports
+      </a>
+      <a href="index.html" class="px-3 py-1 text-xs font-semibold text-[#38bdf8] bg-white/[0.06] rounded-lg border border-white/10 flex items-center gap-1.5 shadow-sm">
+        <span class="material-symbols-outlined text-[15px]">sensors</span> Studio
+      </a>
+      <a href="spatA/index.html" class="px-3 py-1 text-xs text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.04] transition flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[15px]">analytics</span> spatA Workbench
+      </a>
     </div>
 
-    <!-- Top Navigation Links -->
-    <div class="header-nav">
-      <a href="index.html" class="nav-link active">
-        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
-        <span>Studio</span>
-      </a>
-      <a href="viewer.html" class="nav-link">
-        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        <span>Telemetry Viewer</span>
-      </a>
-      <a href="ports.html" class="nav-link" target="_blank" title="Explore Asian Ports on CARTO Basemap with H3 Hexagonal Grid">
-        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        <span>Ports &amp; H3 Grid</span>
-      </a>
-      <a href="spatA/index.html" class="nav-link" title="spatA — AIS Spatiotemporal Analytics Workbench">
-        <svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        <span>spatA</span>
-      </a>
+    <!-- Right Controls: Omnibox & Operator Profile -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center bg-white/[0.03] border border-white/10 px-3 py-1.5 rounded-xl gap-2 text-slate-400 hover:border-white/20 transition">
+        <span class="material-symbols-outlined text-[16px]">search</span>
+        <input type="text" placeholder="FIND CORRIDOR / VESSEL" class="bg-transparent border-none outline-none text-xs font-mono text-slate-200 placeholder-slate-500 w-52" />
+        <kbd class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-slate-300 ml-1">⌘K</kbd>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="h-4 w-px bg-white/10"></div>
+        <div class="flex items-center gap-2.5 pl-1">
+          <div class="text-right leading-tight">
+            <div class="font-mono text-[11px] font-semibold text-slate-200">User 007</div>
+            <div class="font-mono text-[9px] text-slate-500 tracking-wider">Team Blue</div>
+          </div>
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#1164AF] to-[#38bdf8] flex items-center justify-center shadow-lg shadow-[#1164AF]/20 border border-white/20">
+            <span class="material-symbols-outlined text-white text-[17px]">person</span>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- App Main Viewport -->
-  <div class="app-container">
+  <!-- =========================================================================
+       Left Sidebar: Ontology Bindings & Solid Tactile Navigation (IDENTICAL PIXELS)
+       ========================================================================= -->
+  <aside class="fixed left-0 top-14 bottom-0 w-64 sidebar-solid-container z-40 flex flex-col justify-between backdrop-blur-md select-none">
+    <div class="flex flex-col p-3">
+      <div class="px-3 py-2 mb-2 flex items-center justify-between border-b border-white/[0.06]">
+        <span class="font-mono text-[10px] tracking-widest uppercase text-slate-500 font-semibold">ONTOLOGY BINDINGS</span>
+        <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-[#1164AF]/20 text-[#38bdf8] font-semibold border border-[#1164AF]/30">v4.18</span>
+      </div>
+
+      <nav class="space-y-1">
+        <a href="viewer.html#fleet" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">directions_boat</span>
+            <span>Fleet Overview</span>
+          </span>
+          <span class="font-mono text-[11px] text-slate-500">40</span>
+        </a>
+
+        <a href="viewer.html" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">radar</span>
+            <span>Voyage Telemetry</span>
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        </a>
+
+        <a href="ports.html" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">anchor</span>
+            <span>Ports &amp; H3 Geofences</span>
+          </span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-[#1164AF]/20 text-[#38bdf8] font-bold">NGA</span>
+        </a>
+
+        <a href="viewer.html#anomalies" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">warning</span>
+            <span>Anomaly Queue</span>
+          </span>
+          <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 font-bold">12</span>
+        </a>
+
+        <div class="sidebar-nav-item active flex items-center justify-between px-3 py-2 rounded-xl text-white border border-white/10 transition group shadow-sm">
+          <span class="flex items-center gap-2.5 text-sm font-semibold">
+            <span class="material-symbols-outlined text-[18px] text-[#38bdf8] item-icon-box transition-transform">schema</span>
+            <span>Simulation Studio</span>
+          </span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#38bdf8]"></span>
+        </div>
+
+        <a href="spatA/index.html" class="sidebar-nav-item flex items-center justify-between px-3 py-2 rounded-xl text-slate-400 border border-transparent transition group">
+          <span class="flex items-center gap-2.5 text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px] text-slate-400 group-hover:text-white item-icon-box transition-transform">analytics</span>
+            <span>spatA Workbench</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Sidebar Bottom Status Widget -->
+    <div class="p-3 border-t border-white/[0.06] space-y-2">
+      <div class="flex items-center justify-between text-[11px] font-mono">
+        <span class="text-slate-500 uppercase tracking-wider">WORKSHOP ENGINE</span>
+        <span class="text-emerald-400 font-medium flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> CONNECTED
+        </span>
+      </div>
+      <div class="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5 text-[11px] font-mono">
+        <div class="flex justify-between text-slate-400">
+          <span>SIM ENGINE</span>
+          <span class="text-slate-200">Catmull-Rom + searoute</span>
+        </div>
+        <div class="flex justify-between text-slate-400">
+          <span>INTERVALS</span>
+          <span class="text-[#38bdf8]">15s - 120s Dynamic</span>
+        </div>
+        <div class="w-full bg-white/10 h-1 rounded-full overflow-hidden mt-1.5">
+          <div class="bg-gradient-to-r from-[#1164AF] to-[#38bdf8] h-full w-3/4 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       Main Content Viewport Canvas (IDENTICAL PL-64 PT-14 LAYOUT)
+       ========================================================================= -->
+  <div class="pl-64">
+    <main class="pt-14 w-full h-screen relative bg-[#090B10] flex overflow-hidden">
+
     
     <!-- Left Configuration Sidebar -->
     <aside class="sidebar" id="sidebar">
@@ -505,3 +615,7 @@
   </script>
 </body>
 </html>
+    </main>
+  </div>
+
+  

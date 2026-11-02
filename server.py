@@ -30,8 +30,13 @@ import simulator_engine
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 STATIC_DIR = os.path.join(BASE_DIR, "static")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(STATIC_DIR, exist_ok=True)
+DATA_DIR = os.path.join(BASE_DIR, "data")
+RAW_DIR = os.path.join(DATA_DIR, "raw")
+BRONZE_DIR = os.path.join(DATA_DIR, "bronze")
+SILVER_DIR = os.path.join(DATA_DIR, "silver")
+GOLD_DIR = os.path.join(DATA_DIR, "gold")
+for _d in [OUTPUT_DIR, STATIC_DIR, DATA_DIR, RAW_DIR, BRONZE_DIR, SILVER_DIR, GOLD_DIR]:
+    os.makedirs(_d, exist_ok=True)
 
 app = FastAPI(
     title="Maritime AIS Synthetic Route Simulator",
@@ -89,6 +94,181 @@ def get_ports(q: str = Query("", description="Search term for port name, UN/LOCO
         "limit": limit,
         "ports": ports
     })
+
+
+
+def _generate_mmsi(imo: str, country: str = "Panama") -> str:
+    digits = ''.join(c for c in imo if c.isdigit())
+    tail = digits[-6:].zfill(6) if digits else "123456"
+    c_lower = country.lower()
+    if "korea" in c_lower or "kr" in c_lower:
+        mid = "440"
+    elif "japan" in c_lower or "jp" in c_lower:
+        mid = "431"
+    elif "china" in c_lower or "cn" in c_lower:
+        mid = "413"
+    elif "liberia" in c_lower or "lr" in c_lower:
+        mid = "636"
+    else:
+        mid = "371" # Panama
+    return f"{mid}{tail}"
+
+@app.get("/api/fleet/positions")
+def get_fleet_positions():
+    """
+    Returns the most current positions based on active time of all unique
+    vessels in the database (scanning Gold/Silver Data Lake, output CSVs, and commercial ferry routes).
+    Provides distinct attributes: vessel, imo, mmsi, type, flag, position, speed, status, kinematics.
+    """
+    fleet = {}
+    now_dt = datetime.now()
+    now_iso = now_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # 0. Check Gold Fleet State
+    gold_fleet_file = os.path.join(GOLD_DIR, "fleet", "fleet_current_state.json")
+    if os.path.exists(gold_fleet_file):
+        try:
+            with open(gold_fleet_file, "r", encoding="utf-8") as gfp:
+                gdata = json.load(gfp)
+                for v in gdata.get("vessels", []):
+                    name = v.get("vessel", "Vessel").strip()
+                    imo = v.get("imo", "IMO9999999").strip()
+                    key = f"{name.upper()}_{imo.upper()}"
+                    fleet[key] = {
+                        "vessel": name,
+                        "imo": imo,
+                        "mmsi": v.get("mmsi") or _generate_mmsi(imo, v.get("flag", "Panama")),
+                        "type": v.get("type", 60),
+                        "type_label": v.get("type_label", "Ro-Pax Ferry"),
+                        "flag": v.get("flag", "South Korea (KR)"),
+                        "lat": round(float(v.get("lat", 35.115)), 4),
+                        "lon": round(float(v.get("lon", 129.043)), 4),
+                        "sog": round(float(v.get("calc_speed_kts", 0)), 1),
+                        "cog": round(float(v.get("calc_heading_deg", 0)), 0),
+                        "accel": round(float(v.get("calc_accel_kts_min", 0)), 2),
+                        "status": v.get("status", "Underway"),
+                        "corridor": v.get("corridor", "Korea Strait Transit"),
+                        "destination": "Hakata Port, Fukuoka (JP)",
+                        "safety_index": v.get("safety_index", 96.0),
+                        "last_update": now_iso,
+                        "tier": "gold",
+                        "csv_file": "busan_silver.csv"
+                    }
+        except Exception:
+            pass
+
+    # 1. Output CSV files (highest fidelity simulated pings)
+    csv_files = glob.glob(os.path.join(OUTPUT_DIR, "*.csv"))
+    # Sort by modification time so latest simulated pings are prioritized
+    csv_files.sort(key=os.path.getmtime, reverse=True)
+
+    for cf in csv_files:
+        fname = os.path.basename(cf)
+        try:
+            with open(cf, "r", encoding="utf-8-sig") as fp:
+                reader = csv.DictReader(fp)
+                last_row = None
+                for r in reader:
+                    last_row = r
+                if last_row:
+                    name = (last_row.get("Name") or "Vessel").strip()
+                    imo = (last_row.get("IMO") or "IMO9999999").strip()
+                    if not imo.startswith("IMO"):
+                        imo = f"IMO{imo}"
+                    key = f"{name.upper()}_{imo.upper()}"
+                    
+                    if key not in fleet:
+                        flag = "Panama (PA)"
+                        if "korea" in name.lower() or "busan" in fname.lower():
+                            flag = "South Korea (KR)"
+                        elif "breeze" in name.lower():
+                            flag = "Liberia (LR)"
+
+                        mmsi = _generate_mmsi(imo, flag)
+                        lat = float(last_row.get("LAT", 35.115))
+                        lon = float(last_row.get("LON", 129.043))
+                        sog = float(last_row.get("SOG", 0))
+                        cog = float(last_row.get("COG", 0))
+                        status_label = "Underway using engine" if sog > 0.5 else "Moored"
+
+                        fleet[key] = {
+                            "vessel": name,
+                            "imo": imo,
+                            "mmsi": mmsi,
+                            "type": int(float(last_row.get("Type", 60))),
+                            "type_label": "Ro-Pax Ferry" if int(float(last_row.get("Type", 60))) == 60 else "Commercial Vessel",
+                            "flag": flag,
+                            "lat": round(lat, 4),
+                            "lon": round(lon, 4),
+                            "sog": round(sog, 1),
+                            "cog": round(cog, 0),
+                            "status": status_label,
+                            "corridor": "Busan <-> Fukuoka (Hakata)" if "camellia" in name.lower() else "Korea Strait Transit",
+                            "destination": "Hakata Port, Fukuoka (JP)" if cog > 90 and cog < 270 else "Busan North Port (KR)",
+                            "last_update": last_row.get("DateTime", now_iso),
+                            "csv_file": fname
+                        }
+        except Exception as e:
+            pass
+
+    # 2. Commercial routes reference
+    routes_json = os.path.join(BASE_DIR, "reference", "commercial_ferry_routes.json")
+    if os.path.exists(routes_json):
+        try:
+            with open(routes_json, "r", encoding="utf-8") as fp:
+                routes = json.load(fp)
+                for idx, r in enumerate(routes):
+                    rv = r.get("real_vessel", {})
+                    dv = r.get("dummy_vessel", {})
+                    orig = r.get("origin_port", {})
+                    dest = r.get("destination_port", {})
+                    reg = r.get("region", "South Korea - Japan")
+
+                    for v, is_dummy in [(rv, False), (dv, True)]:
+                        if v and v.get("name") and v.get("imo"):
+                            name = v.get("name").strip()
+                            imo = v.get("imo").strip()
+                            if not imo.startswith("IMO"):
+                                imo = f"IMO{imo}"
+                            key = f"{name.upper()}_{imo.upper()}"
+                            if key not in fleet:
+                                flag = "South Korea (KR)" if "Korea" in reg and not is_dummy else "Japan (JP)"
+                                if "China" in reg:
+                                    flag = "China (CN)"
+                                mmsi = _generate_mmsi(imo, flag)
+                                
+                                # Current position: simulated progress along corridor
+                                progress = ((idx * 0.23 + (0.5 if is_dummy else 0.1)) % 1.0)
+                                o_lat, o_lon = orig.get("lat", 35.1), orig.get("lon", 129.0)
+                                d_lat, d_lon = dest.get("lat", 33.6), dest.get("lon", 130.4)
+                                
+                                cur_lat = o_lat + (d_lat - o_lat) * progress
+                                cur_lon = o_lon + (d_lon - o_lon) * progress
+                                cruise_sog = v.get("cruise_speed_knots", 18.5)
+                                is_underway = progress > 0.05 and progress < 0.95
+                                
+                                fleet[key] = {
+                                    "vessel": name,
+                                    "imo": imo,
+                                    "mmsi": mmsi,
+                                    "type": v.get("type_code", 60),
+                                    "type_label": v.get("type_label", "Ro-Pax Ferry"),
+                                    "flag": flag,
+                                    "lat": round(cur_lat, 4),
+                                    "lon": round(cur_lon, 4),
+                                    "sog": round(cruise_sog if is_underway else 0.1, 1),
+                                    "cog": round(140.0 if not is_dummy else 320.0, 0),
+                                    "status": "Underway using engine" if is_underway else "Moored",
+                                    "corridor": r.get("route_name", "Korea Strait Transit"),
+                                    "destination": dest.get("name", "Arrival Port"),
+                                    "last_update": now_iso,
+                                    "csv_file": None
+                                }
+        except Exception as e:
+            pass
+
+    vessels_list = list(fleet.values())
+    return JSONResponse(content={"total": len(vessels_list), "vessels": vessels_list})
 
 
 @app.get("/api/vessels/history")
@@ -299,9 +479,18 @@ def simulate_ais(req: SimulateRequest):
 def list_runs():
     """Lists all previously simulated runs saved in the output directory."""
     runs = []
-    csv_files = glob.glob(os.path.join(OUTPUT_DIR, "*.csv"))
-    # Sort newest first
-    csv_files.sort(key=os.path.getmtime, reverse=True)
+    # Scan output/ and data lake tiers
+    all_files = glob.glob(os.path.join(OUTPUT_DIR, "*.csv"))
+    all_files += glob.glob(os.path.join(SILVER_DIR, "*.csv"))
+    all_files += glob.glob(os.path.join(BRONZE_DIR, "*.csv"))
+    # Deduplicate while preserving order
+    seen_fnames = set()
+    csv_files = []
+    for f in sorted(all_files, key=os.path.getmtime, reverse=True):
+        bn = os.path.basename(f)
+        if bn not in seen_fnames:
+            seen_fnames.add(bn)
+            csv_files.append(f)
 
     for cf in csv_files:
         fname = os.path.basename(cf)
@@ -358,8 +547,19 @@ def list_runs():
 def get_run_details(filename: str):
     """Retrieves full telemetry pings and metadata for a specific saved run."""
     clean_name = os.path.basename(filename)
-    csv_path = os.path.join(OUTPUT_DIR, clean_name)
-    if not os.path.exists(csv_path):
+    possible_paths = [
+        os.path.join(OUTPUT_DIR, clean_name),
+        os.path.join(SILVER_DIR, clean_name),
+        os.path.join(BRONZE_DIR, clean_name),
+        os.path.join(RAW_DIR, clean_name),
+        os.path.join(BASE_DIR, clean_name)
+    ]
+    csv_path = None
+    for p in possible_paths:
+        if os.path.exists(p):
+            csv_path = p
+            break
+    if not csv_path:
         raise HTTPException(status_code=404, detail="Run not found.")
 
     pings = []
@@ -419,6 +619,67 @@ def download_csv(filename: str):
 
 
 # Serve Ports Visualizer standalone page
+@app.get("/api/datalake/status")
+def get_datalake_status():
+    """Returns overview of Medallion Data Lake tiers (Raw, Bronze, Silver, Gold)."""
+    def _list_files(directory):
+        files = []
+        if os.path.exists(directory):
+            for fn in sorted(os.listdir(directory)):
+                p = os.path.join(directory, fn)
+                if os.path.isfile(p):
+                    files.append({
+                        "name": fn,
+                        "size_kb": round(os.path.getsize(p) / 1024, 1),
+                        "modified": datetime.fromtimestamp(os.path.getmtime(p)).strftime("%Y-%m-%d %H:%M:%S")
+                    })
+        return files
+
+    return JSONResponse(content={
+        "data_lake": {
+            "architecture": "Medallion (Raw -> Bronze -> Silver -> Gold)",
+            "tiers": {
+                "raw": {
+                    "description": "Pristine landing zone for untransformed external feeds and dumps",
+                    "files": _list_files(RAW_DIR)
+                },
+                "bronze": {
+                    "description": "Standardized 10-column canonical schema ingestion",
+                    "files": _list_files(BRONZE_DIR)
+                },
+                "silver": {
+                    "description": "Noise-cleansed, voyage-segmented and derived kinematics (speed, heading, accel, ROT) + H3 Res 8/7",
+                    "files": _list_files(SILVER_DIR)
+                },
+                "gold": {
+                    "description": "Curated maritime intelligence: Voyage KPIs (Distance, Avg Speed, Prior Dwell, Safety Index), 3rd-order Markov matrices, Top-3 spectrum",
+                    "files": _list_files(GOLD_DIR)
+                }
+            }
+        }
+    })
+
+
+@app.get("/api/datalake/voyages")
+def get_datalake_voyages():
+    """Returns curated Gold-tier voyage summaries including 4 key metrics."""
+    summary_path = os.path.join(GOLD_DIR, "voyages_summary.json")
+    if os.path.exists(summary_path):
+        with open(summary_path, "r", encoding="utf-8") as f:
+            return JSONResponse(content=json.load(f))
+    return JSONResponse(content=[])
+
+
+@app.get("/api/datalake/markov")
+def get_datalake_markov():
+    """Returns 3rd-order Markov transition matrices and Top-3 predictions from Gold tier."""
+    top3_path = os.path.join(GOLD_DIR, "markov_models", "top3_predictions.json")
+    matrix_path = os.path.join(GOLD_DIR, "markov_models", "transition_matrix_res8.json")
+    top3 = json.load(open(top3_path, "r", encoding="utf-8")) if os.path.exists(top3_path) else {}
+    matrix = json.load(open(matrix_path, "r", encoding="utf-8")) if os.path.exists(matrix_path) else {}
+    return JSONResponse(content={"top3_predictions": top3, "transition_matrix": matrix})
+
+
 @app.get("/ports-visualizer")
 def serve_ports_visualizer():
     vis_path = os.path.join(BASE_DIR, "specs", "001-simplified-telemetry-and-vessel-picker", "ports_visualizer.html")
@@ -439,6 +700,8 @@ def serve_asia_ports_js():
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 if os.path.exists(OUTPUT_DIR):
     app.mount("/output", StaticFiles(directory=OUTPUT_DIR), name="output")
+if os.path.exists(DATA_DIR):
+    app.mount("/data", StaticFiles(directory=DATA_DIR), name="data")
 
 
 @app.get("/")

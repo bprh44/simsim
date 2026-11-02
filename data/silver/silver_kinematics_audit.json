@@ -1,0 +1,36 @@
+{
+  "busan_silver.csv": {
+    "record_count": 746,
+    "voyages_count": 1,
+    "speed_metrics": {
+      "avg_calc_speed_kts": 5.02,
+      "max_calc_speed_kts": 20.46
+    },
+    "acceleration_metrics": {
+      "mean_accel_kts_min": -0.1,
+      "max_accel_kts_min": 35.83,
+      "min_accel_kts_min": -30.0
+    },
+    "rot_metrics": {
+      "max_rot_deg_min": 541.26
+    },
+    "safety_index_mean": 90.1
+  },
+  "new_camellia_silver.csv": {
+    "record_count": 20043,
+    "voyages_count": 1,
+    "speed_metrics": {
+      "avg_calc_speed_kts": 19.72,
+      "max_calc_speed_kts": 35.0
+    },
+    "acceleration_metrics": {
+      "mean_accel_kts_min": 3.54,
+      "max_accel_kts_min": 1846.8,
+      "min_accel_kts_min": -391.2
+    },
+    "rot_metrics": {
+      "max_rot_deg_min": 10393.26
+    },
+    "safety_index_mean": 81.2
+  }
+}

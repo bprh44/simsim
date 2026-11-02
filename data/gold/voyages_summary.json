@@ -1,0 +1,33 @@
+[
+  {
+    "voyage_id": "VOY_NEW_CAMELLIA_001",
+    "vessel_name": "NEW CAMELLIA",
+    "imo": "IMO9304497",
+    "origin_port": "Busan North Port (KR)",
+    "destination_port": "Hakata Port, Fukuoka (JP)",
+    "metrics": {
+      "distance_nm": 56.7,
+      "average_speed_kts": 5.3,
+      "max_speed_kts": 20.5,
+      "prior_dwell_time_hrs": 5.4,
+      "safety_index": 62.3
+    },
+    "safety_breakdown": {
+      "score": 62.3,
+      "status": "MODERATE RISK",
+      "kinematics_integrity": 98.4,
+      "ais_link_reliability": 96.2,
+      "corridor_conformance": 97.8,
+      "factors": {
+        "speed_anomaly_penalty": 0.0,
+        "jerk_accel_penalty": 20.0,
+        "heading_swing_penalty": 2.7,
+        "dropout_penalty": 15.0
+      }
+    },
+    "timestamps": {
+      "departure_utc": "2026-10-26T16:52:18Z",
+      "arrival_utc": "2026-10-27T05:39:39Z"
+    }
+  }
+]
