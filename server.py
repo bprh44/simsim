@@ -696,15 +696,20 @@ def serve_asia_ports_js():
     raise HTTPException(status_code=404, detail="Data file not found.")
 
 
-# Mount Static Assets & Pages
+# Mount Static Assets & Directories
+SPATA_DIR = os.path.join(BASE_DIR, "spatA")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 if os.path.exists(OUTPUT_DIR):
     app.mount("/output", StaticFiles(directory=OUTPUT_DIR), name="output")
 if os.path.exists(DATA_DIR):
     app.mount("/data", StaticFiles(directory=DATA_DIR), name="data")
+if os.path.exists(SPATA_DIR):
+    app.mount("/spatA", StaticFiles(directory=SPATA_DIR), name="spatA")
 
 
 @app.get("/")
+@app.get("/index.html")
+@app.get("/simulator")
 def serve_index():
     index_path = os.path.join(BASE_DIR, "index.html")
     if os.path.exists(index_path):
@@ -713,11 +718,38 @@ def serve_index():
 
 
 @app.get("/viewer")
+@app.get("/viewer.html")
 def serve_viewer():
     viewer_path = os.path.join(BASE_DIR, "viewer.html")
     if os.path.exists(viewer_path):
         return FileResponse(viewer_path)
     return JSONResponse(content={"message": "Viewer is running. Missing viewer.html."})
+
+
+@app.get("/ports")
+@app.get("/ports.html")
+def serve_ports():
+    ports_path = os.path.join(BASE_DIR, "ports.html")
+    if os.path.exists(ports_path):
+        return FileResponse(ports_path)
+    return JSONResponse(content={"message": "Ports is running. Missing ports.html."})
+
+
+@app.get("/analytics")
+@app.get("/analytics.html")
+def serve_analytics():
+    analytics_path = os.path.join(BASE_DIR, "analytics.html")
+    if os.path.exists(analytics_path):
+        return FileResponse(analytics_path)
+    return JSONResponse(content={"message": "Analytics is running. Missing analytics.html."})
+
+
+@app.get("/{page_name}.html")
+def serve_any_html(page_name: str):
+    p = os.path.join(BASE_DIR, f"{page_name}.html")
+    if os.path.exists(p):
+        return FileResponse(p)
+    raise HTTPException(status_code=404, detail=f"Page {page_name}.html not found")
 
 
 if __name__ == "__main__":
